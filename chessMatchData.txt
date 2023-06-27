@@ -1,0 +1,1062 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" dir="ltr" xmlns:fb="http://ogp.me/ns/fb#" xmlns:og="http://ogp.me/ns#" class="user-logged-out cls-board"><head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# game: http://ogp.me/ns/game#">
+          <meta charset="utf-8">
+    <meta name="ROBOTS" content="NOODP">
+    <meta name="ROBOTS" content="NOYDIR">
+          <meta name="ROBOTS" content="NOINDEX">
+        <meta name="verify-v1" content="TgxixMKtxcQ+9NUdD7grKbzw3tAl3iJWlTPSPKt9t0I=">
+    <meta name="p:domain_verify" content="314c7ba9469cc171a12a46b43e0e2aed">
+    <meta name="google-site-verification" content="n7BdKb0xn1E9tRJXvmMxE3Ynr-QajBOi1yA1srT4Nrc">
+
+          <meta name="apple-itunes-app" content="app-id=329218549">
+      
+
+            
+      <meta http-equiv="origin-trial" content="AuGfAMPWoR0C62l9KREVKNwN4sOPJ2Qu6mCJRJBwJt+NAlKwOG8B9sPh3Es8G6LHMzMMMbOF4+gzBjQoAQHftAkAAAB3eyJvcmlnaW4iOiJodHRwczovL3d3dy5jaGVzcy5jb206NDQzIiwiZmVhdHVyZSI6IlVucmVzdHJpY3RlZFNoYXJlZEFycmF5QnVmZmVyIiwiZXhwaXJ5IjoxNjg4MDgzMTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZX0=">
+    
+              <meta name="description" content="noopdogg07 (1190) vs zorocollo (1196). zorocollo won on time in 21 moves. Click to review the game, move by move.">
+      
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  
+    <link rel="preconnect" href="//www.chess.com">
+  <link rel="preconnect" href="//images.chesscomfiles.com">
+
+    <link rel="dns-prefetch" href="//www.chess.com">
+  <link rel="dns-prefetch" href="//images.chesscomfiles.com">
+
+      <link rel="preconnect" href="https://config.playwire.com" crossorigin="">
+<link rel="preconnect" href="https://cdn.intergi.com" crossorigin="">
+<link rel="preconnect" href="https://cdn.intergient.com" crossorigin="">
+<link rel="preconnect" href="https://securepubads.g.doubleclick.net" crossorigin="">
+<link rel="preconnect" href="https://cdn.playwire.com" crossorigin="">
+<link rel="preconnect" href="https://z.moatads.com" crossorigin="">
+  
+    
+<link as="font" crossorigin="crossorigin" href="/bundles/web/fonts/chessglyph-v3/chessglyph-v3.cece6a99.woff2" rel="preload" type="font/woff2">
+
+<link as="font" crossorigin="crossorigin" href="/bundles/web/fonts/montserrat-700.2213e098.woff2" rel="preload" type="font/woff2">
+
+<link as="font" crossorigin="crossorigin" href="/bundles/web/fonts/montserrat-800.2d88ac8b.woff2" rel="preload" type="font/woff2">
+
+    
+  
+  
+<link rel="mask-icon" href="/bundles/web/favicons/safari-pinned-tab.1bf62bbf.svg" color="#4E7838">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/bundles/web/favicons/apple-touch-icon.f72d3fd3.png">
+
+<link rel="alternate icon" type="image/png" href="/bundles/web/favicons/favicon-32x32.c2a8280d.png">
+
+<link rel="icon" href="/bundles/web/favicons/favicon.11c6b6d5.svg" type="image/svg+xml">
+
+    
+
+
+    
+  
+      
+  
+  
+      <link href="/bundles/app/css/main.client.f399e909.css" type="text/css" rel="stylesheet">
+  
+  
+
+    
+  
+      
+  
+  
+      <link href="/bundles/app/css/sprites.client.9285187f.css" type="text/css" rel="stylesheet">
+  
+  
+
+  
+  
+      
+  
+      
+  
+  
+      <link data-href="/bundles/app/css/alerts.client.b4863e0f.css" type="text/css" rel="stylesheet">
+  
+  
+
+
+      
+  
+      
+  
+  
+      <link href="/bundles/app/css/chess-ads.client.f4c11b60.css" type="text/css" rel="stylesheet">
+  
+  
+
+<meta name="language-banner-styles" content="/bundles/app/css/language-banner.client.dcdb10f9.css">
+<meta name="language-banner-scripts" content="/bundles/app/js/language-banner.client.74caea92.js">
+
+      
+  
+      
+  
+  
+      <link href="/bundles/app/css/checkmate.client.69ec9a79.css" type="text/css" rel="stylesheet">
+  
+  
+
+
+      
+  
+      
+  
+  
+      <link href="/bundles/app/css/navigation.client.61dc5370.css" type="text/css" rel="stylesheet">
+  
+  
+
+
+
+
+        
+
+          
+  
+      
+  
+  
+      <link href="/bundles/app/css/board-layout-beta.client.23a95e46.css" type="text/css" rel="stylesheet">
+  
+  
+  
+
+    
+                    <meta name="theme-color" content="#312E2B">
+      
+          
+  <title>Chess: noopdogg07 vs zorocollo - 80934761709 - Chess.com</title>
+
+        
+            <meta property="og:title" content="Chess: noopdogg07 vs zorocollo">
+
+          <meta property="og:url" content="https://www.chess.com/game/live/80934761709">
+
+          <meta property="fb:app_id" content="2427617054">
+
+          <meta property="og:description" content="noopdogg07 (1190) vs zorocollo (1196). zorocollo won on time in 21 moves. Click to review the game, move by move.">
+
+          <meta property="og:type" content="game">
+
+          <meta property="og:image" content="https://www.chess.com/share/game/live/default/80934761709">
+
+          <meta property="og:image:secure_url" content="https://www.chess.com/share/game/live/default/80934761709">
+
+          <meta property="og:site_name" content="Chess.com">
+
+  
+    
+          <meta name="twitter:title" content="Chess: noopdogg07 vs zorocollo">
+
+          <meta name="twitter:card" content="summary_large_image">
+
+          <meta name="twitter:site" content="@chesscom">
+
+          <meta name="twitter:description" content="noopdogg07 (1190) vs zorocollo (1196). zorocollo won on time in 21 moves. Click to review the game, move by move.">
+
+          <meta name="twitter:image" content="https://www.chess.com/share/game/live/default/80934761709">
+
+  
+  
+          
+        <link rel="canonical" href="https://www.chess.com/game/live/80934761709">
+  
+    
+              
+    
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+
+      
+    
+    <script type="text/javascript" async="" src="https://www.googletagmanager.com/gtag/destination?id=G-NP7V31R49N&amp;l=dataLayer&amp;cx=c"></script><script type="text/javascript" async="" src="https://www.googletagmanager.com/gtag/js?id=G-Q0CBHRQJH8&amp;l=dataLayer&amp;cx=c"></script><script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script><script async="" src="https://www.googletagmanager.com/gtm.js?id=GTM-WQJVC73"></script><script>!window.chrome && document.querySelector('html').classList.add('cls-board')</script>
+
+        
+  
+        
+
+      <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WQJVC73');</script>
+  
+  
+  
+  <script>
+window.chesscom = window.chesscom || {};
+
+
+  
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+window.chesscom.features = ['amplitude_domain_proxy', 'ads_playwire_ramp', 'amplitude_onboarding_step_complete', 'check_access_for_getting_leaderboard_stats_data', 'comments_new_entry_articles', 'comments_new_entry_blogs', 'comments_new_entry_chessterms', 'comments_new_entry_daily', 'comments_new_entry_daily_puzzle', 'comments_new_entry_news', 'comments_new_entry_survey', 'comments_new_entry_top_players', 'comments_new_entry_videos', 'comments_new_entry_lessons', 'comments_new_entry_tournaments', 'comments_new_entry_clubs', 'evaluation_line_empty_fix', 'events_search_v2', 'fix_permission_checks_infinite_redirect_loop', 'friends_page_product', 'gift_modal_products_refactor', 'gift_modal_tax_included_redirect', 'hide_game_stats_accuracy', 'home_hide_activity_optimization', 'home_hide_awards_optimization', 'home_hide_clubs_and_club_events_optimization', 'home_hide_friends_optimization', 'home_hide_leagues_optimization', 'home_hide_stats_optimization', 'home_hide_streamers_optimization', 'home_hide_tournaments_optimization', 'home_game_review_optimization', 'home_league_optimization', 'home_play_vs_bot', 'home_promo_cache_puzzle_data', 'home_puzzle_optimization', 'home_re_add_quick_links', 'home_re_add_old_features', 'include_tax_in_payment_route', 'is_enabled_quick_search', 'marketing_banners', 'marketing_middleware_serverside_device_id_generation', 'new_eco_data_webapp', 'new_gifting_experience', 'free_trial_object_in_js_context', 'payments_card_validation_improvements', 'payments_paypal_resolve_currency_fix', 'payments_paypal_upgrade', 'payments_tooltip_position_mobile', 'puzzle_battle_challenges_callback_reduction', 'rebuild_get_game_fn', 'refactored_vml_web_component', 'rewarded_video_client_analysis', 'rewarded_video_client_lessons', 'remove_empty_space_for_comments', 'sanction_russia_flag', 'sanction_belarus_flag', 'settings_service_data_sync', 'special_offer_strings', 'stockfish_15_1', 'subscription_status_modal', 'themes_service_css_variables', 'toaster_center_rcn_offline_challenges', 'toaster_center_pubsub_live_challenges', 'tournament_message_links', 'tinymce_rtl_support', 'trust_and_safety_disallow_user_profile_edition', 'user_avatar_non_static_size', 'update_puzzle_modal_puzzle_count', 'use_amplitude_8', 'use_fake_worker_stockfish', 'user_mention_mail_link_issue'];
+</script>
+
+      <script>
+  window.chesscom = window.chesscom || {};
+
+  // Before adding global experiments please check in #experiments_chat slack channel for the performance costs
+  
+  
+      window.chesscom.experiments = {"play_casual_rated":null,"play_casual_rated_v2":null}
+  </script>
+  <meta http-equiv="origin-trial" content="AymqwRC7u88Y4JPvfIF2F37QKylC04248hLCdJAsh8xgOfe/dVJPV3XS3wLFca1ZMVOtnBfVjaCMTVudWM//5g4AAAB7eyJvcmlnaW4iOiJodHRwczovL3d3dy5nb29nbGV0YWdtYW5hZ2VyLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjk1MTY3OTk5LCJpc1RoaXJkUGFydHkiOnRydWV9"><link rel="stylesheet" type="text/css" href="/chesscom-artifacts/packages/@chesscom/play-client/47.0.1/play-play-game-over-modal-controller.chunk.client.501e3937.css"><link rel="stylesheet" type="text/css" href="/chesscom-artifacts/packages/@chesscom/play-client/47.0.1/play-web.chunk.client.f7320fce.css"><link rel="stylesheet" type="text/css" href="/chesscom-artifacts/packages/@chesscom/play-client/47.0.1/play-play-live-game-tab-next-controller.chunk.client.ccd0e142.css"><link rel="stylesheet" type="text/css" href="/bundles/app/css/web.chunk.client.c720dc40.css"><style type="text/css" id="board-styles-single">
+      #board-single, .fade-in-overlay {
+        background-image: url('https://www.chess.com/boards/green/150.png');
+      }
+      .coordinate-light {
+        fill: #779952;
+      }
+      .coordinate-dark {
+        fill: #edeed1;
+      }
+      .highlight {
+        background-color: #ffff00;
+      }
+    #board-single .piece.wp, #board-single .promotion-piece.wp {
+            background-image: url('https://www.chess.com/chess-themes/pieces/neo/150/wp.png');
+          }#board-single .piece.wn, #board-single .promotion-piece.wn {
+            background-image: url('https://www.chess.com/chess-themes/pieces/neo/150/wn.png');
+          }#board-single .piece.wb, #board-single .promotion-piece.wb {
+            background-image: url('https://www.chess.com/chess-themes/pieces/neo/150/wb.png');
+          }#board-single .piece.wr, #board-single .promotion-piece.wr {
+            background-image: url('https://www.chess.com/chess-themes/pieces/neo/150/wr.png');
+          }#board-single .piece.wq, #board-single .promotion-piece.wq {
+            background-image: url('https://www.chess.com/chess-themes/pieces/neo/150/wq.png');
+          }#board-single .piece.wk, #board-single .promotion-piece.wk {
+            background-image: url('https://www.chess.com/chess-themes/pieces/neo/150/wk.png');
+          }#board-single .piece.bp, #board-single .promotion-piece.bp {
+            background-image: url('https://www.chess.com/chess-themes/pieces/neo/150/bp.png');
+          }#board-single .piece.bn, #board-single .promotion-piece.bn {
+            background-image: url('https://www.chess.com/chess-themes/pieces/neo/150/bn.png');
+          }#board-single .piece.bb, #board-single .promotion-piece.bb {
+            background-image: url('https://www.chess.com/chess-themes/pieces/neo/150/bb.png');
+          }#board-single .piece.br, #board-single .promotion-piece.br {
+            background-image: url('https://www.chess.com/chess-themes/pieces/neo/150/br.png');
+          }#board-single .piece.bq, #board-single .promotion-piece.bq {
+            background-image: url('https://www.chess.com/chess-themes/pieces/neo/150/bq.png');
+          }#board-single .piece.bk, #board-single .promotion-piece.bk {
+            background-image: url('https://www.chess.com/chess-themes/pieces/neo/150/bk.png');
+          }</style><link rel="stylesheet" type="text/css" href="/chesscom-artifacts/packages/@chesscom/play-client/47.0.1/play-web.chunk.client.ffb268fe.css"><script charset="utf-8" data-webpack="client:chunk-41323" src="/bundles/app/js/global-setup-login-modal.chunk.client.ee8d793e.js"></script><script charset="utf-8" data-webpack="client:chunk-76562" src="/bundles/app/js/global-setup-sign-up-modal.chunk.client.69857b0b.js"></script><script charset="utf-8" data-webpack="client:chunk-79030" src="/bundles/app/js/web.chunk.client.bb66d968.js"></script><script charset="utf-8" data-webpack="client:chunk-93831" src="/bundles/app/js/web.chunk.client.ed176886.js"></script><script charset="utf-8" data-webpack="client:chunk-77682" src="/bundles/app/js/web.chunk.client.0146bf8c.js"></script><script charset="utf-8" data-webpack="client:chunk-96159" src="/bundles/app/js/web.chunk.client.4ed338f7.js"></script><script charset="utf-8" data-webpack="client:chunk-67696" src="/bundles/app/js/web.chunk.client.d1e695c7.js"></script><script charset="utf-8" data-webpack="client:chunk-10862" src="/bundles/app/js/web.chunk.client.66444a42.js"></script><script charset="utf-8" data-webpack="client:chunk-12041" src="/bundles/app/js/web.chunk.client.8c42b3d9.js"></script><script charset="utf-8" data-webpack="client:chunk-77267" src="/bundles/app/js/web.chunk.client.9a0e48dd.js"></script><link rel="stylesheet" type="text/css" href="/bundles/app/css/global-setup-user-popover.chunk.client.02f9d619.css"><script charset="utf-8" data-webpack="client:chunk-52179" src="/bundles/app/js/global-setup-user-popover.chunk.client.e2392e97.js"></script></head>
+
+
+
+  
+
+    
+  
+  
+
+
+
+
+<body class=" dark-mode   
+  board-layout
+        with-players  with-und      with-evaluation" onkeydown="if (event.keyCode === 9) this.classList.add('keyboard-navigation-in-use')" onmousedown="this.classList.remove('keyboard-navigation-in-use')" style="--modifiedBoardWidth: 424px;">
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WQJVC73"height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <div class="board-layout-nav">
+      
+      <header id="tb" class="toolbar-new-wrapper ">
+    <div class="toolbar-menu-area toolbar-menu-area-left">
+        <div class="toolbar-action toggle open" data-mobile-nav-toggle="">
+      <span class="icon-font-chess menu toolbar-action-icon"></span>
+    </div>
+    
+        <a href="https://www.chess.com/" class="link chess-logo-wrapper sprite chess-logo" aria-label="Chess.com - Play Chess Online">
+    </a>
+      </div>
+  
+          <div class="toolbar-menu-area mobile-auth-actions  ">
+  <a class="mobile-auth-action ui_v5-button-component ui_v5-button-basic-dark ui_v5-button-x-small sign-up-eng" href="https://www.chess.com/register?returnUrl=https://www.chess.com/game/live/80934761709?username%3Dnoopdogg07" rel="nofollow" title="Sign Up">
+    Sign Up
+  </a>
+
+  <a class="mobile-auth-action ui_v5-button-component ui_v5-button-primary ui_v5-button-x-small login" href="https://www.chess.com/login_and_go?returnUrl=https://www.chess.com/game/live/80934761709?username%3Dnoopdogg07" rel="nofollow" title="Log In">
+    Log In
+  </a>
+</div>
+      </header>
+      
+  
+
+
+
+<div id="login-register-modal"></div>
+
+<div id="shareable-game-url-modal"></div>
+
+<div id="message-modal"></div>
+
+<div id="first-time-modal"></div>
+
+<div id="achievements-modal"></div>
+
+<div id="puzzle-battle-challenge-toaster"></div>
+
+<div id="leagues-division-started-modal"></div>
+
+
+  <div id="offline-challenge-toaster" data-badge="challenges" data-badge-count="0"></div>
+
+  <div id="old-browser-modal"></div>
+
+
+
+<div id="sb" style="" class="nav-component guest" data-constant-message-unread-count-max="100" data-notifications-limit="200" data-route-login-and-go="https://www.chess.com/login_and_go" data-route-register="https://www.chess.com/register">
+    <div id="sb-cover" data-mobile-nav-toggle=""></div>
+
+    <div class="nav-action toggle close" data-mobile-nav-toggle="">
+    <span class="icon-font-chess x"></span>
+  </div>
+
+    <div data-nav-top="">
+    
+        <a aria-label="Chess.com - Play Chess Online" class="nav-link-component nav-link-main-design chess-logo-wrapper sprite chess-logo no-panel" data-nav-link="home" data-amplitude-nav-selection="home" href="https://www.chess.com/" target="_self">
+      <span class="nav-link-text mobile-only">Home</span>
+
+              
+                  <span class="navigation-badge-component" data-badge="alerts" data-badge-count="0"><!----></span>
+                  </a>
+    
+    
+        
+        <a class="nav-link-component nav-link-main-design nav-link-top-level sprite play-top" data-amplitude-nav-selection="play" data-nav-link="play" href="https://www.chess.com/play" target="_self">
+      <span class="nav-link-text">Play</span>
+              <span class="navigation-badge-component" data-badge="games" data-badge-count="0"><!----></span>
+          </a>
+    
+        
+    <div class="nav-panel-component" data-nav-panel="play" data-routes="{&quot;leaderboard&quot;:&quot;https:\/\/www.chess.com\/leaderboard&quot;,&quot;live&quot;:&quot;https:\/\/www.chess.com\/live&quot;,&quot;daily&quot;:&quot;https:\/\/www.chess.com\/play\/online\/daily&quot;,&quot;computer&quot;:&quot;https:\/\/www.chess.com\/play\/computer&quot;,&quot;playOnline&quot;:&quot;https:\/\/www.chess.com\/play\/online&quot;,&quot;playPage&quot;:&quot;https:\/\/www.chess.com\/play&quot;,&quot;playFriend&quot;:&quot;https:\/\/www.chess.com\/play\/online\/friend&quot;,&quot;puzzleBattle&quot;:&quot;https:\/\/www.chess.com\/puzzles\/battle&quot;,&quot;puzzles&quot;:&quot;https:\/\/www.chess.com\/puzzles\/rush&quot;,&quot;tournamentsPlay&quot;:&quot;https:\/\/www.chess.com\/play\/online\/tournaments&quot;,&quot;tournaments&quot;:&quot;https:\/\/www.chess.com\/tournaments&quot;,&quot;library&quot;:&quot;https:\/\/www.chess.com\/library&quot;,&quot;gameArchive&quot;:&quot;https:\/\/www.chess.com\/games\/archive&quot;,&quot;variants&quot;:&quot;https:\/\/www.chess.com\/variants&quot;}">
+    </div>
+    
+        <a class="nav-link-component nav-link-main-design nav-link-top-level sprite puzzles-top" data-amplitude-nav-selection="puzzles" data-nav-link="puzzles" href="https://www.chess.com/puzzles" target="_self">
+      <span class="nav-link-text">Puzzles</span>
+    </a>
+    
+        
+    <div class="nav-panel-component" data-nav-panel="puzzles" data-routes="{&quot;dailyPuzzle&quot;:&quot;https:\/\/www.chess.com\/daily-chess-puzzle&quot;,&quot;drills&quot;:&quot;https:\/\/www.chess.com\/drills&quot;,&quot;endgames&quot;:&quot;https:\/\/www.chess.com\/endgames&quot;,&quot;practice&quot;:&quot;https:\/\/www.chess.com\/practice&quot;,&quot;puzzleBattle&quot;:&quot;https:\/\/www.chess.com\/puzzles\/battle&quot;,&quot;puzzlesCustom&quot;:&quot;https:\/\/www.chess.com\/puzzles\/learning&quot;,&quot;puzzlesRush&quot;:&quot;https:\/\/www.chess.com\/puzzles\/rush&quot;,&quot;puzzlesRated&quot;:&quot;https:\/\/www.chess.com\/puzzles\/rated&quot;,&quot;tactics&quot;:&quot;https:\/\/www.chess.com\/puzzles&quot;,&quot;soloChess&quot;:&quot;https:\/\/www.chess.com\/solo-chess&quot;}">
+    </div>
+    
+        <a class="nav-link-component nav-link-main-design nav-link-top-level sprite learn-top" data-amplitude-nav-selection="learn" data-nav-link="learn" href="https://www.chess.com/learn" target="_self">
+      <span class="nav-link-text">Learn</span>
+    </a>
+    
+        
+    <div class="nav-panel-component" data-nav-panel="learn" data-routes="{&quot;analysis&quot;:&quot;https:\/\/www.chess.com\/analysis&quot;,&quot;classroom&quot;:&quot;https:\/\/www.chess.com\/classroom&quot;,&quot;endgames&quot;:&quot;https:\/\/www.chess.com\/endgames&quot;,&quot;insights&quot;:&quot;https:\/\/www.chess.com\/insights&quot;,&quot;lessons&quot;:&quot;https:\/\/www.chess.com\/lessons&quot;,&quot;openings&quot;:&quot;https:\/\/www.chess.com\/openings&quot;,&quot;practice&quot;:&quot;https:\/\/www.chess.com\/practice&quot;}">
+    </div>
+    
+        
+    <a class="nav-link-component nav-link-main-design nav-link-top-level sprite watch-top" data-amplitude-nav-selection="watch" data-nav-link="watch" href="https://www.chess.com/watch" target="_self">
+      <span class="nav-link-text">Watch</span>
+    </a>
+    
+        
+    <div class="nav-panel-component" data-nav-panel="watch" data-routes="{&quot;chessToday&quot;:&quot;https:\/\/www.chess.com\/today&quot;,&quot;computerChampionship&quot;:&quot;https:\/\/www.chess.com\/computer-chess-championship&quot;,&quot;events&quot;:&quot;https:\/\/www.chess.com\/events&quot;,&quot;news&quot;:&quot;https:\/\/www.chess.com\/news&quot;,&quot;proChessLeague&quot;:&quot;http:\/\/www.prochessleague.com&quot;,&quot;streamers&quot;:&quot;https:\/\/www.chess.com\/streamers&quot;}">
+    </div>
+    
+        <a class="nav-link-component nav-link-main-design nav-link-top-level sprite news-top" data-amplitude-nav-selection="news" data-nav-link="news" href="https://www.chess.com/today" target="_self">
+      <span class="nav-link-text">News</span>
+    </a>
+
+    
+    <div class="nav-panel-component" data-nav-panel="news" data-routes="{&quot;articles&quot;:&quot;https:\/\/www.chess.com\/articles&quot;,&quot;chessToday&quot;:&quot;https:\/\/www.chess.com\/today&quot;,&quot;liveRankings&quot;:&quot;https:\/\/www.chess.com\/ratings&quot;,&quot;news&quot;:&quot;https:\/\/www.chess.com\/news&quot;,&quot;topPlayers&quot;:&quot;https:\/\/www.chess.com\/players&quot;}">
+    </div>
+    
+        <a class="nav-link-component nav-link-main-design nav-link-top-level sprite social-page" data-amplitude-nav-selection="social" data-nav-link="social" href="https://www.chess.com/social" target="_self">
+      <span class="nav-link-text">Social</span>
+          </a>
+    
+    
+    <div class="nav-panel-component" data-nav-panel="social" data-routes="{&quot;articles&quot;:&quot;https:\/\/www.chess.com\/articles&quot;,&quot;news&quot;:&quot;https:\/\/www.chess.com\/news&quot;,&quot;forums&quot;:&quot;https:\/\/www.chess.com\/forum&quot;,&quot;blogs&quot;:&quot;https:\/\/www.chess.com\/blogs&quot;,&quot;clubs&quot;:&quot;https:\/\/www.chess.com\/clubs&quot;,&quot;friends&quot;:&quot;https:\/\/www.chess.com\/friends&quot;,&quot;members&quot;:&quot;https:\/\/www.chess.com\/members&quot;,&quot;coaches&quot;:&quot;https:\/\/www.chess.com\/coaches&quot;}">
+    </div>
+
+          <button aria-label="More" class="nav-link-component nav-link-main-design nav-link-button nav-link-top-level sprite more-top" data-amplitude-nav-selection="more" goto="https://www.chess.com/more" data-nav-link="more">
+        <span class="nav-link-text">More</span>
+      </button>
+    
+        
+    <div class="nav-panel-component" data-nav-panel="more" data-routes="{&quot;computerChampionship&quot;:&quot;https:\/\/www.chess.com\/computer-chess-championship&quot;,&quot;explorer&quot;:&quot;https:\/\/www.chess.com\/explorer&quot;,&quot;gift&quot;:&quot;https:\/\/www.chess.com\/membership\/gift&quot;,&quot;library&quot;:&quot;https:\/\/www.chess.com\/library&quot;,&quot;masterGames&quot;:&quot;https:\/\/www.chess.com\/games&quot;,&quot;mobileApps&quot;:&quot;https:\/\/www.chess.com\/play\/apps&quot;,&quot;resourcesPage&quot;:&quot;https:\/\/www.chess.com\/resources&quot;,&quot;rules&quot;:&quot;https:\/\/www.chess.com\/learn-how-to-play-chess&quot;,&quot;soloChess&quot;:&quot;https:\/\/www.chess.com\/solo-chess&quot;,&quot;terms&quot;:&quot;https:\/\/www.chess.com\/terms&quot;,&quot;verified&quot;:&quot;https:\/\/www.chess.com\/verified&quot;,&quot;videos&quot;:&quot;https:\/\/www.chess.com\/videos&quot;,&quot;vision&quot;:&quot;https:\/\/www.chess.com\/vision&quot;,&quot;voteChess&quot;:&quot;https:\/\/www.chess.com\/votechess&quot;}">
+    </div>
+    
+    
+          <div class="nav-link-wrapper">
+                <a href="https://www.chess.com/search" target="_self" class="nav-link-component nav-link-main-design nav-link-top-level nav-search-icon" aria-label="Search" data-amplitude-nav-selection="subnav-search" data-nav-action-search="" data-nav-toggle-search-box="">
+          <div class="nav-toggle-search-box" id="search"><span class="search-tooltip-component search-icon-font icon-font-chess magnifying-glass"><span class="search-tooltip-tooltip"></span></span></div>
+        </a>
+
+                <div class="nav-popover nav-search" data-nav-popover-search="">
+          <div class="arrow"></div>
+
+          <div class="autocomplete-component" value=""><div class="autocomplete-input-group"><div class="ui_v5-input-group-component autofocus"><input class="ui_v5-input-component" id="" aria-label="Search" autocomplete="off" maxlength="32" name="keyword" placeholder="Search" type="text"> <!----> <!----> <!----> <!----></div> <div class="spinner-ring-component spinner-ring-small autocomplete-loading" style="display: none;"></div></div> <ul class="autocomplete-list" style="display: none;"> <li class="autocomplete-active autocomplete-list-item autocomplete-query"><div class="autocomplete-list-group"><span class="icon-font-chess magnifying-glass autocomplete-query-icon"></span> <div>All Results for <strong></strong></div></div></li></ul></div>
+        </div>
+              </div>
+
+      <div class="nav-search-form">
+        <div class="autocomplete-component" value=""><div class="autocomplete-input-group"><div class="ui_v5-input-group-component ui_v5-input-group-dark"><input class="ui_v5-input-component ui_v5-input-dark" id="" aria-label="Search" autocomplete="off" maxlength="32" name="keyword" placeholder="Search" type="text"> <!----> <!----> <!----> <!----></div> <div class="spinner-ring-component spinner-ring-small spinner-ring-dark autocomplete-loading" style="display: none;"></div></div> <ul class="autocomplete-list" style="display: none;"> <li class="autocomplete-active autocomplete-list-item autocomplete-query"><div class="autocomplete-list-group"><span class="icon-font-chess magnifying-glass autocomplete-query-icon"></span> <div>All Results for <strong></strong></div></div></li></ul></div>
+      </div>
+    
+              
+                  
+      <a id="menu-cta" data-amplitude-props="{&quot;source&quot;:&quot;Unknown&quot;}" href="https://www.chess.com/register?returnUrl=https://www.chess.com/game/live/80934761709?username%3Dnoopdogg07" target="_self" rel="nofollow" class="button auth signup register ui_v5-button-component ui_v5-button-basic-dark authentication-modal-trigger">
+        <span class="icon-font-chess icon user-plus"></span>
+
+        <span class="label">Sign Up</span>
+      </a>
+      
+            <a href="https://www.chess.com/login_and_go?returnUrl=https://www.chess.com/game/live/80934761709?username%3Dnoopdogg07" target="_self" rel="nofollow" class="button auth login ui_v5-button-component ui_v5-button-primary login-modal-trigger">
+        <span class="icon-font-chess icon enter"></span>
+
+        <span class="label">Log In</span>
+      </a>
+                </div>
+    <div class="nav-menu-area">
+              <button aria-label="Change language" class="nav-action language-select" type="button">
+        <span class="icon-font-chess nav-language-icon globe"></span>
+
+        <span class="nav-link-text nav-language-name">
+          English
+        </span>
+      </button>
+        
+            
+    
+              <button aria-label="Light/Dark Interface" class="nav-action ui-mode" data-amplitude-nav-selection="subnav-uimode" data-nav-ui-mode="" type="button">
+        <div id="mode"><span class="icon-font-chess darklight"></span></div>
+
+        <span class="nav-link-text">
+          <span class="light">Light UI</span>
+          <span class="dark">Dark UI</span>
+        </span>
+      </button>
+        
+            
+            
+        <button type="button" aria-label="Help" class="nav-action has-popover help" data-amplitude-nav-selection="subnav-help">
+      <span class="icon-font-chess circle-question"></span>
+
+      <span class="nav-link-text">Help</span>
+    </button>
+    
+        <div class="dark nav-popover help">
+            <div class="arrow"></div>
+      
+            <button type="button" class="btn-link help-scout" data-amplitude-nav-selection="subnav-help-askaquestion">
+        <span class="icon-font-chess circle-question"></span>
+
+        <span class="title">Ask a Question</span>
+      </button>
+      
+            <a data-amplitude-nav-selection="subnav-help-reportabuse" class="btn-link" rel="noopener" href="https://support.chess.com/collection/136-community-safety" target="_blank">
+        <span class="icon-font-chess circle-block"></span>
+
+        <span class="title">Report Abuse</span>
+      </a>
+      
+            <button type="button" class="btn-link user-snap" data-amplitude-nav-selection="subnav-help-makeasuggestion">
+        <span class="icon-font-chess lightbulb"></span>
+
+        <span class="title">Make a Suggestion</span>
+      </button>
+      
+            <a data-amplitude-nav-selection="subnav-help-billingissues" class="btn-link" rel="noopener" href="https://support.chess.com/category/135-membership-and-billing" target="_blank">
+        <span class="icon-font-chess card"></span>
+
+        <span class="title">Billing Issues</span>
+      </a>
+      
+            <button type="button" class="btn-link user-snap" data-amplitude-nav-selection="subnav-help-reportabug">
+        <span class="icon-font-chess bug"></span>
+
+        <span class="title">Report a Bug</span>
+      </button>
+          </div>
+      </div>
+  </div>
+
+
+      </div>
+  
+    
+  
+  <div id="board-layout-main" class="board-layout-main">
+          <div id="board-layout-player-top" class="board-layout-player board-layout-top"><div class="player-component player-top"><!----> <!----> <!----> <div class="player-avatar-component player-avatar"><img data-cy="avatar" alt="zorocollo" src="https://www.chess.com/bundles/web/images/noavatar_l.84a92436@3x.gif" width="40" height="40"> <div class="presence-square-component"><div class="presence-square-square" style="width: 1rem; height: 1rem;"></div></div> </div> <div class="player-tagline"><div class="user-tagline-component"><!----> <a class="user-username-component user-username-white user-username-link user-tagline-username" data-test-element="user-tagline-username">zorocollo</a> <!----> <div class="country-flags-component country-52"></div> <!----> </div> <!----> <captured-pieces board-id="board-single" color="2" class="player-pieces">
+      <div>
+        <span class="captured-pieces-cpiece captured-pieces-w-3-pawns"></span><span class="captured-pieces-cpiece captured-pieces-w-2-bishops"></span><span class="captured-pieces-cpiece captured-pieces-w-2-knights"></span><span class="captured-pieces-cpiece captured-pieces-w-queen"></span><span class="captured-pieces-cpiece captured-pieces-score">+7</span></div>
+    </captured-pieces></div> <!----> <div class="clock-component clock-top clock-black"><!----> <div class="clock-icon-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path d="M5.48,9a.93.93,0,0,0-.3.71v.58a.94.94,0,0,0,.3.71,1,1,0,0,0,.71.3h4.58a1,1,0,0,0,.71-.3.94.94,0,0,0,.29-.71V9.7A.92.92,0,0,0,11.48,9a1,1,0,0,0-.71-.27H6.19A1,1,0,0,0,5.48,9Z"></path><path d="M19.22,6.1a9.9,9.9,0,0,0-2.14-3.18A10.23,10.23,0,0,0,13.9.78,9.76,9.76,0,0,0,10,0,9.86,9.86,0,0,0,6.1.78,10,10,0,0,0,.78,6.1,9.81,9.81,0,0,0,0,10a9.81,9.81,0,0,0,.78,3.9A10,10,0,0,0,6.1,19.22,9.86,9.86,0,0,0,10,20a9.76,9.76,0,0,0,3.89-.78,10.23,10.23,0,0,0,3.18-2.14,9.9,9.9,0,0,0,2.14-3.18A9.81,9.81,0,0,0,20,10,9.81,9.81,0,0,0,19.22,6.1ZM17.07,13a7.65,7.65,0,0,1-1.65,2.42A7.81,7.81,0,0,1,13,17.06a7.46,7.46,0,0,1-3,.6,7.51,7.51,0,0,1-3-.6,7.74,7.74,0,0,1-2.43-1.65A8,8,0,0,1,2.94,13a7.46,7.46,0,0,1-.6-3,7.46,7.46,0,0,1,.6-3A8,8,0,0,1,4.58,4.59,7.74,7.74,0,0,1,7,2.94a7.51,7.51,0,0,1,3-.6,7.45,7.45,0,0,1,3,.6,7.74,7.74,0,0,1,2.43,1.65A7.65,7.65,0,0,1,17.07,7a7.46,7.46,0,0,1,.6,3A7.46,7.46,0,0,1,17.07,13Z"></path></svg></div> <span data-cy="clock-time" class="clock-time-monospace">4:45</span></div></div></div>
+        <div id="board-layout-chessboard" class="board-layout-chessboard board-board">
+              <div id="board-layout-evaluation" class="board-layout-evaluation"><evaluation-bar board-id="board-single" is-default-fen-automatic="true" data-cy="evaluation-bar" style="flex: 1 1 auto;">
+      <div class="evaluation-bar-bar undefined">
+        <span class="evaluation-bar-scoreAbbreviated"></span>
+        <span class="evaluation-bar-score"></span>
+        <div class="evaluation-bar-fill">
+          <div class="evaluation-bar-color evaluation-bar-black"></div>
+          <div class="evaluation-bar-color evaluation-bar-draw"></div>
+          <div class="evaluation-bar-color evaluation-bar-white" style="transform: translate3d(0, 50%, 0)">
+            <span class="evaluation-bar-critical"></span>
+          </div>
+        </div>
+      </div>
+    </evaluation-bar></div>
+                    <div id="board-layout-pieces" class="board-layout-pieces">
+            <div id="side-controls"></div>
+        </div>
+                
+
+
+
+  <chess-board class="board" id="board-single"><svg viewBox="0 0 100 100" class="coordinates"><text x="0.75" y="3.5" font-size="2.8" class="coordinate-light">8</text><text x="0.75" y="15.75" font-size="2.8" class="coordinate-dark">7</text><text x="0.75" y="28.25" font-size="2.8" class="coordinate-light">6</text><text x="0.75" y="40.75" font-size="2.8" class="coordinate-dark">5</text><text x="0.75" y="53.25" font-size="2.8" class="coordinate-light">4</text><text x="0.75" y="65.75" font-size="2.8" class="coordinate-dark">3</text><text x="0.75" y="78.25" font-size="2.8" class="coordinate-light">2</text><text x="0.75" y="90.75" font-size="2.8" class="coordinate-dark">1</text><text x="10" y="99" font-size="2.8" class="coordinate-dark">a</text><text x="22.5" y="99" font-size="2.8" class="coordinate-light">b</text><text x="35" y="99" font-size="2.8" class="coordinate-dark">c</text><text x="47.5" y="99" font-size="2.8" class="coordinate-light">d</text><text x="60" y="99" font-size="2.8" class="coordinate-dark">e</text><text x="72.5" y="99" font-size="2.8" class="coordinate-light">f</text><text x="85" y="99" font-size="2.8" class="coordinate-dark">g</text><text x="97.5" y="99" font-size="2.8" class="coordinate-light">h</text></svg><!--/Coordinates--><div class="element-pool" style=""></div><div class="highlight square-83" data-test-element="highlight" style="background-color: rgb(255, 255, 0); opacity: 0.5;"></div><div class="highlight square-72" data-test-element="highlight" style="background-color: rgb(255, 255, 0); opacity: 0.5;"></div><!--/Squares--><!--/Blinking Highlights--><!--/Effects--><div class="hover-square" style="visibility: hidden;"><svg viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" stroke="rgba(255, 255, 255, 0.65)" stroke-width="10" fill="none"></rect></svg></div><!--/Hover Square--><!--/Effects--><div class="piece br square-88" style=""></div><div class="piece bn square-78" style=""></div><div class="piece wp square-23" style=""></div><div class="piece bk square-58" style=""></div><div class="piece bp square-33" style=""></div><div class="piece wp square-63" style=""></div><div class="piece bb square-83" style=""></div><div class="piece bp square-24" style=""></div><div class="piece bp square-87" style=""></div><div class="piece bp square-77" style=""></div><div class="piece bp square-67" style=""></div><div class="piece wp square-55" style=""></div><div class="element-pool" style=""></div><div class="piece bp square-37" style=""></div><div class="element-pool" style=""></div><div class="piece square-17 br" style=""></div><div class="piece wp square-82" style=""></div><div class="element-pool" style=""></div><div class="piece square-62 wk" style=""></div><div class="element-pool" style=""></div><div class="element-pool" style=""></div><div class="element-pool" style=""></div><div class="element-pool" style=""></div><div class="piece wp square-12" style=""></div><div class="element-pool" style=""></div><div class="element-pool" style=""></div><div class="element-pool" style=""></div><div class="piece square-51 wr" style=""></div><div class="element-pool" style=""></div><div class="element-pool" style=""></div><div class="element-pool" style=""></div><div class="piece wr square-11" style=""></div><!--/Pieces--><!--/Custom Items--><!--/MoveHints--><!--/Capture Hints--><svg viewBox="0 0 100 100" class="arrows"></svg><!--/Arrows--><!--/Promotion Window--><!--/Fade Setup--></chess-board>
+
+  <div id="game-over-modal"></div>
+  <div id="arena-over-modal"></div>
+  <div id="tournament-over-modal"></div>
+  <div id="tournament-bye-modal"></div>
+      <div id="board-layout-controls" class="board-layout-controls hide-board-icons">
+          <div id="board-controls"><div><button id="board-controls-settings" aria-label="Settings" type="button" class="board-layout-icon icon-font-chess circle-gearwheel"></button> <!----> <!----> <button id="board-controls-flip" aria-label="Flip Board" type="button" class="board-layout-icon icon-font-chess repeat"></button> <!----> <button aria-label="Emoji Palette" type="button" class="board-layout-icon icon-font-chess smileyadd"></button></div></div>
+        <span class="board-layout-icon icon-font-chess resize"></span>
+      </div>
+    <div id="placeholder-3je3r05"><div class="board-modal-container-container modal-appear-pop game-over-modal-appear v-enter-to"><div class="board-modal-modal"><div class="game-over-modal-content"><div class="board-modal-header-component game-over-header-component"><div class="header-title-component header-title-bounce v-enter-to">Black Won</div> <!----> <button type="button" aria-label="Close" class="board-modal-header-close"><span class="icon-font-chess x"></span></button></div> <div class="game-over-player-component game-over-modal-player"><div class="game-over-player-player game-over-player-white game-over-player-lose"><div class="game-over-player-avatar"><!----> <div class="player-avatar-component game-over-player-picture"><img data-cy="avatar" alt="noopdogg07" src="https://images.chesscomfiles.com/uploads/v1/user/25730617.eaaf4ac7.78x78o.65286594fb57@3x.jpg" width="80" height="80"> <!----> </div> <!----></div> <span class="game-over-player-username">noopdogg07</span> <!----></div> <div class="game-over-player-middle"><span class="icon-font-chess icon-colored game-over-player-icon rapid"></span> <div class="game-over-player-result">0-1</div></div> <div class="game-over-player-player game-over-player-black game-over-player-win"><div class="game-over-player-avatar"><div class="game-over-player-border player-appear-bounce v-enter-to"></div> <div class="player-avatar-component game-over-player-picture"><img data-cy="avatar" alt="zorocollo" src="https://www.chess.com/bundles/web/images/noavatar_l.84a92436@3x.gif" width="80" height="80"> <!----> </div> <!----></div> <span class="game-over-player-username">zorocollo</span> <!----></div></div> <!----> <!----> <!----> <div class="game-over-modal-break"></div> <!----> <!----> <!----> <div class="game-over-modal-break"></div> <!----> <div class="game-over-ad-component"><div class="game-over-ad-upgrade"><div id="modal-med-rect"></div> <a target="_blank" href="https://www.chess.com/membership?c=post-game-banner">Remove Ads</a></div> <!----></div></div></div></div></div></div>
+          <div id="board-layout-player-bottom" class="board-layout-player board-layout-bottom"><div class="player-component player-bottom"><!----> <!----> <!----> <div class="player-avatar-component player-avatar"><img data-cy="avatar" alt="noopdogg07" src="https://images.chesscomfiles.com/uploads/v1/user/25730617.eaaf4ac7.78x78o.65286594fb57@3x.jpg" width="40" height="40"> <div class="presence-square-component"><div class="presence-square-square" style="width: 1rem; height: 1rem;"></div></div> </div> <div class="player-tagline"><div class="user-tagline-component"><!----> <a class="user-username-component user-username-white user-username-link user-tagline-username" data-test-element="user-tagline-username">noopdogg07</a> <!----> <div class="country-flags-component country-3"></div> <!----> </div> <!----> <captured-pieces board-id="board-single" color="1" class="player-pieces">
+      <div>
+        <span class="captured-pieces-cpiece captured-pieces-b-2-pawns"></span><span class="captured-pieces-cpiece captured-pieces-b-bishop"></span><span class="captured-pieces-cpiece captured-pieces-b-knight"></span><span class="captured-pieces-cpiece captured-pieces-b-queen"></span><span class="captured-pieces-cpiece captured-pieces-score"></span></div>
+    </captured-pieces></div> <!----> <div class="clock-component clock-bottom clock-white"><!----> <div class="clock-icon-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path d="M5.48,9a.93.93,0,0,0-.3.71v.58a.94.94,0,0,0,.3.71,1,1,0,0,0,.71.3h4.58a1,1,0,0,0,.71-.3.94.94,0,0,0,.29-.71V9.7A.92.92,0,0,0,11.48,9a1,1,0,0,0-.71-.27H6.19A1,1,0,0,0,5.48,9Z"></path><path d="M19.22,6.1a9.9,9.9,0,0,0-2.14-3.18A10.23,10.23,0,0,0,13.9.78,9.76,9.76,0,0,0,10,0,9.86,9.86,0,0,0,6.1.78,10,10,0,0,0,.78,6.1,9.81,9.81,0,0,0,0,10a9.81,9.81,0,0,0,.78,3.9A10,10,0,0,0,6.1,19.22,9.86,9.86,0,0,0,10,20a9.76,9.76,0,0,0,3.89-.78,10.23,10.23,0,0,0,3.18-2.14,9.9,9.9,0,0,0,2.14-3.18A9.81,9.81,0,0,0,20,10,9.81,9.81,0,0,0,19.22,6.1ZM17.07,13a7.65,7.65,0,0,1-1.65,2.42A7.81,7.81,0,0,1,13,17.06a7.46,7.46,0,0,1-3,.6,7.51,7.51,0,0,1-3-.6,7.74,7.74,0,0,1-2.43-1.65A8,8,0,0,1,2.94,13a7.46,7.46,0,0,1-.6-3,7.46,7.46,0,0,1,.6-3A8,8,0,0,1,4.58,4.59,7.74,7.74,0,0,1,7,2.94a7.51,7.51,0,0,1,3-.6,7.45,7.45,0,0,1,3,.6,7.74,7.74,0,0,1,2.43,1.65A7.65,7.65,0,0,1,17.07,7a7.46,7.46,0,0,1,.6,3A7.46,7.46,0,0,1,17.07,13Z"></path></svg></div> <span data-cy="clock-time" class="clock-time-monospace">0:00</span></div></div></div>
+          </div>
+
+  <div id="board-layout-sidebar" class="board-layout-sidebar"><div class="sidebar-component"><div role="tablist" class="tabs-component"><div data-tab="game" role="tab" tabindex="0" class="tabs-tab tabs-active"><span aria-hidden="true" class="icon-font-chess rapid tabs-icon"></span> <span class="tabs-label">Analysis</span> <button type="button" aria-label="Close" class="icon-font-chess x tabs-close"></button> <!----> <!----></div><div data-tab="newGame" role="tab" tabindex="0" class="tabs-tab"><span aria-hidden="true" class="icon-font-chess square-plus tabs-icon"></span> <span class="tabs-label">New Game</span> <!----> <!----> <!----></div><div data-tab="games" role="tab" tabindex="0" class="tabs-tab"><span aria-hidden="true" class="icon-font-chess chess-board tabs-icon"></span> <span class="tabs-label">Games</span> <!----> <!----> <!----></div><div data-tab="players" role="tab" tabindex="0" class="tabs-tab"><span aria-hidden="true" class="icon-font-chess users-alt tabs-icon"></span> <span class="tabs-label">Players</span> <!----> <!----> <!----></div></div> <div role="tabpanel" class="tab-content-component"> <div role="tablist" class="underlined-tabs-component"><!----> <button data-tab="liveGameMoves" role="tab" class="underlined-tabs-active underlined-tabs-tab"><span class="underlined-tabs-label">Moves</span> <div class="underlined-tabs-border"></div> <!----> <!----></button><button data-tab="liveGameInfo" role="tab" class="underlined-tabs-tab"><span class="underlined-tabs-label">Info</span> <!----> <!----> <!----></button></div> <!----> <!----> <div class="evaluation-settings-component"><div class="quick-switch-component evaluation-settings-switch"><label for="evaluationBar">Evaluation</label> <!----> <div class="ui_v5-switch-component quick-switch-switch" data-cy="quick-switch-evaluationBar"><input id="evaluationBar" type="checkbox" name="evaluationBar" class="ui_v5-switch-checkbox"> <label for="evaluationBar" class="ui_v5-switch-label"><div class="ui_v5-switch-button"></div></label></div></div> <div class="quick-switch-component evaluation-settings-switch"><label for="evaluationLines">Lines</label> <!----> <div class="ui_v5-switch-component quick-switch-switch" data-cy="quick-switch-evaluationLines"><input id="evaluationLines" type="checkbox" name="evaluationLines" class="ui_v5-switch-checkbox"> <label for="evaluationLines" class="ui_v5-switch-label"><div class="ui_v5-switch-button"></div></label></div></div> <div class="quick-switch-component evaluation-settings-switch"><label for="evaluationExplorer">Explorer</label> <!----> <div class="ui_v5-switch-component quick-switch-switch" data-cy="quick-switch-evaluationExplorer"><input id="evaluationExplorer" type="checkbox" name="evaluationExplorer" class="ui_v5-switch-checkbox"> <label for="evaluationExplorer" class="ui_v5-switch-label"><div class="ui_v5-switch-button"></div></label></div></div> <div class="evaluation-settings-engine"><evaluation-depth>depth=0</evaluation-depth>
+    &nbsp;|&nbsp;
+    Stockfish 15.1
+  </div> <button class="icon-font-chess circle-gearwheel evaluation-settings-settings"></button></div> <!----> <div id="live-game-tab-scroll-container" class="game-tab-scrollable"><!----> <div class="opening-component"><eco-opening board-id="board-single" opening-is-clickable="true" explorer-is-clickable="true" link-to-explorer="true" class="eco-opening-panel">
+      <span class="eco-opening-name">Starting Position</span>
+      <div class="eco-opening-links">
+        <a class="eco-opening-opening"><span class="icon-font-chess chess-book eco-opening-icon"></span></a>
+        <a class="eco-opening-explorer"><span class="icon-font-chess circle-compass eco-opening-icon"></span></a>
+      </div>
+    </eco-opening></div> <move-list-wc data-cy="move-list" scroll-container-id="live-game-tab-scroll-container" board-id="board-single" timestamp-method="withBaseTime" class="move-list-wrapper-component"><vertical-move-list data-cy="move-list" scroll-container-id="live-game-tab-scroll-container" board-id="board-single" timestamp-method="withBaseTime" class="move-list-wrapper-component vertical-move-list timestamps-with-base-time" style="--timestampWidth: 42px;"><div class="move" data-whole-move-number="1">1.<div data-ply="1" class="white node">d4</div><div data-ply="1" data-vml-element="timestamp" class="time-white" data-time="1" style="--timeValue: 1; --timeBarWidth: 0.09195603797421957px;">0.1</div><div data-ply="2" class="black node">d5</div><div data-ply="2" data-vml-element="timestamp" class="time-black" data-time="22" style="--timeValue: 22; --timeBarWidth: 2.021426704249582px;">2.2</div></div><div class="move" data-whole-move-number="2">2.<div data-ply="3" class="white node">c4</div><div data-ply="3" data-vml-element="timestamp" class="time-white" data-time="11" style="--timeValue: 11; --timeBarWidth: 1.0113166838707452px;">1.1</div><div data-ply="4" class="black node">dxc4</div><div data-ply="4" data-vml-element="timestamp" class="time-black" data-time="13" style="--timeValue: 13; --timeBarWidth: 1.1950980719071471px;">1.3</div></div><div class="move" data-whole-move-number="3">3.<div data-ply="5" class="white node">e4</div><div data-ply="5" data-vml-element="timestamp" class="time-white" data-time="55" style="--timeValue: 55; --timeBarWidth: 5.032629868773393px;">5.5</div><div data-ply="6" class="black node">b5</div><div data-ply="6" data-vml-element="timestamp" class="time-black" data-time="17" style="--timeValue: 17; --timeBarWidth: 1.5625121829388744px;">1.7</div></div><div class="move" data-whole-move-number="4">4.<div data-ply="7" class="white node">Nc3</div><div data-ply="7" data-vml-element="timestamp" class="time-white" data-time="47" style="--timeValue: 47; --timeBarWidth: 4.306327463234827px;">4.7</div><div data-ply="8" class="black node">Bd7</div><div data-ply="8" data-vml-element="timestamp" class="time-black" data-time="38" style="--timeValue: 38; --timeBarWidth: 3.4860646752554825px;">3.8</div></div><div class="move" data-whole-move-number="5">5.<div data-ply="9" class="white node">b3</div><div data-ply="9" data-vml-element="timestamp" class="time-white" data-time="105" style="--timeValue: 105; --timeBarWidth: 9.485682776841788px;">10.5</div><div data-ply="10" class="black node">b4</div><div data-ply="10" data-vml-element="timestamp" class="time-black" data-time="125" style="--timeValue: 125; --timeBarWidth: 11.211857942100297px;">12.5</div></div><div class="move" data-whole-move-number="6">6.<div data-ply="11" class="white node">Na4</div><div data-ply="11" data-vml-element="timestamp" class="time-white" data-time="434" style="--timeValue: 434; --timeBarWidth: 31.75111733117272px;">43.4</div><div data-ply="12" class="black node">c3</div><div data-ply="12" data-vml-element="timestamp" class="time-black" data-time="41" style="--timeValue: 41; --timeBarWidth: 3.759822969614866px;">4.1</div></div><div class="move" data-whole-move-number="7">7.<div data-ply="13" class="white node">Be3</div><div data-ply="13" data-vml-element="timestamp" class="time-white" data-time="296" style="--timeValue: 296; --timeBarWidth: 24.076021767775273px;">29.6</div><div data-ply="14" class="black node">e5</div><div data-ply="14" data-vml-element="timestamp" class="time-black" data-time="77" style="--timeValue: 77; --timeBarWidth: 7.012711159185677px;">7.7</div></div><div class="move" data-whole-move-number="8">8.<div data-ply="15" class="white node">dxe5</div><div data-ply="15" data-vml-element="timestamp" class="time-white" data-time="779" style="--timeValue: 779; --timeBarWidth: 43.32360814947326px;">1:17.9</div><div data-ply="16" class="black node">Nc6</div><div data-ply="16" data-vml-element="timestamp" class="time-black" data-time="56" style="--timeValue: 56; --timeBarWidth: 5.1232082256240234px;">5.6</div></div><div class="move" data-whole-move-number="9">9.<div data-ply="17" class="white node">Nf3</div><div data-ply="17" data-vml-element="timestamp" class="time-white" data-time="402" style="--timeValue: 402; --timeBarWidth: 30.171178117513403px;">40.2</div><div data-ply="18" class="black node">Bg4</div><div data-ply="18" data-vml-element="timestamp" class="time-black" data-time="44" style="--timeValue: 44; --timeBarWidth: 4.033251644490568px;">4.4</div></div><div class="move" data-whole-move-number="10">10.<div data-ply="19" class="white node">Bb5</div><div data-ply="19" data-vml-element="timestamp" class="time-white" data-time="26" style="--timeValue: 26; --timeBarWidth: 2.3882057912862678px;">2.6</div><div data-ply="20" class="black node">Qxd1+</div><div data-ply="20" data-vml-element="timestamp" class="time-black" data-time="70" style="--timeValue: 70; --timeBarWidth: 6.3857549601384305px;">7.0</div></div><div class="move" data-whole-move-number="11">11.<div data-ply="21" class="white node">Kxd1</div><div data-ply="21" data-vml-element="timestamp" class="time-white" data-time="21" style="--timeValue: 21; --timeBarWidth: 1.9296799840302026px;">2.1</div><div data-ply="22" class="black node">Bd7</div><div data-ply="22" data-vml-element="timestamp" class="time-black" data-time="46" style="--timeValue: 46; --timeBarWidth: 4.215342823516867px;">4.6</div></div><div class="move" data-whole-move-number="12">12.<div data-ply="23" class="white node">Bxc6</div><div data-ply="23" data-vml-element="timestamp" class="time-white" data-time="437" style="--timeValue: 437; --timeBarWidth: 31.893567987165248px;">43.7</div><div data-ply="24" class="black node">Bxc6</div><div data-ply="24" data-vml-element="timestamp" class="time-black" data-time="19" style="--timeValue: 19; --timeBarWidth: 1.7461304720396649px;">1.9</div></div><div class="move" data-whole-move-number="13">13.<div data-ply="25" class="white node">Nd4</div><div data-ply="25" data-vml-element="timestamp" class="time-white" data-time="62" style="--timeValue: 62; --timeBarWidth: 5.665613849660244px;">6.2</div><div data-ply="26" class="black node">Bxe4</div><div data-ply="26" data-vml-element="timestamp" class="time-black" data-time="23" style="--timeValue: 23; --timeBarWidth: 2.1131535391332354px;">2.3</div></div><div class="move" data-whole-move-number="14">14.<div data-ply="27" class="white node">Re1</div><div data-ply="27" data-vml-element="timestamp" class="time-white" data-time="608" style="--timeValue: 608; --timeBarWidth: 38.6343300957785px;">1:00.8</div><div data-ply="28" class="black node">Rd8</div><div data-ply="28" data-vml-element="timestamp" class="time-black" data-time="93" style="--timeValue: 93; --timeBarWidth: 8.433199544577885px;">9.3</div></div><div class="move" data-whole-move-number="15">15.<div data-ply="29" class="white node">Nc5</div><div data-ply="29" data-vml-element="timestamp" class="time-white" data-time="33" style="--timeValue: 33; --timeBarWidth: 3.0291320138378417px;">3.3</div><div data-ply="30" class="black node">Bxg2</div><div data-ply="30" data-vml-element="timestamp" class="time-black" data-time="161" style="--timeValue: 161; --timeBarWidth: 14.217724914707967px;">16.1</div></div><div class="move" data-whole-move-number="16">16.<div data-ply="31" class="white node">Ke2</div><div data-ply="31" data-vml-element="timestamp" class="time-white" data-time="246" style="--timeValue: 246; --timeBarWidth: 20.701746801869994px;">24.6</div><div data-ply="32" class="black node">Bxc5</div><div data-ply="32" data-vml-element="timestamp" class="time-black" data-time="15" style="--timeValue: 15; --timeBarWidth: 1.3788323127196052px;">1.5</div></div><div class="move" data-whole-move-number="17">17.<div data-ply="33" class="white node">Nc6</div><div data-ply="33" data-vml-element="timestamp" class="time-white" data-time="93" style="--timeValue: 93; --timeBarWidth: 8.433199544577885px;">9.3</div><div data-ply="34" class="black node">Rd5</div><div data-ply="34" data-vml-element="timestamp" class="time-black" data-time="58" style="--timeValue: 58; --timeBarWidth: 5.30421615352971px;">5.8</div></div><div class="move" data-whole-move-number="18">18.<div data-ply="35" class="white node">Bxc5</div><div data-ply="35" data-vml-element="timestamp" class="time-white" data-time="38" style="--timeValue: 38; --timeBarWidth: 3.4860646752554825px;">3.8</div><div data-ply="36" class="black node">Rxc5</div><div data-ply="36" data-vml-element="timestamp" class="time-black" data-time="15" style="--timeValue: 15; --timeBarWidth: 1.3788323127196052px;">1.5</div></div><div class="move" data-whole-move-number="19">19.<div data-ply="37" class="white node">Nxa7</div><div data-ply="37" data-vml-element="timestamp" class="time-white" data-time="750" style="--timeValue: 750; --timeBarWidth: 42.637286949058016px;">1:15.0</div><div data-ply="38" class="black node">Ra5</div><div data-ply="38" data-vml-element="timestamp" class="time-black" data-time="2159" style="--timeValue: 2159; --timeBarWidth: 56.496853385121995px;">3:35.9</div></div><div class="move" data-whole-move-number="20">20.<div data-ply="39" class="white node">f3</div><div data-ply="39" data-vml-element="timestamp" class="time-white" data-time="192" style="--timeValue: 192; --timeBarWidth: 16.687902730973917px;">19.2</div><div data-ply="40" class="black node">Rxa7</div><div data-ply="40" data-vml-element="timestamp" class="time-black" data-time="36" style="--timeValue: 36; --timeBarWidth: 3.3033875765950667px;">3.6</div></div><div class="move" data-whole-move-number="21">21.<div data-ply="41" class="white node">Kf2</div><div data-ply="41" data-vml-element="timestamp" class="time-white" data-time="105" style="--timeValue: 105; --timeBarWidth: 9.485682776841788px;">10.5</div><div data-ply="42" class="black node selected">Bh3</div><div data-ply="42" data-vml-element="timestamp" class="time-black" data-time="22" style="--timeValue: 22; --timeBarWidth: 2.021426704249582px;">2.2</div></div><div class="move"><span class="white game-result">0-1</span></div></vertical-move-list></move-list-wc> <div class="quick-analysis-results-component"><div class="quick-analysis-loader-component"><div class="quick-analysis-loader-fill" style="transform: translate3d(-100%, 0px, 0px);"></div> <div class="quick-analysis-loader-loaderMessage"><span class="quick-analysis-loader-icon icon-question-mark"></span>
+    Checking for mistakes...
+  </div></div></div> <div class="game-review-buttons-component"><div data-cy="quick-analysis-buttons-review" class="game-review-buttons-review"><!----> <button type="button" class="ui_v5-button-component ui_v5-button-primary ui_v5-button-full game-review-buttons-button" data-cy="sidebar-game-review-button"><span aria-hidden="true" class="ui_v5-button-icon icon-font-chess best"></span> <span>Game Review</span></button></div> <button type="button" class="ui_v5-button-component ui_v5-button-basic" data-cy="sidebar-game-analysis-button"><span aria-hidden="true" class="ui_v5-button-icon icon-font-chess chess-board-search"></span> <span>Analysis</span></button></div></div> <!----> <!----> <div class="live-game-buttons-component"><!----> <button data-cy="sidebar-share-button" class="icon-font-chess share live-game-buttons-button" tabindex="-1"></button> <button data-cy="daily-games-add-to-library-btn" class="icon-font-chess library-add add-to-library-button-button"></button> <a target="_blank" href="https://www.chess.com/classroom?loadLiveGame=80934761709" class="icon-font-chess classroom live-game-buttons-button" tabindex="-1"></a> <button aria-label="Comments" data-cy="sidebar-toggle-comments-button" class="icon-font-chess chat live-game-buttons-button"></button> <!----> <span class="live-game-buttons-separator"></span> <!----> <button data-cy="move-list-button-start" class="icon-font-chess chevron-previous live-game-buttons-button"></button> <button data-cy="move-list-button-backward" class="icon-font-chess chevron-left live-game-buttons-button"></button> <button data-cy="move-list-button-forward" class="icon-font-chess chevron-right live-game-buttons-button"></button> <button data-cy="move-list-button-end" class="icon-font-chess chevron-next live-game-buttons-button"></button> <button data-cy="move-list-button-reload" class="icon-font-chess redo live-game-buttons-button"></button> <button data-cy="move-list-button-flip" class="icon-font-chess repeat live-game-buttons-button"></button> </div> <!----> <!----></div> <!----></div></div>
+
+  
+      <div id="board-layout-comments" class="board-layout-comments">
+        <div class="v5-section v5-overflow-hidden v5-space-top" id="play-comments-container">
+    <div id="view-comments" show-reactions="true"><!----></div>
+  </div>
+    </div>
+  
+  
+  
+      <div id="board-layout-ad" class="board-layout-ad">
+        <div id="sidebar-ad"><div class="sidebar-ad"><div id="sky-atf"></div> <a data-cy="ads-sidebar-upgrade-link" href="https://www.chess.com/membership?c=no_ads" target="_blank">Remove Ads</a></div></div>
+    </div>
+  
+    <div id="share-menu"></div>
+
+
+  <div id="share-modal"></div>
+  <div id="add-to-library-modal"></div>
+  <div id="settings-modal"></div>
+  <div id="trophy-modal"></div>
+  <div id="full-screen-modal"></div>
+  <div id="report-modal"></div>
+  <div id="gift-membership-modal"></div>
+  <div id="fair-play-modal"></div>
+  <div id="lesson-recommendation"></div>
+  <div id="premium-arena-modal"></div>
+
+        <script>
+  window.PubSub = {};
+  window.PubSub.options = {
+    environment: 'prod',
+    url: {
+              base: 'https://www.chess.com',
+        baseWss: 'wss://www.chess.com',
+        chat: 'https://www.chess.com/service/chat/',
+        classroom: 'https://www.chess.com/service/classroom/',
+        insights: 'https://www.chess.com/service/insights/',
+        invitations: 'https://www.chess.com/service/invitations/',
+        matcher: 'https://www.chess.com/service/matcher/',
+        game: 'https://www.chess.com/service/play/',
+        play: 'https://www.chess.com/service/play/',
+        presence: 'https://www.chess.com/service/presence/',
+        pubsub: 'wss://www.chess.com/pubsub',
+        ratings: 'https://www.chess.com/service/ratings/',
+        reactions: 'https://www.chess.com/service/reactions/',
+        settings: 'https://www.chess.com/service/settings/',
+        topplayers: 'https://www.chess.com/service/topplayers/',
+        gamelist: 'https://www.chess.com/service/gamelist/',
+        users: '',
+          },
+      };
+</script>
+  
+      
+  
+  <div id="widget-alert-flash" class="alerts-container">
+      </div>
+
+
+      
+
+      
+                    
+  
+  
+      
+  
+                  
+  
+    
+      
+    <link href="/chesscom-artifacts/packages/@chesscom/play-client/47.0.1/play-vendors.client.css" type="text/css" rel="stylesheet">
+    <link href="/chesscom-artifacts/packages/@chesscom/play-client/47.0.1/play.client.css" type="text/css" rel="stylesheet">
+  
+
+      
+
+    
+  
+  
+        
+    <link rel="stylesheet" type="text/css" href="/bundles/app/css/comments-next.client.df25ff92.css">
+  
+
+
+    
+
+  <script type="text/javascript">
+    var Config = {
+      "cometd.url": "/cometd",
+      "domain.main": "//www.chess.com",
+      "domain.static": "//www.chess.com",
+      "domain.files": "//files.chesscomfiles.com",
+      "domain.live": "//live.chess.com",
+      "domain.live2": "//live2.chess.com",
+      "domain.live3": "//live3.chess.com",
+      "domain.voice": "rtmp://voice.chess.com",
+      "domain.cssjs": "//www.chess.com",
+      "domain.images": "//images.chesscomfiles.com",
+      "domain.avatars": "//avatars.chesscomfiles.com",
+      "domain.baseUrl": "",
+      "isFacebookCanvas": false,
+      "facebookId": "2427617054",
+      "pathToEngineWorker": "/bundles/app/js/vendor/jschessengine/stockfish.6983901b.js",
+      "pathToEngineWorkerAlt": "/bundles/app/js/engine/stockfish.1de0d633.js",
+      "pathToWasmEngine": "/bundles/app/js/vendor/jschessengine/stockfish.6103b42f.bin",
+      "pathToNonWasmEngine": "/bundles/app/js/vendor/jschessengine/stockfish.asm.1abfa10c.js",
+      "pathToKomodoWorker": "/bundles/app/js/vendor/jschessengine/komodo.9ea31da2.js",
+      "pathToWasmKomodo": "/bundles/app/js/vendor/jschessengine/komodo.765d36d5.bin",
+      "pathToNonWasmKomodo": "/bundles/app/js/vendor/jschessengine/komodo.asm.b6f18c99.js",
+      "pathToExplanationEngineWorker": "/bundles/app/js/vendor/explanation-engine-beta/explanation-engine.5bb1c352.js",
+      "pathToWasmExplanationEngine": "/bundles/app/js/vendor/explanation-engine-beta/explanation-engine.d6c6b9d0.wasm",
+      "pathToExplanationEngineWorkerPD": "/bundles/app/js/vendor/explanation-engine-pd/explanation-engine.660eb9d6.js",
+      "pathToExplanationEnginePD": "/bundles/app/js/vendor/explanation-engine-pd/explanation-engine.9a26e4e3.wasm",
+      "pathToEcoJson": "/bundles/app/js/engine/books/eco.02376aed.json",
+      "pathToBook": "/bundles/app/js/engine/books/eco.02376aed.json",
+      "pathToBookSmall": "/bundles/app/js/engine/books/eco.02376aed.json",
+      "pathToWebGL": "/bundles/app/js/vendor/webgl_three.61269fce.js",
+      "pathToGamePreviewLoader": "/bundles/web/images/game-preview-loading.8677fb94.png",
+      "pathToPersonalityBooks": {
+                        "aggressive": "/bundles/app/js/engine/books/aggressive.50a9b452.bin",
+                  "alexandra_botez": "/bundles/app/js/engine/books/alexandra_botez.d64a85b6.bin",
+                  "alexandra_kosteniuk": "/bundles/app/js/engine/books/alexandra_kosteniuk.bfba3aea.bin",
+                  "andrea_botez": "/bundles/app/js/engine/books/andrea_botez.53326027.bin",
+                  "anish_giri": "/bundles/app/js/engine/books/anish_giri.8726a67e.bin",
+                  "anna_muzychuk": "/bundles/app/js/engine/books/anna_muzychuk.1846bba6.bin",
+                  "anna_rudolf": "/bundles/app/js/engine/books/anna_rudolf.c7ed14ff.bin",
+                  "balanced": "/bundles/app/js/engine/books/balanced.71d69282.bin",
+                  "beginner": "/bundles/app/js/engine/books/beginner.f122c7c5.bin",
+                  "book": "/bundles/app/js/engine/books/book.28504e3b.bin",
+                  "cccopenings": "/bundles/app/js/engine/books/cccopenings.bdfbf7b7.bin",
+                  "classical": "/bundles/app/js/engine/books/classical.2e31ad51.bin",
+                  "daniel_naroditsky": "/bundles/app/js/engine/books/daniel_naroditsky.ec6d2390.bin",
+                  "eric_hansen": "/bundles/app/js/engine/books/eric_hansen.d890b525.bin",
+                  "f-pawner": "/bundles/app/js/engine/books/f-pawner.bb8a15f1.bin",
+                  "fischer": "/bundles/app/js/engine/books/fischer.c93e412d.bin",
+                  "gambit": "/bundles/app/js/engine/books/gambit.3ef59ed2.bin",
+                  "hou_yifan": "/bundles/app/js/engine/books/hou_yifan.a29e7286.bin",
+                  "indian": "/bundles/app/js/engine/books/indian.8e8f8dd6.bin",
+                  "irina_krush": "/bundles/app/js/engine/books/irina_krush.eb470d8b.bin",
+                  "judit_polgar": "/bundles/app/js/engine/books/judit_polgar.7c8fcd30.bin",
+                  "kevin_bordi": "/bundles/app/js/engine/books/kevin_bordi.9cd76731.bin",
+                  "komodo": "/bundles/app/js/engine/books/komodo.bb8b6a25.bin",
+                  "krikor_mekhitarian": "/bundles/app/js/engine/books/krikor_mekhitarian.43b3d4cd.bin",
+                  "levy_rozman": "/bundles/app/js/engine/books/levy_rozman.024e3929.bin",
+                  "luis_fernandez_siles": "/bundles/app/js/engine/books/luis_fernandez_siles.12a08971.bin",
+                  "maurice_ashley": "/bundles/app/js/engine/books/maurice_ashley.fb4474e5.bin",
+                  "mike_klein": "/bundles/app/js/engine/books/mike_klein.dadd1687.bin",
+                  "nakamura": "/bundles/app/js/engine/books/nakamura.1b408716.bin",
+                  "naycir_gurpinar": "/bundles/app/js/engine/books/naycir_gurpinar.017ff300.bin",
+                  "offbeat": "/bundles/app/js/engine/books/offbeat.c125e5bf.bin",
+                  "paul_morphy": "/bundles/app/js/engine/books/paul_morphy.19e29116.bin",
+                  "positional": "/bundles/app/js/engine/books/positional.988b37b5.bin",
+                  "quick_queen": "/bundles/app/js/engine/books/quick_queen.523ee0a4.bin",
+                  "rensch": "/bundles/app/js/engine/books/rensch.f0d14299.bin",
+                  "robert_hess": "/bundles/app/js/engine/books/robert_hess.38e30a88.bin",
+                  "samay_raina": "/bundles/app/js/engine/books/samay_raina.0c633f9e.bin",
+                  "vishy_anand": "/bundles/app/js/engine/books/vishy_anand.3c6cff4e.bin",
+                  "vladimir_kramnik": "/bundles/app/js/engine/books/vladimir_kramnik.0c154e06.bin",
+                  "winger": "/bundles/app/js/engine/books/winger.77d88765.bin",
+                    },
+      "threadedEnginePaths": {
+        "stockfish": {
+          "fakeWorker": {
+            "loader": "https://www.chess.com/bundles/app/js/engine/stockfish-nnue-15.1-no-Worker.47c3d633.js",
+            "engine": "https://www.chess.com/bundles/app/js/engine/stockfish-nnue-15.1-no-Worker.a459ad84.wasm",
+          },
+          "multiThreaded": {
+            "loader": "https://www.chess.com/bundles/app/js/engine/stockfish-nnue-15.1.274aa595.js",
+            "engine": "/bundles/app/js/engine/stockfish-nnue-15.1.5f5319f2.wasm",
+            "nnue": "/bundles/app/js/engine/nn-ad9b42354671.f89fd37b.nnue",
+          },
+          "multiThreadedNoSIMD": {
+            "loader": "/bundles/app/js/engine/stockfish-nnue-15.1-no-simd.512368a9.js",
+            "engine": "/bundles/app/js/engine/stockfish-nnue-15.1-no-simd.5375bfe7.wasm",
+          },
+          "singleThreaded": {
+            "loader": "/bundles/app/js/engine/stockfish-single.830cf9cc.js",
+            "engine": "/bundles/app/js/engine/stockfish-single.8ffa2b70.wasm",
+          },
+          "asm": "/bundles/app/js/engine/stockfish.asm.16fa8540.js",
+          "fakeWorkerBrowserVersions": [{"browser":"chrome","version":109}],
+        },
+      },
+      "oldThemes": false,
+      "isPlay": true,
+      "isStaff": false,
+      "noAvatar": '/bundles/web/images/user-image.007dad08.svg',
+      "wdlJsonModel": '/bundles/web/wdl/model.json',
+      "wdlWeights": '/bundles/web/wdl/group1-shard1of1.bin',
+      "ad.hideAds": false,
+      "ad.disabledAds": []
+    };
+
+    Config.adCustomPath = '';
+
+    Config.pathToTinyMCE = "/bundles/app/js/tinymce-lazy.client.121f4f45.js",
+
+    
+    
+          Config.pathToDiagramViewerCSS =  "/bundles/app/css/diagram-viewer.client.30cb2e10.css",
+      Config.pathToDiagramViewerJS = "/bundles/app/js/diagram-viewer.client.3d8e7c36.js",
+    
+        window.__CHESSCOM_RTL__ = false;
+
+        window.chesscom = window.chesscom || {};
+    window.chesscom.clientMetricsDomain = 'https://client-metrics.chess.com';
+
+        //<![CDATA[
+    context = {"freeTrial":null,"activeMembership":null,"i18n":{"locale":"en_US","contentLanguage":"any","mobile":[]},"csrf":{"token":"b002bca0e32cea5e4ec9c074914ff6b.fr1xVJBzRB-eWXsneWlhWecwVef9_P3mvdQvs9Vomr0.COwpHNkfAFHNHwtWKwMpYNdHY467jLGN2Z9rxoRcr_tKyhA7xkcTKec4Tw","login":"14a7bbb3e5de30135752db59d.uMW0dSRjiM3HjKZG8diVb3gtAsNUaizrA80y1zStQYs.iqz5P24LvIW-4d5rw6_0Oxd5b5Z5XnuTaoZYoW7IA9T79YAAZiD7rPDAkg","logout":"3f68bcc2b7657e856fecf71a64.GZSNePgr-TXNal2e4GsbbzJbSlMjI5b5kwjRHigdfKc.Uf7BMs1xu3mGJj6m1ThfB3Q-cmpvZ8-B2G7iUE58Feh4-NcXv3nKWK4ZZQ"},"amplitudeKey":"5cc41a1e56d0ee35d4c85d1d4225d2d1","iterableKey":"f771b86cf083441f992a4bb01d3d600f","adyen":{"environment":"live","integrity":"sha384-O0Q35c47I1ojd1zrD78yWAs+r5gytAjBC\/sxwZqgQW5z9hDbAFM49z8SViprrDwm","clientKey":"live_7STEYX735RGTTEZMSKIVNX5C2YU2QN5B","key":"10001|D97C83A6DB30A889AAC517489C56512C733B365B8E5E2E5CB5FD860751EC3EC14A145FE6FD2EF1A338D375DB3D9F7B988631B64D4B9C9BE3DE007D8C60649F2BAC7B0798A869892B683110B2FE53E89EBB9923A0EF7113FDEEEBC57FDB21AA8F99D3757DB7C8A8E6458D3B628B357396E77CD3C31158B203BEDAF3AC56E11A94C3BA745CAE7847B6C7D5C6B1D6E68204147A9B98EC334560F94A484FC5335F8AA4716BF13E0153B9B0E7FF75384449563F935AF0173C5F8F1CBE20B1C91593C2F7AF07A83E48F31DA8F4F5959687A682823216342C6E1B36771AC42C9BF0E03F443D07D239F25EB916BC15A908796C698D296130A9BA4A925684416F9C759143","originKey":"pub.v2.1114841580210853.aHR0cHM6Ly93d3cuY2hlc3MuY29t.g3hcnpsxbNsbEo3XJP_laQJwLDCkoYfA1YmHG6Kns8g","sdk":"https:\/\/checkoutshopper-live.adyen.com\/checkoutshopper\/sdk\/5.23.1\/adyen.js"},"iterableMuteApiCallsFeature":false,"paypalClientId":"AX68j9lUfn3i3vsUPLiDT-jSr3n_1h0nbZtUSRPXXy3-O6iMSX-adfP6PB0qcTbNbbqCaHm6MiDy4JzE"};
+    //]]>
+    
+    context.version = '20230626131930';
+    context.branch = 'master';
+    context.commit = 'ebe2592af9f9c9d1d48ee5099f1ca60c69049bf7';
+    context.requestId = '0641e2332de2551f51dd40eeda034510';
+    context.server = 'web124.chess.com';
+    context.locale = 'en';
+    context.environment = 'prod';
+    context.cookies = {
+      app: '',
+    };
+
+    context.ip = '99.226.34.237';
+    context.chessboardBeta = false;
+    context.route = 'web_game_live';
+  </script>
+
+  <div id="cdm-zone-end"></div>
+
+    <script language="javascript">
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        registrations.forEach(registration => {
+          if (registration.active.scriptURL.includes('/service-worker.client.js')) {
+            registration.unregister();
+          }
+        });
+      }).catch(() => { });
+    }
+  </script>
+
+
+<script defer="" src="/bundles/app/js/client/es6-translations/es6-translation.en_US.7f33c6c9.js"></script>
+
+<script src="/bundles/app/js/vue.dll.38cf4abe.js"></script>
+
+
+    
+      
+  
+      <script defer="" src="/bundles/app/js/global.client.66f582b9.js">
+    </script>
+  
+  
+
+
+
+        
+  
+
+
+  
+      
+    <script>
+      window.chesscom = window.chesscom || {};
+      window.chesscom.sentry = {
+        appCookie: '',
+        incrementCallback: 'https://www.chess.com/metrics/fe_sentry',
+        key: '',
+      }
+    </script>
+
+        
+      
+  
+      <script defer="" src="/bundles/app/js/sentry.client.24c08a85.js">
+    </script>
+  
+  
+  
+  
+  
+
+  
+
+      <script type="text/javascript">
+  document.domain = Config['domain.main'].substr(6);
+
+  window.TinymceConfig = {
+    editor_options: {
+      paste_as_text: true,
+      debounce: false,
+      baseURL: 'https://www.chess.com/bundles/app/js/vendor/tinymce',
+      pathToTinyMCE: '/bundles/app/js/tinymce-lazy.client.121f4f45.js',
+      theme: 'silver',
+      theme_url: '/bundles/app/js/vendor/tinymce/themes/silver/theme.min.237b6e15.js',
+      content_css: '/bundles/app/css/tinymce-content.client.40a4bb9c.css',
+      skin: 'oxide',
+      skin_url: '/bundles/app/js/vendor/tinymce/skins/ui/oxide',
+      extended_valid_elements: 'img[id|src|srcset|style|title|class|alt|width|height]',
+      external_plugins: {
+
+                'chessdiagram': 'https://www.chess.com/bundles/app/js/tinymce/plugins/chessdiagram/plugin.js',
+                'imageuploader': 'https://www.chess.com/bundles/app/js/tinymce/plugins/imageuploader.js',
+                'smileys': 'https://www.chess.com/bundles/app/js/tinymce/plugins/smileys.js',
+                'advlist': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/advlist/plugin.min.73cb9101.js',
+                'autolink': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/autolink/plugin.min.04d23487.js',
+                'link': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/link/plugin.min.212dc6a1.js',
+                'lists': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/lists/plugin.min.cbf51c9b.js',
+                'charmap': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/charmap/plugin.min.36a4c56f.js',
+                'print': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/print/plugin.min.4a9132b4.js',
+                'preview': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/preview/plugin.min.e26941c4.js',
+                'hr': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/hr/plugin.min.867b7842.js',
+                'anchor': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/anchor/plugin.min.1b78f9c5.js',
+                'pagebreak': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/pagebreak/plugin.min.1b620f40.js',
+                'spellchecker': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/spellchecker/plugin.min.0cf9efdf.js',
+                'visualblocks': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/visualblocks/plugin.min.36e78fa4.js',
+                'visualchars': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/visualchars/plugin.min.372771ec.js',
+                'code': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/code/plugin.min.9b57a076.js',
+                'fullscreen': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/fullscreen/plugin.min.d7af0ef1.js',
+                'insertdatetime': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/insertdatetime/plugin.min.49d81e24.js',
+                'media': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/media/plugin.min.bd130046.js',
+                'nonbreaking': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/nonbreaking/plugin.min.b35f0bd7.js',
+                'noneditable': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/noneditable/plugin.min.4ffbb89a.js',
+                'table': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/table/plugin.min.5dc062b2.js',
+                'directionality': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/directionality/plugin.min.d1a923c8.js',
+                'template': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/template/plugin.min.c0e5f3a7.js',
+                'textcolor': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/textcolor/plugin.min.4cffa84c.js',
+                'paste': 'https://www.chess.com/bundles/app/js/vendor/tinymce/plugins/paste/plugin.min.3c417f1d.js',
+        
+      }
+    },
+    theme_options: {"browser_spellcheck":true,"branding":false,"plugins":["autolink chessdiagram imageuploader smileys media spellchecker noneditable textcolor link lists hr directionality"],"menubar":false,"toolbar1":"chessdiagram imageuploader smileys media bold italic forecolor fontsizeselect bullist numlist hr link unlink","theme":"silver","skin":"oxide","width":"100%","height":"230,","elementpath":false,"contextmenu":false,"min_height":130,"mobile":{"toolbar_mode":"wrap"},"auto_convert_smileys":true,"smileys":[[{"shortcut":":X","url":"\/bundles\/web\/images\/icons\/smileys\/2x\/angry.png","title":"angry"},{"shortcut":":-\/","url":"\/bundles\/web\/images\/icons\/smileys\/2x\/meh.png","title":"meh"},{"shortcut":":|","url":"\/bundles\/web\/images\/icons\/smileys\/2x\/frustrated.png","title":"frustrated"},{"shortcut":":)","url":"\/bundles\/web\/images\/icons\/smileys\/2x\/happy.png","title":"happy"},{"shortcut":":D","url":"\/bundles\/web\/images\/icons\/smileys\/2x\/grin.png","title":"grin"},{"shortcut":">:)","url":"\/bundles\/web\/images\/icons\/smileys\/2x\/evil.png","title":"evil"},{"shortcut":":((","url":"\/bundles\/web\/images\/icons\/smileys\/2x\/cry.png","title":"cry"},{"shortcut":":S","url":"\/bundles\/web\/images\/icons\/smileys\/2x\/nervous.png","title":"nervous"},{"shortcut":":(","url":"\/bundles\/web\/images\/icons\/smileys\/2x\/sad.png","title":"sad"},{"shortcut":":@","url":"\/bundles\/web\/images\/icons\/smileys\/2x\/shock.png","title":"shock"},{"shortcut":":O","url":"\/bundles\/web\/images\/icons\/smileys\/2x\/surprise.png","title":"surprise"},{"shortcut":";(","url":"\/bundles\/web\/images\/icons\/smileys\/2x\/tear.png","title":"tear"},{"shortcut":":P","url":"\/bundles\/web\/images\/icons\/smileys\/2x\/tongue.png","title":"tongue"},{"shortcut":";)","url":"\/bundles\/web\/images\/icons\/smileys\/2x\/wink.png","title":"wink"}],[{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/archive.png","title":"archive"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/articles.png","title":"articles"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/blitz.png","title":"blitz"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/blogs.png","title":"blogs"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/bullet.png","title":"bullet"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/castle.png","title":"castle"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/chessbook.png","title":"chessbook"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/clock.png","title":"clock"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/clubs.png","title":"clubs"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/coaches.png","title":"coaches"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/computer.png","title":"computer"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/daily.png","title":"daily"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/fork.png","title":"fork"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/videos.png","title":"videos"}],[{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/devices.png","title":"devices"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/diamond.png","title":"diamond"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/draw.png","title":"draw"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/explorer.png","title":"explorer"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/fish.png","title":"fish"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/forums.png","title":"forums"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/friends.png","title":"friends"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/gold.png","title":"gold"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/lessons.png","title":"lessons"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/live.png","title":"live"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/messages.png","title":"messages"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/news.png","title":"news"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/openings.png","title":"openings"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/peshka.png","title":"peshka"}],[{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/pin.png","title":"pin"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/platinum.png","title":"platinum"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/playhand.png","title":"playhand"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/resign.png","title":"resign"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/settings.png","title":"settings"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/skewer.png","title":"skewer"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/stats.png","title":"stats"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/tactics.png","title":"tactics"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/themes.png","title":"themes"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/thumbdown.png","title":"thumbdown"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/thumbup.png","title":"thumbup"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/tournaments.png","title":"tournaments"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/trophies.png","title":"trophies"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/votechess.png","title":"votechess"}],[{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/half.png","title":"half"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/0-0-0.png","title":"0-0-0"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/0-0.png","title":"0-0"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/chesspawn.png","title":"chesspawn"}],[{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/bp.png","title":"bp"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/bb.png","title":"bb"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/bn.png","title":"bn"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/br.png","title":"br"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/bq.png","title":"bq"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/bk.png","title":"bk"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/wp.png","title":"wp"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/wb.png","title":"wb"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/wn.png","title":"wn"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/wr.png","title":"wr"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/wq.png","title":"wq"},{"url":"\/bundles\/web\/images\/icons\/smileys\/2x\/wk.png","title":"wk"}]],"theme_advanced_toolbar_location":"top","theme_advanced_path":false,"theme_advanced_statusbar_location":"bottom","theme_advanced_resize_horizontal":false,"theme_advanced_resizing":true,"theme_advanced_resizing_use_cookie":false,"font_formats":"Apple System=-apple-system, BlinkMacSystemFont;Arial=arial,helvetica,sans-serif;Courier New=courier new,courier;Helvetica=helvetica;Tahoma=tahoma,arial,helvetica,sans-serif;Times New Roman=times new roman,times;Segoe UI=\"Segoe UI\";","relative_urls":false,"remove_script_host":false,"convert_urls":false,"content_css":"asset[bundles\/app\/css\/tinymce-content.client.css]","paste_webkit_styles":"all","fontsize_formats":"8px 10px 11px 12px 14px 18px 24px 36px","extended_valid_elements":"img[id|src|srcset|style|title|class|alt|width|height]"}
+  };
+</script>
+
+  
+
+          
+      
+  
+      <script defer="" src="/bundles/app/js/board-layout-beta.client.b0f9fae8.js">
+    </script>
+  
+  
+  
+
+    
+  
+  
+      
+      
+  
+      
+  
+  
+
+
+  <script type="text/javascript">
+  window.Config.trophies = {
+    tournament: {
+        gold: 'https://www.chess.com/bundles/web/images/live/medals/tournament-gold.4032cea1.png',
+        silver: 'https://www.chess.com/bundles/web/images/live/medals/tournament-silver.4b5fdb3b.png',
+        bronze: 'https://www.chess.com/bundles/web/images/live/medals/tournament-bronze.dda6e5d9.png',
+    },
+    arena: {
+        gold: 'https://www.chess.com/bundles/web/images/live/medals/arena-gold.1a853d08.png',
+        silver: 'https://www.chess.com/bundles/web/images/live/medals/arena-silver.94a367b0.png',
+        bronze: 'https://www.chess.com/bundles/web/images/live/medals/arena-bronze.a3e8778e.png',
+    },
+  };
+
+      window.Config['cometd.transport'] = 'ssl-websocket';
+  
+      window.Config['cometd.network'] = 'live2';
+  
+  
+      var idleTimeoutMinutes = Number(20);
+    if (idleTimeoutMinutes) {
+      window.Config['cometd.disconnectTimeout'] = idleTimeoutMinutes * 60000;
+      window.Config['cometd.beforeDisconnectTimeout'] = (idleTimeoutMinutes / 6) * 60000;
+    }
+  
+  window.chesscom = window.chesscom || {};
+</script>
+  <script>
+    window.chesscom.showAds = Boolean(1);
+    window.chesscom.statsGames = 13579981;
+    window.chesscom.statsMembersOnline = 190455;
+
+    window.chesscom.features.push('play_no_games_tab_for_guests');
+    window.chesscom.features.push('login_redirection_on_play_settings_401');
+    window.chesscom.features.push('play_remove_live_save_settings');
+    window.chesscom.features.push('play_decouple_comments');
+    window.chesscom.features.push('play_gamelist_platform_service');
+    window.chesscom.features.push('play_load_ratings_from_platform');
+    window.chesscom.features.push('block_report_friend');
+    window.chesscom.features.push('play_live_game_tab_next');
+    window.chesscom.features.push('play_new_comments_entry');
+
+    
+          window.chesscom.features.push('user_trophy_game_live_uuid');
+    
+    
+    
+          window.chesscom.features.push('play_pro_chess_league');
+    
+          window.chesscom.isRCNMatcherSwitchEnabled = true;
+      window.chesscom.RCNSendMoveTimeout = 5000;
+      window.chesscom.features.push('play_rcn_matcher_switch');
+    
+    
+          window.chesscom.leaguesDataFallbackTimeout = Number(500);
+    
+          window.chesscom.features.push('play_game_monitor');
+
+      
+      
+      
+      window.chesscom.clientMetricsDomain = 'https://client-metrics.chess.com';
+      window.chesscom.playMetricsUrl = 'https://client-metrics.chess.com/play';
+      window.chesscom.playMetricsCheckRequiredGamesUrl = 'https://client-metrics.chess.com/play/check-required-games';
+
+      
+              window.chesscom.features.push('play_game_monitor_send_metrics_streamers');
+      
+      
+      
+              window.chesscom.features.push('chessboard_performance_metrics_full_session');
+          
+          window.chesscom.features.push('play_rcn_cheat_detection');
+    
+    
+          window.chesscom.features.push('play_live_retry_delay');
+    
+    
+    
+          window.chesscom.features.push('play_game_via_rsocket');
+
+      window.chesscom.rsocketKeepAlive = 3000;
+      window.chesscom.rsocketLifetime = 10000;
+    
+          window.chesscom.features.push('play_rcn_capabilities_rated_games');
+    
+          window.chesscom.features.push('browser_extension_detector');
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    if (window.context.user) {
+      window.context.user.hasSupportRole = false;
+      window.context.user.completedGamesCount = Number(10);
+      window.context.user.isStreamer = false;
+    }
+  </script>
+
+      
+            
+  
+  
+      
+  
+                  
+  
+    
+      <script defer="" src="/chesscom-artifacts/packages/@chesscom/play-client/47.0.1/play-vendors.client.js">
+    </script>
+    <script defer="" src="/chesscom-artifacts/packages/@chesscom/play-client/47.0.1/play.client.js">
+    </script>
+  
+
+  
+
+
+            
+    
+      
+  
+      <script defer="" src="/bundles/app/js/navigation.client.fc98bb48.js">
+    </script>
+  
+  
+  
+
+              <script defer="" src="/bundles/app/js/facebook-sdk.client.2672596b.js"></script>
+            <script src="https://prod01.kaxsdc.com/collect/sdk?m=850100" crossorigin=""></script><script type="text/javascript" id="">(function(){function d(b){return function(a){return-1==b.filter(e).map(f).indexOf(a)}}function e(b){return"gtm.formSubmit"===b.event}function f(b){return b["gtm.element"].name}function g(b){return{name:b,history:c[b]||[]}}function h(b){return 0<b.history.length}if("undefined"!==typeof document.querySelectorAll){window.addEventListener("beforeunload",function(b){Object.keys(c).filter(d(window.dataLayer)).map(g).filter(h).forEach(function(a){window.dataLayer.push({event:"formAbandonment",eventCategory:"Form Abandonment",
+eventAction:a.history.join(" \x3e ")})})});var c={};window.addEventListener("load",function(){document.addEventListener("change",function(b){var a=b.target;a&&a.tagName&&("INPUT"==a.tagName.toUpperCase()||"TEXTAREA"==a.tagName.toUpperCase()||"SELECT"==a.tagName.toUpperCase())&&(b=a.getAttribute("name"),(a=a.form)&&b&&(a=a.getAttribute("name"),"undefined"==typeof c[a]&&(c[a]=[]),c[a].slice(-1)!=b&&c[a].push(b)))})})}})();</script><script type="text/javascript" id="">window._pwGA4PageviewId="".concat(Date.now());window.dataLayer=window.dataLayer||[];gtag("js",new Date);gtag("event","ramp_js",{send_to:"G-NP7V31R49N",pageview_id:window._pwGA4PageviewId});</script>
+  
+  
+  <div id="checkmate"></div> 
+      <div id="toaster-center"></div>
+  
+        <div id="board-popover"></div>
+    <div id="confirm-popover"></div>
+    <div id="confirm-popover-inline"></div>
+    <div id="form-datepicker"></div>
+    <div id="language-picker-modal"></div>
+    <div id="message-popover"></div>
+    <div id="modal-video"></div>
+    <div id="trophy-popover"></div>
+    <div id="user-popover"></div>
+    <div id="subscription-status-modal"></div>
+    <div id="tenure-based-offer-modal"></div>
+    
+      
+            <div id="login-modal"></div>
+    
+          <div id="authentication-modal"></div>
+      
+  <div id="guest-modal"></div>
+
+    
+
+<div class="tooltip tip vue-tooltip"><div class="arrow"></div> <div data-cy="tooltip-content" class="inner"></div></div><div class="tooltip tip vue-tooltip"><div class="arrow"></div> <div class="inner"></div></div><script src="/bundles/app/js/comments-next.client.793806fc.js" defer=""></script><script id="facebook-jssdk" async="" src="//connect.facebook.net/en-US/sdk.js"></script><script src="//cdn.intergient.com/1024308/72720/ramp.js" async="" type="text/javascript"></script><script src="/bundles/app/js/checkmate.client.f974762e.js" defer=""></script><script src="https://btloader.com/tag?o=5150306120761344&amp;upapi=true" defer=""></script></body></html>

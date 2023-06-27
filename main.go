@@ -3,9 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"sync"
+	"time"
 
+	"github.com/chromedp/chromedp"
 	openai "github.com/sashabaranov/go-openai"
 )
 
@@ -87,6 +91,55 @@ func callGpt(currentText string) {
 	fmt.Println("*******")
 }
 
+func chessParser() {
+	url := "https://www.chess.com/game/live/80934761709?username=noopdogg07"
+	// className := "white_node"
+	ctx, cancel := chromedp.NewContext(context.Background())
+	defer cancel()
+
+	// Create a timeout to limit the waiting time
+	ctx, cancel = context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	err := chromedp.Run(ctx, chromedp.Navigate(url))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Wait for the page to load completely
+	err = chromedp.Run(ctx, chromedp.WaitVisible(".move", chromedp.ByQueryAll))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Get the HTML content of the page
+	var htmlContent string
+	err = chromedp.Run(ctx, chromedp.Evaluate(`document.documentElement.outerHTML`, &htmlContent))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// fmt.Println(html)
+	ioutil.WriteFile("chessMatchData.txt", []byte(htmlContent), 0644)
+
+	html, err := ioutil.ReadFile("./chessMatchData.txt")
+
+	if err != nil {
+		fmt.Println("An error occurred while reading the file")
+		fmt.Println(err)
+	}
+
+	ctx, cancel = chromedp.NewContext(context.Background())
+	defer cancel()
+
+	htmlToString := string(html)
+
+	// var whiteNodes []string
+
+	fmt.Println(Search(htmlToString, "white node"))
+
+}
+
 func main() {
 	// podcastUrl := "https://www.youtube.com/watch?v=uJQmCFTYCh8&ab_channel=All-InPodcast"
 
@@ -109,6 +162,8 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 
-	analyzeText()
+	// analyzeText()
+
+	chessParser()
 	// os.WriteFile("loggedin.png", res, 0644)
 }
