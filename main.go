@@ -6,9 +6,11 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/chromedp/chromedp"
 	openai "github.com/sashabaranov/go-openai"
 )
@@ -91,6 +93,62 @@ func callGpt(currentText string) {
 	fmt.Println("*******")
 }
 
+func getChessGames() {
+	url := "https://www.chess.com/member/noopdogg07"
+	ctx, cancel := chromedp.NewContext(context.Background())
+	defer cancel()
+
+	// Create a timeout to limit the waiting time
+	ctx, cancel = context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	err := chromedp.Run(ctx, chromedp.Navigate(url))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Wait for the page to load completely
+	err = chromedp.Run(ctx, chromedp.WaitVisible(".archived-games-user-cell", chromedp.ByQueryAll))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	getLinks()
+
+	// Get the HTML content of the page
+	var htmlContent string
+	err = chromedp.Run(ctx, chromedp.Evaluate(`document.documentElement.outerHTML`, &htmlContent))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// fmt.Println(html)
+	ioutil.WriteFile("chessGameListData.txt", []byte(htmlContent), 0644)
+}
+
+func getLinks() {
+	// Open the HTML file
+	file, err := os.Open("./chessGameListData.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	// Create a goquery document from the HTML file
+	doc, err := goquery.NewDocumentFromReader(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Find all <a> tags and extract the href attribute
+	doc.Find("a").Each(func(index int, element *goquery.Selection) {
+		href, exists := element.Attr("href")
+		if exists && strings.Contains(href, "noopdogg07") && strings.Contains(href, "game") {
+			fmt.Println(href)
+		}
+	})
+}
+
 func chessParser() {
 	url := "https://www.chess.com/game/live/80934761709?username=noopdogg07"
 	// className := "white_node"
@@ -168,6 +226,7 @@ func main() {
 
 	// analyzeText()
 
-	chessParser()
+	getChessGames()
+	// chessParser()
 	// os.WriteFile("loggedin.png", res, 0644)
 }
