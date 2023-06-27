@@ -62,7 +62,7 @@ func analyzeText() {
 
 func callGpt(currentText string) {
 	// get API key from AMEX_PIN folder
-	client := openai.NewClient("")
+	client := openai.NewClient("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")
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
@@ -134,10 +134,14 @@ func chessParser() {
 
 	htmlToString := string(html)
 
-	// var whiteNodes []string
+	whiteMoves := Search(htmlToString, "white node")
+	blackMoves := Search(htmlToString, "black node")
 
-	fmt.Println(Search(htmlToString, "white node"))
-
+	for i := 0; i < len(whiteMoves); i++ {
+		fmt.Print("move ")
+		fmt.Print(i + 1)
+		fmt.Println(": white " + whiteMoves[i] + " black " + blackMoves[i])
+	}
 }
 
 func main() {

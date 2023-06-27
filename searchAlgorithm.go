@@ -1,6 +1,7 @@
 package main
 
 import (
+	// "fmt"
 	"unicode/utf8"
 )
 
@@ -21,7 +22,8 @@ func BuildSkipTable(needle string) map[rune]int {
 
 // search a needle in haystack and return count of needle.
 // table is build by BuildSkipTable.
-func SearchBySkipTable(haystack, needle string, table map[rune]int) int {
+func SearchBySkipTable(haystack, needle string, table map[rune]int) []string {
+	var playerMoves []string
 
 	i, c := 0, 0
 	hrunes := []rune(haystack)
@@ -30,11 +32,12 @@ func SearchBySkipTable(haystack, needle string, table map[rune]int) int {
 	nl := utf8.RuneCountInString(needle)
 
 	if hl == 0 || nl == 0 || hl < nl {
-		return 0
+		return nil
 	}
 
 	if hl == nl && haystack == needle {
-		return 1
+		// was 1 before
+		return nil
 	}
 
 loop:
@@ -65,14 +68,32 @@ loop:
 			i += nl
 		}
 
+		k := i + 8
+
+		if needle == "black node" {
+			k = i + 2
+		}
+
+		for []rune(haystack)[k] != '<' {
+			k++
+		}
+
+		// fmt.Println(haystack[i+2 : k])
+
+		if needle == "black node" {
+			playerMoves = append(playerMoves, haystack[i+2:k])
+		} else {
+			playerMoves = append(playerMoves, haystack[i+7:k])
+		}
+
 		c++
 	}
 
-	return c
+	return playerMoves
 }
 
 // search a needle in haystack and return count of needle.
-func Search(haystack, needle string) int {
+func Search(haystack, needle string) []string {
 	table := BuildSkipTable(needle)
 	return SearchBySkipTable(haystack, needle, table)
 }
