@@ -93,15 +93,36 @@ func callGpt(currentText string) {
 	fmt.Println("*******")
 }
 
-func getChessGames() {
+func getChessGames(username string) {
+
 	url := "https://www.chess.com/member/noopdogg07"
+	var urlList []string
+
+	urlList = getLinks(username)
+
+	var wg sync.WaitGroup
+
+	wg.Add(len(urlList))
+
+	for i := 0; i < len(urlList); i++ {
+		go func(i int) {
+			defer wg.Done()
+			// pass in if it is expected that the user is white or black
+			parseChessMatch(urlList[i], "white")
+		}(i)
+	}
+
+	wg.Wait()
+
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
+	fmt.Println("about to call timeout 2")
 	// Create a timeout to limit the waiting time
-	ctx, cancel = context.WithTimeout(ctx, 10*time.Second)
+	ctx, cancel = context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 
+	fmt.Println("done timeout 2")
 	err := chromedp.Run(ctx, chromedp.Navigate(url))
 	if err != nil {
 		log.Fatal(err)
@@ -112,8 +133,6 @@ func getChessGames() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	getLinks()
 
 	// Get the HTML content of the page
 	var htmlContent string
@@ -126,8 +145,12 @@ func getChessGames() {
 	ioutil.WriteFile("chessGameListData.txt", []byte(htmlContent), 0644)
 }
 
-func getLinks() {
+func getLinks(username string) []string {
+	var urlArray []string
 	// Open the HTML file
+	linkPrefix := "https://www.chess.com"
+	linkMap := map[string]bool{}
+
 	file, err := os.Open("./chessGameListData.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -143,22 +166,30 @@ func getLinks() {
 	// Find all <a> tags and extract the href attribute
 	doc.Find("a").Each(func(index int, element *goquery.Selection) {
 		href, exists := element.Attr("href")
-		if exists && strings.Contains(href, "noopdogg07") && strings.Contains(href, "game") {
-			fmt.Println(href)
+		if exists && strings.Contains(href, username) && strings.Contains(href, "game/live") {
+			linkMap[linkPrefix+href] = true
 		}
 	})
+
+	for key := range linkMap {
+		urlArray = append(urlArray, key)
+	}
+
+	fmt.Println("done getting links")
+	return urlArray
 }
 
-func chessParser() {
-	url := "https://www.chess.com/game/live/80934761709?username=noopdogg07"
+func parseChessMatch(url string, chessPiece string) {
+	// url := "https://www.chess.com/game/live/80934761709?username=noopdogg07"
 	// className := "white_node"
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
+	fmt.Println("about to call timeout 1")
 	// Create a timeout to limit the waiting time
-	ctx, cancel = context.WithTimeout(ctx, 10*time.Second)
+	ctx, cancel = context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
-
+	fmt.Println("done timeout 1")
 	err := chromedp.Run(ctx, chromedp.Navigate(url))
 	if err != nil {
 		log.Fatal(err)
@@ -178,7 +209,7 @@ func chessParser() {
 	}
 
 	// fmt.Println(html)
-	ioutil.WriteFile("chessMatchData.txt", []byte(htmlContent), 0644)
+	ioutil.WriteFile("./chessMatchData.txt", []byte(htmlContent), 0644)
 
 	html, err := ioutil.ReadFile("./chessMatchData.txt")
 
@@ -226,7 +257,7 @@ func main() {
 
 	// analyzeText()
 
-	getChessGames()
+	getChessGames("noopdogg07")
 	// chessParser()
 	// os.WriteFile("loggedin.png", res, 0644)
 }
