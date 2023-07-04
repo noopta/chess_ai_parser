@@ -1,0 +1,80 @@
+\documentclass{resume} % Use the custom resume.cls style
+
+\usepackage[left=0.4 in,top=0.4in,right=0.4 in,bottom=0.4in]{geometry} % Document margins
+\newcommand{\tab}[1]{\hspace{.2667\textwidth}\rlap{#1}} 
+\newcommand{\itab}[1]{\hspace{0em}\rlap{#1}}
+\name{Firstname Lastname} % Your name
+% You can merge both of these into a single line, if you do not have a website.
+\address{+1(123) 456-7890 \\ San Francisco, CA} 
+\address{\href{mailto:contact@faangpath.com}{contact@faangpath.com} \\ \href{https://linkedin.com/company/faangpath}{linkedin.com/company/faangpath} \\ \href{www.faangpath.com}{www.faangpath.com}}  %
+
+\begin{document}
+%----------------------------------------------------------------------------------------
+%	EDUCATION SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{rSection}{Education}
+
+{\bf Bachelor of Computer Science}, University of Guelph\hfill {Sep 2017 - Dec 2022}\\
+Relevant Coursework: Operating Systems, Data Structures, Algorithm Analysis, and Discrete Mathematics
+
+\end{rSection}
+
+%----------------------------------------------------------------------------------------
+%	WORK EXPERIENCE SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{rSection}{EXPERIENCE}
+
+\textbf{Android Software Engineer (Kotlin, Java, Jetpack Compose, Azure)} \hfill Feb 2023 - Present\\
+Toronto-Dominion Bank \hfill \textit{Toronto, ON}
+ \begin{itemize}
+    \itemsep -3pt {} 
+     \item Wrote low-latency and multi-threaded code with Kotlin co-routines to efficiently load fragments and activities
+     \item  Implemented fragments with Jetpack Compose using Kotlin to improve user experiences through a modernistic interface layout
+    \item  Designed and engineered internal API's in view models, which transmitted data to fragments and adapters for loading dynamic JSON content hosted via Azure 
+ \end{itemize}
+ 
+\textbf{Software Engineer Intern (Go, React, PartiQL, System Design, AWS)} \hfill Jun 2022 - Sep 2022\\
+Amazon Web Services \hfill \textit{Vancouver, BC}
+ \begin{itemize}
+    \itemsep -3pt {} 
+     \item  Led three rounds of design meetings for implementing a distributed system to process client location data, analyzing trade-offs for each microservice recommended, and their alternatives
+     \item Utilized CloudWatch, Kinesis Data and Delivery Streams, S3, Lambda with Go, and TimeStream DB to create the infrastructure for continuously processing and organizing location data to solve the issue of having unstructured data in logs
+    \item  Wrote Go run time Lambda functions to parse and format raw log data using the Booyer-More string searching algorithm and to perform batch writes to TimeStream DB
+ \end{itemize}
+
+ \textbf{Android Software Engineer Intern (Kotlin, Java, Azure)} \hfill Sep 2021 - Dec 2021\\
+Toronto-Dominion Bank \hfill \textit{Toronto, ON}
+ \begin{itemize}
+    \itemsep -3pt {} 
+     \item Developed with Java and Kotlin, using the MVVM design pattern for seamless code integration
+     \item Re-wrote app screens with binders, adapters, fragments and view models for a stronger user experience
+    \item Set up error-handling for service API calls, notifying users of disturbances
+ \end{itemize}
+
+ \textbf{Software Developer Co-op (Java, Angular, TypeScript, MySQL)} \hfill Sep 2021 - Dec 2021\\
+Canada Life \hfill \textit{Toronto, ON}
+ \begin{itemize}
+    \itemsep -3pt {} 
+     \item Resolved NgRx data access issues using selectors to retrieve state-related data in a pipeline
+     \item Refactored JUnit and E2E tests, as well as dependencies to upgrade the code base from Angular 8 to 11
+    \item Programmed back-end Java code which interacted with API calls for retrieving customer account data utilized
+in the Angular front end
+ \end{itemize}
+
+\end{rSection} 
+
+
+\begin{rSection}{PROJECTS}
+\vspace{-1.25em}
+
+\item \textbf{ChessOps (Go, Ember, Open AI, NoSQL)} \hfill Jun 2023 - Present
+ \begin{itemize}
+    \itemsep -3pt {} 
+     \item Built a platform which offers a free analysis of a player's weaknesses and resources to study to cover the respective areas of improvement using AI
+     \item  Data is scraped from a user's Chess.com profile with respect to their most recent games, and each game move set is analyzed with Open AI's GPT 3.5 to provide feedback
+      \item Check it out on my \href{https://github.com/noopta/chess_ai_parser/tree/main}{GitHub}
+ \end{itemize}
+\end{rSection} 
+\end{document}

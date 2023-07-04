@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/url"
 	"os"
 	"strings"
 	"sync"
@@ -13,7 +14,15 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/chromedp/chromedp"
 	openai "github.com/sashabaranov/go-openai"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
+
+type ChessMatchHtml struct {
+	HtmlContent string
+}
 
 // var topicMap map[string][]string
 
@@ -98,28 +107,12 @@ func getChessGames(username string) {
 	url := "https://www.chess.com/member/noopdogg07"
 	var urlList []string
 
-	urlList = getLinks(username)
-
-	var wg sync.WaitGroup
-
-	wg.Add(len(urlList))
-
-	for i := 0; i < len(urlList); i++ {
-		go func(i int) {
-			defer wg.Done()
-			// pass in if it is expected that the user is white or black
-			parseChessMatch(urlList[i], "white")
-		}(i)
-	}
-
-	wg.Wait()
-
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
 	fmt.Println("about to call timeout 2")
 	// Create a timeout to limit the waiting time
-	ctx, cancel = context.WithTimeout(ctx, 30*time.Second)
+	ctx, cancel = context.WithTimeout(ctx, 100*time.Second)
 	defer cancel()
 
 	fmt.Println("done timeout 2")
@@ -143,22 +136,42 @@ func getChessGames(username string) {
 
 	// fmt.Println(html)
 	ioutil.WriteFile("chessGameListData.txt", []byte(htmlContent), 0644)
+	matchHtml := connectToMongoDb(htmlContent)
+	urlList = getLinks(username, matchHtml)
+
+	return
+
+	var wg sync.WaitGroup
+
+	wg.Add(len(urlList))
+
+	for i := 0; i < len(urlList); i++ {
+		go func(i int) {
+			defer wg.Done()
+			// pass in if it is expected that the user is white or black
+			fmt.Println(urlList[i])
+			parseChessMatch(urlList[i], i)
+		}(i)
+	}
+
+	wg.Wait()
 }
 
-func getLinks(username string) []string {
+func getLinks(username string, htmlContent string) []string {
 	var urlArray []string
 	// Open the HTML file
 	linkPrefix := "https://www.chess.com"
 	linkMap := map[string]bool{}
 
-	file, err := os.Open("./chessGameListData.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
+	// file, err := os.Open("./chessGameListData.txt")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer file.Close()
 
 	// Create a goquery document from the HTML file
-	doc, err := goquery.NewDocumentFromReader(file)
+	// doc, err := goquery.NewDocumentFromReader(file)
+	doc, err := goquery.NewDocument(htmlContent)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -176,18 +189,43 @@ func getLinks(username string) []string {
 	}
 
 	fmt.Println("done getting links")
+
+	for i := 0; i < len(urlArray); i++ {
+		fmt.Println(urlArray[i])
+	}
 	return urlArray
 }
 
-func parseChessMatch(url string, chessPiece string) {
+func parseChessMatch(url string, index int) {
 	// url := "https://www.chess.com/game/live/80934761709?username=noopdogg07"
 	// className := "white_node"
+
+	// filePath := "chessMatchData" + strconv.Itoa(index) + ".txt"
+	// fmt.Println(filePath)
+
+	// var _, err = os.Stat(filePath)
+
+	// if os.IsNotExist(err) {
+	// 	var file, err = os.Create(filePath)
+
+	// 	if err != nil {
+	// 		fmt.Println(err)
+	// 		return
+	// 	}
+	// 	defer file.Close()
+	// }
+
+	// ioutil.WriteFile(filePath, []byte("yo"), 0644)
+
+	// return
+
+	// return
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
 	fmt.Println("about to call timeout 1")
 	// Create a timeout to limit the waiting time
-	ctx, cancel = context.WithTimeout(ctx, 30*time.Second)
+	ctx, cancel = context.WithTimeout(ctx, 100*time.Second)
 	defer cancel()
 	fmt.Println("done timeout 1")
 	err := chromedp.Run(ctx, chromedp.Navigate(url))
@@ -208,23 +246,29 @@ func parseChessMatch(url string, chessPiece string) {
 		log.Fatal(err)
 	}
 
-	// fmt.Println(html)
-	ioutil.WriteFile("./chessMatchData.txt", []byte(htmlContent), 0644)
+	// parsedHtml := reformatQuotationString(htmlContent)
 
-	html, err := ioutil.ReadFile("./chessMatchData.txt")
+	// ioutil.WriteFile(filePath, []byte(htmlContent), 0644)
+
+	// html, err := ioutil.ReadFile(filePath)
 
 	if err != nil {
 		fmt.Println("An error occurred while reading the file")
 		fmt.Println(err)
 	}
 
-	ctx, cancel = chromedp.NewContext(context.Background())
-	defer cancel()
+	// ioutil.WriteFile("chessMatchData0.txt", []byte(htmlContent), 0644)
 
-	htmlToString := string(html)
+	parsedString := reformatQuotationString(htmlContent)
 
-	whiteMoves := Search(htmlToString, "white node")
-	blackMoves := Search(htmlToString, "black node")
+	fmt.Println("******")
+	fmt.Println(parsedString)
+
+	return
+	// htmlToString := string(html)
+
+	whiteMoves := Search(htmlContent, "white node")
+	blackMoves := Search(htmlContent, "black node")
 
 	for i := 0; i < len(whiteMoves); i++ {
 		fmt.Print("move ")
@@ -233,30 +277,103 @@ func parseChessMatch(url string, chessPiece string) {
 	}
 }
 
+func reformatQuotationString(text string) string {
+	escapedText := strings.ReplaceAll(text, `"`, `\"`)
+	escapedText = strings.ReplaceAll(escapedText, " ", "")
+	return escapedText
+}
+
+func connectToMongoDb(htmlContent string) string {
+	// https://cloud.mongodb.com/v2#/org/61d272d17795b52cac81de6e/projects
+	// mongodb+srv://m001-student:<password>@sandbox.gjttf.mongodb.net/?retryWrites=true&w=majority
+
+	atlasUri := "mongodb+srv://chess_parser_user:chessParser@sandbox.gjttf.mongodb.net/?retryWrites=true&w=majority"
+
+	client, err := mongo.NewClient(options.Client().ApplyURI(atlasUri))
+	if err != nil {
+		log.Fatal(err)
+	}
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	err = client.Connect(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Disconnect(ctx)
+
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	databases, err := client.ListDatabaseNames(ctx, bson.M{})
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(databases)
+
+	collection := client.Database("chess_match_database").Collection("match_collection")
+	document := ChessMatchHtml{HtmlContent: htmlContent}
+
+	result, err := collection.InsertOne(context.TODO(), document)
+
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+
+	fmt.Printf("Inserted document with id %v\n", result.InsertedID)
+
+	var matchHtml bson.M
+
+	err = collection.FindOne(ctx, bson.M{}).Decode(&matchHtml)
+
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+
+	return convertToString(matchHtml)
+}
+
+func convertToString(value map[string]interface{}) string {
+	str, err := bson.Marshal(value)
+	if err != nil {
+		return ""
+	}
+
+	unescapedResult, err := url.PathUnescape(string(str))
+
+	if err != nil {
+		fmt.Println("Error:", err)
+		return ""
+	}
+
+	return unescapedResult
+}
+
+// filter := bson.D{}
+// opts := options.Find().SetProjection(bson.D{{"htmlcontent", 1}})
+
+// cursor, err := collection.Find(context.TODO(), filter, opts)
+
+// if err != nil {
+// 	fmt.Println(err)
+// 	return
+// }
+
+// var res []ChessMatchHtml
+
+// if err = cursor.All(context.TODO(), &res); err != nil {
+// 	fmt.Println(err)
+// 	return
+// }
+
+// for _, res := range res {
+// 	tempRes, _ := bson.MarshalExtJSON(res, false, false)
+// 	fmt.Println(string(tempRes))
+// }
 func main() {
-	// podcastUrl := "https://www.youtube.com/watch?v=uJQmCFTYCh8&ab_channel=All-InPodcast"
-
-	// var res []byte
-	// ctx, cancel := chromedp.NewContext(context.Background(), chromedp.WithBrowserOption())
-	// defer cancel()
-	// log.Println("here")
-	// err := chromedp.Run(ctx,
-	// 	chromedp.Navigate("https://youtubetranscript.com/"),
-	// 	chromedp.WaitReady("body"),
-	// 	// chromedp.Click(`a[data-nav-role="signin"]`, chromedp.ByQuery),
-	// 	// chromedp.Sleep(time.Second*2),
-	// 	chromedp.SetValue(`video_url`, podcastUrl, chromedp.ByID),
-	// 	chromedp.Click(`button[class="btn btn-block btn-lg btn-primary"]`, chromedp.ByID),
-	// 	// chromedp.Sleep(time.Second*1),
-	// 	// chromedp.CaptureScreenshot(&res),
-	// )
-	// log.Println("here5")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// analyzeText()
-
 	getChessGames("noopdogg07")
 	// chessParser()
 	// os.WriteFile("loggedin.png", res, 0644)
