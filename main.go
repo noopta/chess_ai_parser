@@ -23,6 +23,9 @@ import (
 type ChessMatchHtml struct {
 	HtmlContent string
 }
+type MoveSet struct {
+	playerMoves []string
+}
 
 // var topicMap map[string][]string
 
@@ -139,13 +142,11 @@ func getChessGames(username string) {
 	matchHtml := connectToMongoDb(htmlContent)
 	urlList = getLinks(username, matchHtml)
 
-	return
-
 	var wg sync.WaitGroup
 
-	wg.Add(len(urlList))
+	wg.Add(3)
 
-	for i := 0; i < len(urlList); i++ {
+	for i := 0; i < 3; i++ {
 		go func(i int) {
 			defer wg.Done()
 			// pass in if it is expected that the user is white or black
@@ -171,8 +172,11 @@ func getLinks(username string, htmlContent string) []string {
 
 	// Create a goquery document from the HTML file
 	// doc, err := goquery.NewDocumentFromReader(file)
-	doc, err := goquery.NewDocument(htmlContent)
+	fmt.Println("here")
+
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(htmlContent))
 	if err != nil {
+		fmt.Println("returning")
 		log.Fatal(err)
 	}
 
@@ -190,7 +194,7 @@ func getLinks(username string, htmlContent string) []string {
 
 	fmt.Println("done getting links")
 
-	for i := 0; i < len(urlArray); i++ {
+	for i := 0; i < 5; i++ {
 		fmt.Println(urlArray[i])
 	}
 	return urlArray
@@ -259,22 +263,56 @@ func parseChessMatch(url string, index int) {
 
 	// ioutil.WriteFile("chessMatchData0.txt", []byte(htmlContent), 0644)
 
-	parsedString := reformatQuotationString(htmlContent)
-
-	fmt.Println("******")
-	fmt.Println(parsedString)
-
-	return
 	// htmlToString := string(html)
+
+	atlasUri := "mongodb+srv://chess_parser_user:chessParser@sandbox.gjttf.mongodb.net/?retryWrites=true&w=majority"
+
+	client, err := mongo.NewClient(options.Client().ApplyURI(atlasUri))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
+
+	err = client.Connect(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Disconnect(ctx)
+
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	whiteMoves := Search(htmlContent, "white node")
 	blackMoves := Search(htmlContent, "black node")
 
-	for i := 0; i < len(whiteMoves); i++ {
-		fmt.Print("move ")
-		fmt.Print(i + 1)
-		fmt.Println(": white " + whiteMoves[i] + " black " + blackMoves[i])
+	collection := client.Database("chess_match_database").Collection("individual_games")
+
+	document := MoveSet{playerMoves: whiteMoves}
+
+	result, err := collection.InsertOne(context.TODO(), document)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	} else {
+		fmt.Println(result.InsertedID)
 	}
+
+	document = MoveSet{playerMoves: blackMoves}
+
+	result, err = collection.InsertOne(context.TODO(), document)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	} else {
+		fmt.Println(result.InsertedID)
+	}
+	// post games to Mongo
+	// then just read from mongo and analyze
 }
 
 func reformatQuotationString(text string) string {
@@ -293,6 +331,7 @@ func connectToMongoDb(htmlContent string) string {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	err = client.Connect(ctx)
 	if err != nil {
@@ -324,16 +363,43 @@ func connectToMongoDb(htmlContent string) string {
 
 	fmt.Printf("Inserted document with id %v\n", result.InsertedID)
 
-	var matchHtml bson.M
-
-	err = collection.FindOne(ctx, bson.M{}).Decode(&matchHtml)
-
+	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
+	}
+
+	var episodes []bson.M
+	if err = cursor.All(ctx, &episodes); err != nil {
+		log.Fatal(err)
+	}
+
+	// Convert primitive.M to []byte
+	data, err := bson.Marshal(episodes[0])
+	if err != nil {
+		fmt.Println("Error:", err)
 		return ""
 	}
 
-	return convertToString(matchHtml)
+	var content ChessMatchHtml
+
+	err = bson.Unmarshal(data, &content)
+
+	return content.HtmlContent
+}
+
+func makeQuotationMarksValid(input string) string {
+	// Define the invalid quotation marks
+	invalidQuotes := []string{"“", "”", "‘", "’"}
+
+	// Define the valid quotation marks
+	validQuotes := []string{"\"", "\"", "'", "'"}
+
+	// Replace invalid quotation marks with valid ones
+	for i := 0; i < len(invalidQuotes); i++ {
+		input = strings.ReplaceAll(input, invalidQuotes[i], validQuotes[i])
+	}
+
+	return input
 }
 
 func convertToString(value map[string]interface{}) string {
