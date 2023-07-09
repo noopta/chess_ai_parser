@@ -24,7 +24,8 @@ type ChessMatchHtml struct {
 	HtmlContent string
 }
 type MoveSet struct {
-	playerMoves []string
+	PlayerMoves []string `bson:"moveSet"`
+	PlayerColor string `bson:"playerColor"`
 }
 
 // var topicMap map[string][]string
@@ -58,25 +59,33 @@ func analyzeText() {
 		currentIndex += 4000
 	}
 
-	var wg sync.WaitGroup
+	// TODO Uncomment later, first get synchronous working then async
+	// var wg sync.WaitGroup
 
-	wg.Add(len(stringSections))
+	// wg.Add(len(stringSections))
 
-	fmt.Println("calling Chat GPT")
-	fmt.Println()
-	for i := 0; i < len(stringSections); i++ {
-		go func(i int) {
-			defer wg.Done()
-			callGpt(stringSections[i])
-		}(i)
-	}
+	// fmt.Println("calling Chat GPT")
+	// fmt.Println()
+	// for i := 0; i < len(stringSections); i++ {
+	// 	go func(i int) {
+	// 		defer wg.Done()
+	// 		callGpt(stringSections[i])
+	// 	}(i)
+	// }
 
-	wg.Wait()
+	// wg.Wait()
 }
 
-func callGpt(currentText string) {
+func callGpt(currentGame MoveSet) {
 	// get API key from AMEX_PIN folder
-	client := openai.NewClient("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")
+
+	var currentChessMoves string
+
+	for i := 0; i < len(currentGame.PlayerMoves); i++ {
+		currentChessMoves += currentGame.PlayerMoves[i] + " "
+	}
+
+	client := openai.NewClient("")
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
@@ -84,8 +93,7 @@ func callGpt(currentText string) {
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role: openai.ChatMessageRoleUser,
-					Content: "Summarize the following text in the following way, find the central theme of the text, mention it in the beginning of your response (e.g. Economics: your explanation) be sure the explanation before your key point is a headline with 10 or less words " +
-						" and list the key points as bullet points. Here is the text to analyze: \n\n" + currentText,
+					Content: "I am going to give you a set of chess moves by 1 player and their piece color. I want you to analyze the set of moves and determine 3 of their core weaknesses or areas of improvement. Provide feedback referring to specific moves, and provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.)" + currentChessMoves + "\n" + currentGame.PlayerColor,
 				},
 			},
 		},
@@ -108,7 +116,7 @@ func callGpt(currentText string) {
 func getChessGames(username string) {
 
 	url := "https://www.chess.com/member/noopdogg07"
-	var urlList []string
+	// var urlList []string
 
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
@@ -139,23 +147,29 @@ func getChessGames(username string) {
 
 	// fmt.Println(html)
 	ioutil.WriteFile("chessGameListData.txt", []byte(htmlContent), 0644)
-	matchHtml := connectToMongoDb(htmlContent)
-	urlList = getLinks(username, matchHtml)
+	// TODO: UNCOMMENT WHEN DONE READING FROM MONGO 
 
-	var wg sync.WaitGroup
 
-	wg.Add(3)
+	// matchHtml := connectToMongoDb(htmlContent)
+	// urlList = getLinks(username, matchHtml)
 
-	for i := 0; i < 3; i++ {
-		go func(i int) {
-			defer wg.Done()
-			// pass in if it is expected that the user is white or black
-			fmt.Println(urlList[i])
-			parseChessMatch(urlList[i], i)
-		}(i)
-	}
+	//
+	// var wg sync.WaitGroup
 
-	wg.Wait()
+	// wg.Add(5)
+
+	// for i := 0; i < 5; i++ {
+	// 	go func(i int) {
+	// 		defer wg.Done()
+	// 		// pass in if it is expected that the user is white or black
+	// 		fmt.Println(urlList[i])
+	// 		parseChessMatch(urlList[i], i)
+	// 	}(i)
+	// }
+
+	// wg.Wait()
+
+	readChessGamesFromMongo()
 }
 
 func getLinks(username string, htmlContent string) []string {
@@ -201,29 +215,6 @@ func getLinks(username string, htmlContent string) []string {
 }
 
 func parseChessMatch(url string, index int) {
-	// url := "https://www.chess.com/game/live/80934761709?username=noopdogg07"
-	// className := "white_node"
-
-	// filePath := "chessMatchData" + strconv.Itoa(index) + ".txt"
-	// fmt.Println(filePath)
-
-	// var _, err = os.Stat(filePath)
-
-	// if os.IsNotExist(err) {
-	// 	var file, err = os.Create(filePath)
-
-	// 	if err != nil {
-	// 		fmt.Println(err)
-	// 		return
-	// 	}
-	// 	defer file.Close()
-	// }
-
-	// ioutil.WriteFile(filePath, []byte("yo"), 0644)
-
-	// return
-
-	// return
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
@@ -250,22 +241,13 @@ func parseChessMatch(url string, index int) {
 		log.Fatal(err)
 	}
 
-	// parsedHtml := reformatQuotationString(htmlContent)
-
-	// ioutil.WriteFile(filePath, []byte(htmlContent), 0644)
-
-	// html, err := ioutil.ReadFile(filePath)
 
 	if err != nil {
 		fmt.Println("An error occurred while reading the file")
 		fmt.Println(err)
 	}
 
-	// ioutil.WriteFile("chessMatchData0.txt", []byte(htmlContent), 0644)
-
-	// htmlToString := string(html)
-
-	atlasUri := "mongodb+srv://chess_parser_user:chessParser@sandbox.gjttf.mongodb.net/?retryWrites=true&w=majority"
+	atlasUri := ""
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(atlasUri))
 	if err != nil {
@@ -290,22 +272,27 @@ func parseChessMatch(url string, index int) {
 
 	collection := client.Database("chess_match_database").Collection("individual_games")
 
-	document := MoveSet{playerMoves: whiteMoves}
+	document := MoveSet{PlayerMoves: whiteMoves, PlayerColor: "white"}
 
 	result, err := collection.InsertOne(context.TODO(), document)
+	// result, err := collection.InsertOne(context.TODO(), document)
 
 	if err != nil {
+		fmt.Println("yo")
 		fmt.Println(err)
 		return
 	} else {
 		fmt.Println(result.InsertedID)
 	}
 
-	document = MoveSet{playerMoves: blackMoves}
+	document = MoveSet{PlayerMoves: blackMoves, PlayerColor: "black"}
+
+	// result, err = collection.InsertOne(context.TODO(), document)
 
 	result, err = collection.InsertOne(context.TODO(), document)
 
 	if err != nil {
+		fmt.Println("yo2")
 		fmt.Println(err)
 		return
 	} else {
@@ -325,7 +312,7 @@ func connectToMongoDb(htmlContent string) string {
 	// https://cloud.mongodb.com/v2#/org/61d272d17795b52cac81de6e/projects
 	// mongodb+srv://m001-student:<password>@sandbox.gjttf.mongodb.net/?retryWrites=true&w=majority
 
-	atlasUri := "mongodb+srv://chess_parser_user:chessParser@sandbox.gjttf.mongodb.net/?retryWrites=true&w=majority"
+	atlasUri := ""
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(atlasUri))
 	if err != nil {
@@ -344,13 +331,7 @@ func connectToMongoDb(htmlContent string) string {
 		log.Fatal(err)
 	}
 
-	databases, err := client.ListDatabaseNames(ctx, bson.M{})
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(databases)
-
+	// inserting to collection
 	collection := client.Database("chess_match_database").Collection("match_collection")
 	document := ChessMatchHtml{HtmlContent: htmlContent}
 
@@ -363,6 +344,7 @@ func connectToMongoDb(htmlContent string) string {
 
 	fmt.Printf("Inserted document with id %v\n", result.InsertedID)
 
+	// getting all elements from the collection 
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
 		log.Fatal(err)
@@ -385,6 +367,54 @@ func connectToMongoDb(htmlContent string) string {
 	err = bson.Unmarshal(data, &content)
 
 	return content.HtmlContent
+}
+
+func readChessGamesFromMongo() {
+	atlasUri := "mongodb+srv://chess_parser_user:chessParser@sandbox.gjttf.mongodb.net/?retryWrites=true&w=majority"
+
+	client, err := mongo.NewClient(options.Client().ApplyURI(atlasUri))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	err = client.Connect(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Disconnect(ctx)
+
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// inserting to collection
+	collection := client.Database("chess_match_database").Collection("individual_games")
+
+	cursor, err := collection.Find(ctx, bson.M{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var chessGames []bson.M
+	if err = cursor.All(ctx, &chessGames); err != nil {
+		log.Fatal(err)
+	}
+
+	for i:= 0; i < len(chessGames); i++ {
+		data, err := bson.Marshal(chessGames[i])
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+
+		var content MoveSet
+
+		err = bson.Unmarshal(data, &content)
+	
+		callGpt(content)
+	}
 }
 
 func makeQuotationMarksValid(input string) string {
@@ -418,27 +448,6 @@ func convertToString(value map[string]interface{}) string {
 	return unescapedResult
 }
 
-// filter := bson.D{}
-// opts := options.Find().SetProjection(bson.D{{"htmlcontent", 1}})
-
-// cursor, err := collection.Find(context.TODO(), filter, opts)
-
-// if err != nil {
-// 	fmt.Println(err)
-// 	return
-// }
-
-// var res []ChessMatchHtml
-
-// if err = cursor.All(context.TODO(), &res); err != nil {
-// 	fmt.Println(err)
-// 	return
-// }
-
-// for _, res := range res {
-// 	tempRes, _ := bson.MarshalExtJSON(res, false, false)
-// 	fmt.Println(string(tempRes))
-// }
 func main() {
 	getChessGames("noopdogg07")
 	// chessParser()
