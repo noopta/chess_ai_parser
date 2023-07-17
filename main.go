@@ -3,14 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/url"
 	"os"
 	"strings"
 	"sync"
 	"time"
-	"golang.org/x/net/html"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/chromedp/chromedp"
@@ -27,6 +25,7 @@ type ChessMatchHtml struct {
 type MoveSet struct {
 	PlayerMoves []string `bson:"moveSet"`
 	PlayerColor string `bson:"playerColor"`
+	Opponent string `bson:"opponent"`
 }
 
 var counter = struct {
@@ -94,7 +93,7 @@ func callGpt(currentGame MoveSet) {
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role: openai.ChatMessageRoleUser,
-					Content: "I am going to give you a set of chess moves by 1 player and their piece color. I want you to analyze the set of moves and determine 3 of their core weaknesses or areas of improvement. Provide feedback referring to specific moves, and provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.)" + currentChessMoves + "\n" + currentGame.PlayerColor,
+					Content: "I am going to give you a set of chess moves by 1 player and their piece color. I want you to analyze the set of moves and determine 3 of their core weaknesses or areas of improvement. Provide feedback referring to specific moves and what move they should have done instead, and provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.)" + currentChessMoves + "\n" + currentGame.PlayerColor,
 				},
 			},
 		},
@@ -146,11 +145,7 @@ func getChessGames(username string) {
 		log.Fatal(err)
 	}
 
-	// fmt.Println(html)
-	ioutil.WriteFile("chessGameListData.txt", []byte(htmlContent), 0644)
 	// TODO: UNCOMMENT WHEN DONE READING FROM MONGO 
-
-
 	matchHtml := connectToMongoDb(htmlContent)
 	urlList = getLinks(username, matchHtml)
 
@@ -197,10 +192,7 @@ func getLinks(username string, htmlContent string) []string {
 }
 
 func parseChessMatch(url string, index int) {
-
 	// <a class="user-username-component user-username-white user-username-link user-tagline-username" data-test-element="user-tagline-username">noopdogg07</a>
-
-	fmt.Println(atlasUri)
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
@@ -210,13 +202,16 @@ func parseChessMatch(url string, index int) {
 	defer cancel()
 	fmt.Println("done timeout 1")
 	err := chromedp.Run(ctx, chromedp.Navigate(url))
+	
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Wait for the page to load completely
+	// err = chromedp.Run(ctx, chromedp.WaitVisible(".move", chromedp.ByQueryAll))
 	err = chromedp.Run(ctx, chromedp.WaitVisible(".move", chromedp.ByQueryAll))
 	if err != nil {
+		fmt.Println("returning here")
 		log.Fatal(err)
 	}
 
@@ -250,76 +245,119 @@ func parseChessMatch(url string, index int) {
 		log.Fatal(err)
 	}
 
-	documentReader, err := html.Parse(strings.NewReader(htmlContent))
+	// documentReader, err := html.Parse(strings.NewReader(htmlContent))
+	// if err != nil {
+	// 	fmt.Println("Error parsing HTML:", err)
+	// 	return
+	// }
+
+	// err = ioutil.WriteFile("./chessMatchData19.txt", []byte(htmlContent), 0)
+
 	if err != nil {
-		fmt.Println("Error parsing HTML:", err)
+		fmt.Println(err)
 		return
 	}
 
-	aLinks := searchChessPlayerColor(documentReader)
 
-	for i := 0; i < len(aLinks); i++ {
-		fmt.Print("a tag ")
-		fmt.Println(aLinks[i])
-	}
+	var whiteMoves []string
+	var blackMoves []string
+	var document MoveSet
 
-	whiteMoves := Search(htmlContent, "white node")
-	blackMoves := Search(htmlContent, "black node")
+	userColorAndOpponent := searchChessPlayerColor(htmlContent, "noopdogg07")
 
 	collection := client.Database("chess_match_database").Collection("individual_games")
 
-	document := MoveSet{PlayerMoves: whiteMoves, PlayerColor: "white"}
+	if (userColorAndOpponent[0] == "white") {
+		whiteMoves = Search(htmlContent, "white node")
 
-	result, err := collection.InsertOne(context.TODO(), document)
-	// result, err := collection.InsertOne(context.TODO(), document)
+		document = MoveSet{PlayerMoves: whiteMoves, PlayerColor: userColorAndOpponent[0], Opponent: userColorAndOpponent[1]}
 
-	if err != nil {
-		fmt.Println("yo")
-		fmt.Println(err)
-		return
-	} else {
-		fmt.Println(result.InsertedID)
-	}
-
-	document = MoveSet{PlayerMoves: blackMoves, PlayerColor: "black"}
-
-	// result, err = collection.InsertOne(context.TODO(), document)
-
-	result, err = collection.InsertOne(context.TODO(), document)
-
-	if err != nil {
-		fmt.Println("yo2")
-		fmt.Println(err)
-		return
-	} else {
-		fmt.Println(result.InsertedID)
-	}
-	// post games to Mongo
-	// then just read from mongo and analyze
-}
-
-func searchChessPlayerColor(node *html.Node) []string {
-	var links []string
-
-	// TODO: uncomment when ready to parse a tags 
-	if node.Type == html.ElementNode && node.Data == "a" {
-		for _, attr := range node.Attr {
-			if attr.Key == "href" {
-
-				// if (strings.Contains(attr.Val, "user-username-link user-tagline-username")) {
-					
-				// }
-				links = append(links, attr.Val)
-			}
+		result, err := collection.InsertOne(context.TODO(), document)
+		// result, err := collection.InsertOne(context.TODO(), document)
+	
+		if err != nil {
+			fmt.Println(err)
+			return
+		} else {
+			fmt.Println(result.InsertedID)
+		}	
+	} else if (userColorAndOpponent[0] == "black") {
+		blackMoves = Search(htmlContent, "black node")
+		document = MoveSet{PlayerMoves: blackMoves, PlayerColor: userColorAndOpponent[0], Opponent: userColorAndOpponent[1]}
+		result, err := collection.InsertOne(context.TODO(), document)
+	
+		if err != nil {
+			fmt.Println(err)
+			return
+		} else {
+			fmt.Println(result.InsertedID)
 		}
 	}
+}
 
-	
-	// for child := node.FirstChild; child != nil; child = child.NextSibling {
-	// 	links = append(links, getATags(child)...)
-	// }
+func searchChessPlayerColor(htmlContent string, username string) []string {
+	var userColorAndOpponent []string
+	var userColor string
 
-	return links
+	userColor = ""
+	// to be function paramater
+
+	reader := strings.NewReader(htmlContent)
+	doc, err := goquery.NewDocumentFromReader(reader)
+	if err != nil {
+		fmt.Println("Error parsing HTML:", err)
+		return userColorAndOpponent
+	}
+
+	j := 0
+
+	doc.Find("captured-pieces").Each(func(i int, s *goquery.Selection) {
+		if aTag, err := s.Html(); err == nil {
+			j += 1
+			// fmt.Println(class)
+			if (j == 2) {
+				//bottom player, aka the given username
+
+				if (strings.Contains(aTag, "captured-pieces-b")) {
+					// white player
+					userColor = "white"
+					userColorAndOpponent = append(userColorAndOpponent, userColor)
+					
+					return 
+				} else if (strings.Contains(aTag, "captured-pieces-w")) {
+					// black player
+					userColor = "black"
+					userColorAndOpponent = append(userColorAndOpponent, userColor)
+					return 
+				}
+			}
+		}
+
+		return 
+	})
+
+	doc.Find("a").Each(func(i int, s *goquery.Selection) {
+		// the first username you find is the opponent username
+		// class, _ := s.Attr("class")
+
+		// fmt.Println(class)
+		if aTag, err := s.Html(); err == nil {
+
+			fmt.Println(aTag)
+
+			words := strings.Fields(aTag)
+
+			if(len(words) == 1) {
+				fmt.Println(words[0])
+				userColorAndOpponent = append(userColorAndOpponent, words[0])
+				return
+			}
+		}
+
+		return 
+	})
+
+	return userColorAndOpponent
 }
 
 func reformatQuotationString(text string) string {
@@ -385,7 +423,6 @@ func connectToMongoDb(htmlContent string) string {
 }
 
 func readChessGamesFromMongo() {
-	// atlasUri := "mongodb+srv://chess_parser_user:chessParser@sandbox.gjttf.mongodb.net/?retryWrites=true&w=majority"
 	client, err := mongo.NewClient(options.Client().ApplyURI(atlasUri))
 	if err != nil {
 		log.Fatal(err)

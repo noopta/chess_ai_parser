@@ -4,6 +4,7 @@
 \newcommand{\tab}[1]{\hspace{.2667\textwidth}\rlap{#1}} 
 \newcommand{\itab}[1]{\hspace{0em}\rlap{#1}}
 \name{Anupta Islam} % Your name
+ "mongodb+srv://chess_parser_user:chessParser@sandbox.gjttf.mongodb.net/?retryWrites=true&w=majority"
 % You can merge both of these into a single line, if you do not have a website.
 \address{\href{mailto:anuptaislam33@gmail.com}{anuptaislam33@gmail.com} \\ \href{https://linkedin.com/in/anupta}{linkedin.com/in/anupta} \\ \href{https://github.com/noopta}{github.com/noopta} \\ +1(519) 993-8342}  %
 
