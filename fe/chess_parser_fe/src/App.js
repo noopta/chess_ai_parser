@@ -1,54 +1,38 @@
 import logo from './logo.svg';
 import './App.css';
 import './landingComponents/landingForm';
+import Reac, { useState, useEffect } from 'react';
 
 function App() {
   return (
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>src/App.js</code> and save to reload.
-    //     </p>
-    //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>
-    heroSection()
-    // landingForm()
+    HeroSection()
   );
 }
 
-function landingForm() {
+
+const landingForm = (showComponent, setShowComponent) => {
+
+  const handleSubmit = (event) => {
+    event.preventDefault(); // This prevents the default behavior of form submission (page refresh)
+    // Add your form submission logic here, if needed
+    // For example, you can access form data using event.target and perform actions based on it
+    console.log("yo")
+
+    setShowComponent(true)
+  }
+
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-white">
-        <body class="h-full">
-        ```
-      */}
-      {/* <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8"> */}
       <div className=" sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" action="#" method="POST">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+            <label className="block text-sm font-medium leading-6 text-gray-900">
               Username
             </label>
             <div className="mt-2">
               <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
+                id="text"
+                autoComplete="text"
                 required
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -63,7 +47,7 @@ function landingForm() {
               Analyze Games
             </button>
           </div>
-        </form>
+        </form >
 
         <p className="mt-10 text-center text-sm text-gray-500">
           Got a suggestion?{' '}
@@ -71,9 +55,7 @@ function landingForm() {
             Submit any bugs here
           </a>
         </p>
-      </div>
-      {/* {Grid()}
-      </div> */}
+      </div >
     </>
   )
 }
@@ -157,7 +139,13 @@ function gameCard() {
   )
 }
 
-function heroSection() {
+const HeroSection = (props) => {
+  const [showComponent, setShowComponent] = useState(false);
+
+  const handleButtonClick = () => {
+    setShowComponent(true);
+  };
+
   return (
     <>
       <div class="bg-white">
@@ -221,36 +209,24 @@ function heroSection() {
         </header>
 
         <div class="relative isolate px-6 lg:px-8">
-          {/* <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
-            <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style={polygonStyle}></div>
-          </div> */}
-          {/* class below has sm:py-48 for more spacing */}
           <div class="mx-auto max-w-2xl py-32">
-            {/* <div class="hidden sm:mb-8 sm:flex sm:justify-center">
-              <div class="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
-                Announcing our next round of funding. <a href="#" class="font-semibold text-indigo-600"><span class="absolute inset-0" aria-hidden="true"></span>Read more <span aria-hidden="true">&rarr;</span></a>
-              </div>
-            </div> */}
             <div class="text-center">
               <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Chess analysis with AI, tailored for your skill set.</h1>
               <p class="mt-6 text-lg leading-8 text-gray-600">Get started by entering a Chess.com username to get feedback on your recent games.</p>
               <div class="mt-10 flex items-center justify-center gap-x-6">
-                {/* <a href="#" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get started</a> */}
-                {/* {inputForm()} */}
-                {landingForm()}
-                {/* <a href="#" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get started</a> */}
-
-                {/* <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a> */}
+                {landingForm(showComponent, setShowComponent)}
               </div>
             </div>
           </div>
-          {/* <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
-            <div class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" style={polygonStyle}></div>
-          </div> */}
         </div>
       </div>
 
-      {Grid()}
+      {showComponent ? <Grid /> : null}
+      {/* {isGameListVisible ? console.log("yo") : null} */}
+
+      {/* Or you can use conditional rendering with a ternary operator */}
+      {/* {isVariableTrue ? <MyFunctionalComponent /> : <div>Variable is false.</div>} */}
+      {/* {Grid()} */}
     </>
   )
 }
