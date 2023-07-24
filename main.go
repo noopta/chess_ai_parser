@@ -9,6 +9,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"golang.org/x/time/rate"
+	"os/exec"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/chromedp/chromedp"
@@ -23,9 +25,12 @@ type ChessMatchHtml struct {
 	HtmlContent string
 }
 type MoveSet struct {
-	PlayerMoves []string `bson:"moveSet"`
+	WhiteMoves []string `bson:"whiteMoves"`
+	BlackMoves []string `bson:"blackMoves"`
 	PlayerColor string `bson:"playerColor"`
 	Opponent string `bson:"opponent"`
+	MatchBlurb string `bson:"matchBlurb"`
+	Analysis string `bson:"analysis"`
 }
 
 var counter = struct {
@@ -81,8 +86,9 @@ func callGpt(currentGame MoveSet) {
 
 	var currentChessMoves string
 
-	for i := 0; i < len(currentGame.PlayerMoves); i++ {
-		currentChessMoves += currentGame.PlayerMoves[i] + " "
+	// TODO: modify WhiteMoves
+	for i := 0; i < len(currentGame.WhiteMoves); i++ {
+		currentChessMoves += currentGame.WhiteMoves[i] + " "
 	}
 
 	client := openai.NewClient(os.Getenv("open_api_key"))
@@ -149,18 +155,37 @@ func getChessGames(username string) {
 	matchHtml := connectToMongoDb(htmlContent)
 	urlList = getLinks(username, matchHtml)
 
-	
-	// var wg sync.WaitGroup
-
-	// wg.Add(5)
-
+	matchList := []MoveSet{}
 	for i := 0; i < 5; i++ {
-		parseChessMatch(urlList[i], i)
+		// go func(i int) {
+		// 	defer parsingWaitGroup.Done()
+		// 	if err := limiter.Wait(context.Background()); err != nil {
+		// 		fmt.Println(err)
+		// 	}
+		// 	parseChessMatch(urlList[i], i, &matchList)
+		// } (i)
+		parseChessMatch(urlList[i], i, &matchList)
 	}
 
-	// wg.Wait()
+	var wg sync.WaitGroup
+	limiter := rate.NewLimiter(rate.Every(time.Second/5), 5)
 
-	readChessGamesFromMongo()
+	wg.Add(len(matchList))
+
+	for i:= 0; i < len(matchList); i++ {
+		fmt.Println(matchList[i])
+		go func(i int) {
+			defer wg.Done()
+			if err := limiter.Wait(context.Background()); err != nil {
+				fmt.Println(err)
+			}
+			getChessBlurb(matchList[i])
+		} (i)
+	}
+
+	wg.Wait()
+
+	// readChessGamesFromMongo()
 }
 
 func getLinks(username string, htmlContent string) []string {
@@ -191,22 +216,23 @@ func getLinks(username string, htmlContent string) []string {
 	return urlArray
 }
 
-func parseChessMatch(url string, index int) {
+/*Write a function to add two*/
+func parseChessMatch(url string, index int, matchList *[]MoveSet) {
 	// <a class="user-username-component user-username-white user-username-link user-tagline-username" data-test-element="user-tagline-username">noopdogg07</a>
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
 	fmt.Println("about to call timeout 1")
 	// Create a timeout to limit the waiting time
-	ctx, cancel = context.WithTimeout(ctx, 100*time.Second)
+	ctx, cancel = context.WithTimeout(ctx, 20*time.Second)
 	defer cancel()
 	fmt.Println("done timeout 1")
 	err := chromedp.Run(ctx, chromedp.Navigate(url))
 	
 	if err != nil {
+		fmt.Println("cancelling")
 		log.Fatal(err)
 	}
-
 	// Wait for the page to load completely
 	// err = chromedp.Run(ctx, chromedp.WaitVisible(".move", chromedp.ByQueryAll))
 	err = chromedp.Run(ctx, chromedp.WaitVisible(".move", chromedp.ByQueryAll))
@@ -219,6 +245,7 @@ func parseChessMatch(url string, index int) {
 	var htmlContent string
 	err = chromedp.Run(ctx, chromedp.Evaluate(`document.documentElement.outerHTML`, &htmlContent))
 	if err != nil {
+		fmt.Println("cancelling 2")
 		log.Fatal(err)
 	}
 
@@ -236,22 +263,16 @@ func parseChessMatch(url string, index int) {
 
 	err = client.Connect(ctx)
 	if err != nil {
+		fmt.Println("cancelling 3")
 		log.Fatal(err)
 	}
 	defer client.Disconnect(ctx)
 
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
+		fmt.Println("cancelling 4")
 		log.Fatal(err)
 	}
-
-	// documentReader, err := html.Parse(strings.NewReader(htmlContent))
-	// if err != nil {
-	// 	fmt.Println("Error parsing HTML:", err)
-	// 	return
-	// }
-
-	// err = ioutil.WriteFile("./chessMatchData19.txt", []byte(htmlContent), 0)
 
 	if err != nil {
 		fmt.Println(err)
@@ -261,38 +282,143 @@ func parseChessMatch(url string, index int) {
 
 	var whiteMoves []string
 	var blackMoves []string
-	var document MoveSet
+	// var document MoveSet
 
 	userColorAndOpponent := searchChessPlayerColor(htmlContent, "noopdogg07")
 
-	collection := client.Database("chess_match_database").Collection("individual_games")
+	// collection := client.Database("chess_match_database").Collection("individual_games")
 
-	if (userColorAndOpponent[0] == "white") {
-		whiteMoves = Search(htmlContent, "white node")
+	whiteMoves = Search(htmlContent, "white node")
+	blackMoves = Search(htmlContent, "black node")
 
-		document = MoveSet{PlayerMoves: whiteMoves, PlayerColor: userColorAndOpponent[0], Opponent: userColorAndOpponent[1]}
+	gameData := MoveSet{WhiteMoves: whiteMoves, BlackMoves: blackMoves, PlayerColor: userColorAndOpponent[0], Opponent: userColorAndOpponent[1]}
 
-		result, err := collection.InsertOne(context.TODO(), document)
-		// result, err := collection.InsertOne(context.TODO(), document)
-	
-		if err != nil {
-			fmt.Println(err)
-			return
-		} else {
-			fmt.Println(result.InsertedID)
-		}	
-	} else if (userColorAndOpponent[0] == "black") {
-		blackMoves = Search(htmlContent, "black node")
-		document = MoveSet{PlayerMoves: blackMoves, PlayerColor: userColorAndOpponent[0], Opponent: userColorAndOpponent[1]}
-		result, err := collection.InsertOne(context.TODO(), document)
-	
-		if err != nil {
-			fmt.Println(err)
-			return
-		} else {
-			fmt.Println(result.InsertedID)
-		}
+	fmt.Println(gameData)
+	*matchList = append(*matchList, gameData)
+
+	return
+
+	// call Open AI to get a blurb of the users moves 
+	// chessBlurb := getChessBlurb(whiteMoves, blackMoves, userColorAndOpponent[0])
+
+	// document = MoveSet{WhiteMoves: whiteMoves, BlackMoves: blackMoves, PlayerColor: userColorAndOpponent[0], Opponent: userColorAndOpponent[1], MatchBlurb: chessBlurb[0], Analysis: chessBlurb[1]}
+
+	// result, err := collection.InsertOne(context.TODO(), document)
+	// // result, err := collection.InsertOne(context.TODO(), document)
+
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// } else {
+	// 	fmt.Println(result.InsertedID)
+	// }
+}
+
+// func getChessBlurb(whiteMoves []string, blackMoves []string, playerColor string) []string {
+func getChessBlurb(currentMatch MoveSet) {
+	// var gptResponses []string
+	var firstResponse string
+	var secondResponse string
+	var whiteMovesConcat string
+	var blackMovesConcat string
+
+	for i := 0; i < len(currentMatch.WhiteMoves); i++ {
+		whiteMovesConcat += currentMatch.WhiteMoves[i] + " "
 	}
+
+	
+	for i := 0; i < len(currentMatch.BlackMoves); i++ {
+		blackMovesConcat += currentMatch.BlackMoves[i] + " "
+	}
+
+	fmt.Println("getting firstResponse")
+
+	client := openai.NewClient(os.Getenv("open_api_key"))
+	resp, err := client.CreateChatCompletion(
+		context.Background(),
+		openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role: openai.ChatMessageRoleUser,
+					Content: "I am going to give you two sets of chess moves followed by the color of the player. I want you to write a 15-20 word enthusiastic summary on the players game and if they won or lost. Both move sets are from the same game" + whiteMovesConcat + "\n" + blackMovesConcat + "\n" + currentMatch.PlayerColor,
+				},
+			},
+		},
+	)
+
+	if err != nil {
+		fmt.Printf("ChatCompletion error: %v\n", err)
+		return 
+	}
+
+	firstResponse = resp.Choices[0].Message.Content
+	fmt.Println("ANALYSIS\n")
+
+	resp, err = client.CreateChatCompletion(
+		context.Background(),
+		openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role: openai.ChatMessageRoleUser,
+					Content: "I am going to give you 2 sets of chess moves from the same game and the current players piece color. I want you to analyze the set of moves by the player who's piece color is specified and determine 3 of their core weaknesses or areas of improvement. Provide feedback referring to specific moves and what move they should have done instead, and provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.)" + whiteMovesConcat + "\n" + blackMovesConcat + "\n" + currentMatch.PlayerColor,
+				},
+			},
+		},
+	)
+
+	if err != nil {
+		fmt.Println(err)
+		return 
+	}
+	// fmt.Println(resp.Choices[0].Message.Content)
+
+	// fmt.Println("*******")
+
+	secondResponse = resp.Choices[0].Message.Content
+
+	// gptResponses = append(gptResponses, resp.Choices[0].Message.Content)
+
+	// write to mongo 
+
+	mongoClient, err := mongo.NewClient(options.Client().ApplyURI(atlasUri))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	err = mongoClient.Connect(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer mongoClient.Disconnect(ctx)
+
+	err = mongoClient.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	currentMatch.MatchBlurb = firstResponse
+	currentMatch.Analysis = secondResponse
+
+	collection := mongoClient.Database("chess_match_database").Collection("individual_games")
+	result, err := collection.InsertOne(context.TODO(), currentMatch)
+	// result, err := collection.InsertOne(context.TODO(), document)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	} else {
+		fmt.Println(result.InsertedID)
+	}
+	return
 }
 
 func searchChessPlayerColor(htmlContent string, username string) []string {
@@ -343,12 +469,9 @@ func searchChessPlayerColor(htmlContent string, username string) []string {
 		// fmt.Println(class)
 		if aTag, err := s.Html(); err == nil {
 
-			fmt.Println(aTag)
-
 			words := strings.Fields(aTag)
 
 			if(len(words) == 1) {
-				fmt.Println(words[0])
 				userColorAndOpponent = append(userColorAndOpponent, words[0])
 				return
 			}
@@ -457,15 +580,6 @@ func readChessGamesFromMongo() {
 
 	wg.Add(len(chessGames))
 
-	// fmt.Println("calling Chat GPT")
-	// fmt.Println()
-	// for i := 0; i < len(stringSections); i++ {
-	// 	go func(i int) {
-	// 		defer wg.Done()
-	// 		callGpt(stringSections[i])
-	// 	}(i)
-	// }
-
 	for i:= 0; i < len(chessGames); i++ {
 
 		go func(i int) {
@@ -519,7 +633,10 @@ func convertToString(value map[string]interface{}) string {
 }
 
 func main() {
+	cmd := exec.Command("sudo rm -rf", "/tmp/*")
+	cmd.Stdout = os.Stdout
+
+	cmd = exec.Command("ls", "/tmp/")
+	cmd.Stdout = os.Stdout
 	getChessGames("noopdogg07")
-	// chessParser()
-	// os.WriteFile("loggedin.png", res, 0644)
 }
