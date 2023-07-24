@@ -184,8 +184,6 @@ func getChessGames(username string) {
 	}
 
 	wg.Wait()
-
-	// readChessGamesFromMongo()
 }
 
 func getLinks(username string, htmlContent string) []string {
@@ -297,21 +295,6 @@ func parseChessMatch(url string, index int, matchList *[]MoveSet) {
 	*matchList = append(*matchList, gameData)
 
 	return
-
-	// call Open AI to get a blurb of the users moves 
-	// chessBlurb := getChessBlurb(whiteMoves, blackMoves, userColorAndOpponent[0])
-
-	// document = MoveSet{WhiteMoves: whiteMoves, BlackMoves: blackMoves, PlayerColor: userColorAndOpponent[0], Opponent: userColorAndOpponent[1], MatchBlurb: chessBlurb[0], Analysis: chessBlurb[1]}
-
-	// result, err := collection.InsertOne(context.TODO(), document)
-	// // result, err := collection.InsertOne(context.TODO(), document)
-
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// } else {
-	// 	fmt.Println(result.InsertedID)
-	// }
 }
 
 // func getChessBlurb(whiteMoves []string, blackMoves []string, playerColor string) []string {
