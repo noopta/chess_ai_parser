@@ -4,13 +4,15 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"strings"
 	"sync"
 	"time"
+
 	"golang.org/x/time/rate"
-	"os/exec"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/chromedp/chromedp"
@@ -25,12 +27,12 @@ type ChessMatchHtml struct {
 	HtmlContent string
 }
 type MoveSet struct {
-	WhiteMoves []string `bson:"whiteMoves"`
-	BlackMoves []string `bson:"blackMoves"`
-	PlayerColor string `bson:"playerColor"`
-	Opponent string `bson:"opponent"`
-	MatchBlurb string `bson:"matchBlurb"`
-	Analysis string `bson:"analysis"`
+	WhiteMoves  []string `bson:"whiteMoves"`
+	BlackMoves  []string `bson:"blackMoves"`
+	PlayerColor string   `bson:"playerColor"`
+	Opponent    string   `bson:"opponent"`
+	MatchBlurb  string   `bson:"matchBlurb"`
+	Analysis    string   `bson:"analysis"`
 }
 
 var counter = struct {
@@ -92,13 +94,13 @@ func callGpt(currentGame MoveSet) {
 	}
 
 	client := openai.NewClient(os.Getenv("open_api_key"))
-	resp, err := client.CreateChatCompletion(
+	_, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
 			Model: openai.GPT3Dot5Turbo,
 			Messages: []openai.ChatCompletionMessage{
 				{
-					Role: openai.ChatMessageRoleUser,
+					Role:    openai.ChatMessageRoleUser,
 					Content: "I am going to give you a set of chess moves by 1 player and their piece color. I want you to analyze the set of moves and determine 3 of their core weaknesses or areas of improvement. Provide feedback referring to specific moves and what move they should have done instead, and provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.)" + currentChessMoves + "\n" + currentGame.PlayerColor,
 				},
 			},
@@ -114,9 +116,6 @@ func callGpt(currentGame MoveSet) {
 	// if it is not key points
 
 	// add key to map if not currently existing there, and  val
-
-	fmt.Println(resp.Choices[0].Message.Content)
-	fmt.Println("*******")
 }
 
 func getChessGames(username string) {
@@ -127,7 +126,6 @@ func getChessGames(username string) {
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
-	fmt.Println("about to call timeout 2")
 	// Create a timeout to limit the waiting time
 	ctx, cancel = context.WithTimeout(ctx, 100*time.Second)
 	defer cancel()
@@ -151,36 +149,46 @@ func getChessGames(username string) {
 		log.Fatal(err)
 	}
 
-	// TODO: UNCOMMENT WHEN DONE READING FROM MONGO 
+	// TODO: UNCOMMENT WHEN DONE READING FROM MONGO
 	matchHtml := connectToMongoDb(htmlContent)
 	urlList = getLinks(username, matchHtml)
 
+	cancel()
+
 	matchList := []MoveSet{}
+	// var parsingWaitGroup sync.WaitGroup
+	// parsingWaitGroup.Add(5)
+
+	// parsingLimiter := rate.NewLimiter(rate.Every(time.Second/5), 5)
 	for i := 0; i < 5; i++ {
 		// go func(i int) {
 		// 	defer parsingWaitGroup.Done()
-		// 	if err := limiter.Wait(context.Background()); err != nil {
+		// 	if err := parsingLimiter.Wait(context.Background()); err != nil {
+		// 		fmt.Println("yur")
 		// 		fmt.Println(err)
 		// 	}
 		// 	parseChessMatch(urlList[i], i, &matchList)
-		// } (i)
+		// }(i)
 		parseChessMatch(urlList[i], i, &matchList)
 	}
+
+	// parsingWaitGroup.Wait()
 
 	var wg sync.WaitGroup
 	limiter := rate.NewLimiter(rate.Every(time.Second/5), 5)
 
 	wg.Add(len(matchList))
 
-	for i:= 0; i < len(matchList); i++ {
-		fmt.Println(matchList[i])
+	for i := 0; i < len(matchList); i++ {
+		// fmt.Println(matchList[i])
 		go func(i int) {
 			defer wg.Done()
 			if err := limiter.Wait(context.Background()); err != nil {
+				fmt.Println("returning at open api")
 				fmt.Println(err)
 			}
 			getChessBlurb(matchList[i])
-		} (i)
+		}(i)
 	}
 
 	wg.Wait()
@@ -209,8 +217,6 @@ func getLinks(username string, htmlContent string) []string {
 		urlArray = append(urlArray, key)
 	}
 
-	fmt.Println("done getting links")
-
 	return urlArray
 }
 
@@ -220,13 +226,12 @@ func parseChessMatch(url string, index int, matchList *[]MoveSet) {
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
-	fmt.Println("about to call timeout 1")
 	// Create a timeout to limit the waiting time
 	ctx, cancel = context.WithTimeout(ctx, 20*time.Second)
 	defer cancel()
-	fmt.Println("done timeout 1")
+
 	err := chromedp.Run(ctx, chromedp.Navigate(url))
-	
+
 	if err != nil {
 		fmt.Println("cancelling")
 		log.Fatal(err)
@@ -277,7 +282,6 @@ func parseChessMatch(url string, index int, matchList *[]MoveSet) {
 		return
 	}
 
-
 	var whiteMoves []string
 	var blackMoves []string
 	// var document MoveSet
@@ -291,7 +295,6 @@ func parseChessMatch(url string, index int, matchList *[]MoveSet) {
 
 	gameData := MoveSet{WhiteMoves: whiteMoves, BlackMoves: blackMoves, PlayerColor: userColorAndOpponent[0], Opponent: userColorAndOpponent[1]}
 
-	fmt.Println(gameData)
 	*matchList = append(*matchList, gameData)
 
 	return
@@ -309,12 +312,9 @@ func getChessBlurb(currentMatch MoveSet) {
 		whiteMovesConcat += currentMatch.WhiteMoves[i] + " "
 	}
 
-	
 	for i := 0; i < len(currentMatch.BlackMoves); i++ {
 		blackMovesConcat += currentMatch.BlackMoves[i] + " "
 	}
-
-	fmt.Println("getting firstResponse")
 
 	client := openai.NewClient(os.Getenv("open_api_key"))
 	resp, err := client.CreateChatCompletion(
@@ -323,7 +323,7 @@ func getChessBlurb(currentMatch MoveSet) {
 			Model: openai.GPT3Dot5Turbo,
 			Messages: []openai.ChatCompletionMessage{
 				{
-					Role: openai.ChatMessageRoleUser,
+					Role:    openai.ChatMessageRoleUser,
 					Content: "I am going to give you two sets of chess moves followed by the color of the player. I want you to write a 15-20 word enthusiastic summary on the players game and if they won or lost. Both move sets are from the same game" + whiteMovesConcat + "\n" + blackMovesConcat + "\n" + currentMatch.PlayerColor,
 				},
 			},
@@ -332,11 +332,10 @@ func getChessBlurb(currentMatch MoveSet) {
 
 	if err != nil {
 		fmt.Printf("ChatCompletion error: %v\n", err)
-		return 
+		return
 	}
 
 	firstResponse = resp.Choices[0].Message.Content
-	fmt.Println("ANALYSIS\n")
 
 	resp, err = client.CreateChatCompletion(
 		context.Background(),
@@ -344,7 +343,7 @@ func getChessBlurb(currentMatch MoveSet) {
 			Model: openai.GPT3Dot5Turbo,
 			Messages: []openai.ChatCompletionMessage{
 				{
-					Role: openai.ChatMessageRoleUser,
+					Role:    openai.ChatMessageRoleUser,
 					Content: "I am going to give you 2 sets of chess moves from the same game and the current players piece color. I want you to analyze the set of moves by the player who's piece color is specified and determine 3 of their core weaknesses or areas of improvement. Provide feedback referring to specific moves and what move they should have done instead, and provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.)" + whiteMovesConcat + "\n" + blackMovesConcat + "\n" + currentMatch.PlayerColor,
 				},
 			},
@@ -353,7 +352,7 @@ func getChessBlurb(currentMatch MoveSet) {
 
 	if err != nil {
 		fmt.Println(err)
-		return 
+		return
 	}
 	// fmt.Println(resp.Choices[0].Message.Content)
 
@@ -363,7 +362,7 @@ func getChessBlurb(currentMatch MoveSet) {
 
 	// gptResponses = append(gptResponses, resp.Choices[0].Message.Content)
 
-	// write to mongo 
+	// write to mongo
 
 	mongoClient, err := mongo.NewClient(options.Client().ApplyURI(atlasUri))
 	if err != nil {
@@ -424,25 +423,25 @@ func searchChessPlayerColor(htmlContent string, username string) []string {
 		if aTag, err := s.Html(); err == nil {
 			j += 1
 			// fmt.Println(class)
-			if (j == 2) {
+			if j == 2 {
 				//bottom player, aka the given username
 
-				if (strings.Contains(aTag, "captured-pieces-b")) {
+				if strings.Contains(aTag, "captured-pieces-b") {
 					// white player
 					userColor = "white"
 					userColorAndOpponent = append(userColorAndOpponent, userColor)
-					
-					return 
-				} else if (strings.Contains(aTag, "captured-pieces-w")) {
+
+					return
+				} else if strings.Contains(aTag, "captured-pieces-w") {
 					// black player
 					userColor = "black"
 					userColorAndOpponent = append(userColorAndOpponent, userColor)
-					return 
+					return
 				}
 			}
 		}
 
-		return 
+		return
 	})
 
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
@@ -454,13 +453,13 @@ func searchChessPlayerColor(htmlContent string, username string) []string {
 
 			words := strings.Fields(aTag)
 
-			if(len(words) == 1) {
+			if len(words) == 1 {
 				userColorAndOpponent = append(userColorAndOpponent, words[0])
 				return
 			}
 		}
 
-		return 
+		return
 	})
 
 	return userColorAndOpponent
@@ -503,7 +502,7 @@ func connectToMongoDb(htmlContent string) string {
 
 	fmt.Printf("Inserted document with id %v\n", result.InsertedID)
 
-	// getting all elements from the collection 
+	// getting all elements from the collection
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
 		log.Fatal(err)
@@ -557,13 +556,13 @@ func readChessGamesFromMongo() {
 	var chessGames []bson.M
 	if err = cursor.All(ctx, &chessGames); err != nil {
 		log.Fatal(err)
-	}	
-	
+	}
+
 	var wg sync.WaitGroup
 
 	wg.Add(len(chessGames))
 
-	for i:= 0; i < len(chessGames); i++ {
+	for i := 0; i < len(chessGames); i++ {
 
 		go func(i int) {
 			defer wg.Done()
@@ -572,13 +571,13 @@ func readChessGamesFromMongo() {
 				fmt.Println("Error:", err)
 				return
 			}
-	
+
 			var content MoveSet
-	
+
 			err = bson.Unmarshal(data, &content)
-		
+
 			callGpt(content)
-		} (i)
+		}(i)
 	}
 
 	wg.Wait()
@@ -615,11 +614,46 @@ func convertToString(value map[string]interface{}) string {
 	return unescapedResult
 }
 
-func main() {
-	cmd := exec.Command("sudo rm -rf", "/tmp/*")
-	cmd.Stdout = os.Stdout
-
-	cmd = exec.Command("ls", "/tmp/")
-	cmd.Stdout = os.Stdout
+func publicHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Getting chess games")
 	getChessGames("noopdogg07")
+	fmt.Fprintf(w, "Done")
+}
+
+func main() {
+	// Command to execute the Bash script
+	cmd := exec.Command("./cleanup.sh")
+
+	// Run the command and capture the output and error streams
+	output, err := cmd.CombinedOutput()
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Print the output
+	fmt.Println(string(output))
+
+	http.HandleFunc("/chessGameAnalysis", publicHandler) // set router
+	fmt.Println("Server started on port 8080")
+	err = http.ListenAndServe(":8080", nil) // set listen port
+
+	if err != nil {
+		fmt.Println("Error starting server")
+		return
+	}
+
+	// Command to execute the Bash script
+	cmd = exec.Command("./cleanup.sh")
+
+	// Run the command and capture the output and error streams
+	output, err = cmd.CombinedOutput()
+
+	// Check for errors
+	if err != nil {
+		fmt.Println("Error executing command:", err)
+		return
+	}
+
+	// getChessGames("noopdogg07")
 }
