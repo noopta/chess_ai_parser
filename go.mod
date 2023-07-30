@@ -16,6 +16,7 @@ require (
 	github.com/antchfx/xpath v1.2.4 // indirect
 	github.com/chromedp/cdproto v0.0.0-20230722233645-dbf72f61037f // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
+	github.com/go-rod/rod v0.114.1 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
@@ -35,6 +36,11 @@ require (
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
+	github.com/ysmood/fetchup v0.2.3 // indirect
+	github.com/ysmood/goob v0.4.0 // indirect
+	github.com/ysmood/got v0.34.1 // indirect
+	github.com/ysmood/gson v0.7.3 // indirect
+	github.com/ysmood/leakless v0.8.0 // indirect
 	golang.org/x/crypto v0.11.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.10.0 // indirect

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -15,17 +16,27 @@ import (
 	"sync"
 	"time"
 
-	"github.com/golang/gddo/httputil/header"
-	"golang.org/x/time/rate"
+	// "github.com/golang/gddo/httputil/header"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/chromedp/chromedp"
+	"github.com/go-rod/rod"
 	openai "github.com/sashabaranov/go-openai"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"golang.org/x/time/rate"
 )
+
+type ChessApiStruct struct {
+	Games []Game `json:"games"`
+}
+
+type Game struct {
+	Url string `json:"url"`
+	Pgn string `json:"pgn"`
+}
 
 type FrontEndRequest struct {
 	Username string `json:"username"`
@@ -165,23 +176,12 @@ func getChessGames(username string) {
 	cancel()
 
 	matchList := []MoveSet{}
-	// var parsingWaitGroup sync.WaitGroup
-	// parsingWaitGroup.Add(5)
 
-	// parsingLimiter := rate.NewLimiter(rate.Every(time.Second/5), 5)
 	for i := 0; i < 5; i++ {
-		// go func(i int) {
-		// 	defer parsingWaitGroup.Done()
-		// 	if err := parsingLimiter.Wait(context.Background()); err != nil {
-		// 		fmt.Println("yur")
-		// 		fmt.Println(err)
-		// 	}
-		// 	parseChessMatch(urlList[i], i, &matchList)
-		// }(i)
 		parseChessMatch(urlList[i], i, &matchList)
 	}
 
-	// parsingWaitGroup.Wait()
+	fmt.Println("done parsing")
 
 	var wg sync.WaitGroup
 	limiter := rate.NewLimiter(rate.Every(time.Second/5), 5)
@@ -236,10 +236,12 @@ func parseChessMatch(url string, index int, matchList *[]MoveSet) {
 	defer cancel()
 
 	// Create a timeout to limit the waiting time
-	ctx, cancel = context.WithTimeout(ctx, 20*time.Second)
+	ctx, cancel = context.WithTimeout(ctx, 40*time.Second)
 	defer cancel()
 
 	err := chromedp.Run(ctx, chromedp.Navigate(url))
+
+	fmt.Println(url)
 
 	if err != nil {
 		fmt.Println("cancelling")
@@ -248,11 +250,13 @@ func parseChessMatch(url string, index int, matchList *[]MoveSet) {
 	// Wait for the page to load completely
 	// err = chromedp.Run(ctx, chromedp.WaitVisible(".move", chromedp.ByQueryAll))
 	err = chromedp.Run(ctx, chromedp.WaitVisible(".move", chromedp.ByQueryAll))
+
 	if err != nil {
 		fmt.Println("returning here")
 		log.Fatal(err)
 	}
 
+	fmt.Println("getting html")
 	// Get the HTML content of the page
 	var htmlContent string
 	err = chromedp.Run(ctx, chromedp.Evaluate(`document.documentElement.outerHTML`, &htmlContent))
@@ -260,6 +264,8 @@ func parseChessMatch(url string, index int, matchList *[]MoveSet) {
 		fmt.Println("cancelling 2")
 		log.Fatal(err)
 	}
+
+	fmt.Println("done getting html")
 
 	if err != nil {
 		fmt.Println("An error occurred while reading the file")
@@ -306,6 +312,8 @@ func parseChessMatch(url string, index int, matchList *[]MoveSet) {
 
 	*matchList = append(*matchList, gameData)
 
+	cancel()
+
 	return
 }
 
@@ -321,7 +329,7 @@ func getChessBlurb(currentMatch MoveSet) {
 		whiteMovesConcat += currentMatch.WhiteMoves[i] + " "
 	}
 
-	for i := 0; i < len(currentMatch.BlackMoves); i++ {
+	for i := 0; i < len(currentMatch.BlackMoves[i]); i++ {
 		blackMovesConcat += currentMatch.BlackMoves[i] + " "
 	}
 
@@ -363,15 +371,8 @@ func getChessBlurb(currentMatch MoveSet) {
 		fmt.Println(err)
 		return
 	}
-	// fmt.Println(resp.Choices[0].Message.Content)
-
-	// fmt.Println("*******")
 
 	secondResponse = resp.Choices[0].Message.Content
-
-	// gptResponses = append(gptResponses, resp.Choices[0].Message.Content)
-
-	// write to mongo
 
 	mongoClient, err := mongo.NewClient(options.Client().ApplyURI(atlasUri))
 	if err != nil {
@@ -624,51 +625,73 @@ func convertToString(value map[string]interface{}) string {
 }
 
 func publicHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.Header)
+	// fmt.Println(r.Header)
 
-	if r.Header.Get("Content-Type") != "" {
-		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
-		if value != "application/json" {
-			msg := "Content-Type header is not application/json"
-			http.Error(w, msg, http.StatusUnsupportedMediaType)
+	// if r.Header.Get("Content-Type") != "" {
+	// 	value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
+	// 	if value != "application/json" {
+	// 		msg := "Content-Type header is not application/json"
+	// 		http.Error(w, msg, http.StatusUnsupportedMediaType)
+	// 		return
+	// 	}
+	// }
+
+	// // Use http.MaxBytesReader to enforce a maximum read of 1MB from the
+	// // response body. A request body larger than that will now result in
+	// // Decode() returning a "http: request body too large" error.
+	// r.Body = http.MaxBytesReader(w, r.Body, 1048576)
+
+	// // Setup the decoder and call the DisallowUnknownFields() method on it.
+	// // This will cause Decode() to return a "json: unknown field ..." error
+	// // if it encounters any extra unexpected fields in the JSON. Strictly
+	// // speaking, it returns an error for "keys which do not match any
+	// // non-ignored, exported fields in the destination".
+	// dec := json.NewDecoder(r.Body)
+	// dec.DisallowUnknownFields()
+
+	// var frontEndRequest FrontEndRequest
+
+	// err := dec.Decode(&frontEndRequest)
+
+	// if err != nil {
+	// 	handleDecodingError(err, w)
+	// }
+
+	// // Call decode again, using a pointer to an empty anonymous struct as
+	// // the destination. If the request body only contained a single JSON
+	// // object this will return an io.EOF error. So if we get anything else,
+	// // we know that there is additional data in the request body.
+	// err = dec.Decode(&struct{}{})
+
+	// if !errors.Is(err, io.EOF) {
+	// 	msg := "Request body must only contain a single JSON object"
+	// 	http.Error(w, msg, http.StatusBadRequest)
+	// 	return
+	// }
+
+	// fmt.Println(frontEndRequest)
+
+	fmt.Println("yo")
+	if r.Method == "POST" {
+		fmt.Println("yo")
+		// Parse the request body
+		decoder := json.NewDecoder(r.Body)
+		var data map[string]string
+		err := decoder.Decode(&data)
+		if err != nil {
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
 			return
 		}
+
+		// Access the data received in the request body
+		username := data["username"]
+		fmt.Println("Received username:", username)
+
+		// Do further processing with the received data
+		// ...
+	} else {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
-
-	// Use http.MaxBytesReader to enforce a maximum read of 1MB from the
-	// response body. A request body larger than that will now result in
-	// Decode() returning a "http: request body too large" error.
-	r.Body = http.MaxBytesReader(w, r.Body, 1048576)
-
-	// Setup the decoder and call the DisallowUnknownFields() method on it.
-	// This will cause Decode() to return a "json: unknown field ..." error
-	// if it encounters any extra unexpected fields in the JSON. Strictly
-	// speaking, it returns an error for "keys which do not match any
-	// non-ignored, exported fields in the destination".
-	dec := json.NewDecoder(r.Body)
-	dec.DisallowUnknownFields()
-
-	var frontEndRequest FrontEndRequest
-
-	err := dec.Decode(&frontEndRequest)
-
-	if err != nil {
-		handleDecodingError(err, w)
-	}
-
-	// Call decode again, using a pointer to an empty anonymous struct as
-	// the destination. If the request body only contained a single JSON
-	// object this will return an io.EOF error. So if we get anything else,
-	// we know that there is additional data in the request body.
-	err = dec.Decode(&struct{}{})
-
-	if !errors.Is(err, io.EOF) {
-		msg := "Request body must only contain a single JSON object"
-		http.Error(w, msg, http.StatusBadRequest)
-		return
-	}
-
-	fmt.Println(frontEndRequest)
 
 	fmt.Fprintf(w, "Getting chess games")
 	getChessGames("noopdogg07")
@@ -737,6 +760,318 @@ func handleDecodingError(err error, w http.ResponseWriter) {
 	}
 }
 
+func connectToScrapingBee() {
+	// API KEY = M977YHXCMPJJ569DSB0B8KSKL9NRU2O2327MIDT55785T8LS9TJGDW4GFMCMOZNRVN3GPSXF0Y6DGC32
+	// https://app.scrapingbee.com/api/v1/?api_key=M977YHXCMPJJ569DSB0B8KSKL9NRU2O2327MIDT55785T8LS9TJGDW4GFMCMOZNRVN3GPSXF0Y6DGC32&url=https://www.chess.com/games/archive/noopdogg07
+	// apiKey := "M977YHXCMPJJ569DSB0B8KSKL9NRU2O2327MIDT55785T8LS9TJGDW4GFMCMOZNRVN3GPSXF0Y6DGC32"
+	// url := "https://www.chess.com/game/live/83358897615?username=noopdogg07"
+
+	// Create client
+	client := &http.Client{}
+
+	// Create request
+	req, err := http.NewRequest("GET", "https://app.scrapingbee.com/api/v1/?api_key=M977YHXCMPJJ569DSB0B8KSKL9NRU2O2327MIDT55785T8LS9TJGDW4GFMCMOZNRVN3GPSXF0Y6DGC32&url=https://www.chess.com/game/live/83358897615?username=noopdogg07&wait_for=.toolbar-menu-area", nil)
+
+	parseFormErr := req.ParseForm()
+	if parseFormErr != nil {
+		fmt.Println(parseFormErr)
+	}
+
+	// Fetch Request
+	resp, err := client.Do(req)
+
+	if err != nil {
+		fmt.Println("Failure : ", err)
+	}
+
+	// Read Response Body
+	respBody, _ := ioutil.ReadAll(resp.Body)
+
+	// Display Results
+	fmt.Println("response Status : ", resp.Status)
+	fmt.Println("response Headers : ", resp.Header)
+	fmt.Println("response Body : ", string(respBody))
+	err = ioutil.WriteFile("scraped.html", respBody, 0644)
+}
+
+func rodFunc() {
+	// Create a new browser instance
+	browser := rod.New().MustConnect()
+
+	// Close the browser when the program exits
+	defer browser.MustClose()
+
+	// Navigate to the URL
+	page := browser.MustPage("https://www.chess.com/game/live/83358897615?username=noopdogg07")
+	page.MustWaitLoad().MustWaitIdle()
+
+	// Wait for an element with the CSS selector ".my-element" to load
+	element := page.MustElement(".move")
+
+	// Get the text content of the element
+	text := element.MustText()
+
+	// Print the extracted text
+	fmt.Println("Extracted text:", text)
+
+}
+
+func getGptResponse(opponentName string, playerColor string, whiteMoves []string, blackMoves []string) {
+	// var gptResponses []string
+	var firstResponse string
+	var secondResponse string
+	var whiteMovesConcat string
+	var blackMovesConcat string
+
+	for i := 0; i < len(whiteMoves); i++ {
+		whiteMovesConcat += whiteMoves[i] + " "
+	}
+
+	for i := 0; i < len(blackMoves); i++ {
+		blackMovesConcat += blackMoves[i] + " "
+	}
+
+	// var wg sync.WaitGroup
+
+	// wg.Add(len(stringSections))
+
+	// fmt.Println("calling Chat GPT")
+	// fmt.Println()
+	// for i := 0; i < len(stringSections); i++ {
+	// 	go func(i int) {
+	// 		defer wg.Done()
+	// 		callGpt(stringSections[i])
+	// 	}(i)
+	// }
+
+	// wg.Wait()
+
+	client := openai.NewClient(os.Getenv("open_api_key"))
+	resp, err := client.CreateChatCompletion(
+		context.Background(),
+		openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: "I am going to give you two sets of chess moves followed by the color of the player. I want you to write a 15-20 word enthusiastic summary on the players game and if they won or lost. Both move sets are from the same game" + whiteMovesConcat + "\n" + blackMovesConcat + "\n" + playerColor,
+				},
+			},
+		},
+	)
+
+	if err != nil {
+		fmt.Printf("ChatCompletion error: %v\n", err)
+		return
+	}
+
+	firstResponse = resp.Choices[0].Message.Content
+
+	resp, err = client.CreateChatCompletion(
+		context.Background(),
+		openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: "I am going to give you 2 sets of chess moves from the same game and the current players piece color. I want you to analyze the set of moves by the player who's piece color is specified and determine 3 of their core weaknesses or areas of improvement. Provide feedback referring to specific moves and what move they should have done instead, and provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.)" + whiteMovesConcat + "\n" + blackMovesConcat + "\n" + playerColor,
+				},
+			},
+		},
+	)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	secondResponse = resp.Choices[0].Message.Content
+
+	mongoClient, err := mongo.NewClient(options.Client().ApplyURI(atlasUri))
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	err = mongoClient.Connect(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer mongoClient.Disconnect(ctx)
+
+	err = mongoClient.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// type MoveSet struct {
+	// 	WhiteMoves  []string `bson:"whiteMoves"`
+	// 	BlackMoves  []string `bson:"blackMoves"`
+	// 	PlayerColor string   `bson:"playerColor"`
+	// 	Opponent    string   `bson:"opponent"`
+	// 	MatchBlurb  string   `bson:"matchBlurb"`
+	// 	Analysis    string   `bson:"analysis"`
+	// }
+
+	var currentMatch MoveSet
+
+	currentMatch.WhiteMoves = whiteMoves
+	currentMatch.BlackMoves = blackMoves
+	currentMatch.PlayerColor = playerColor
+	currentMatch.MatchBlurb = firstResponse
+	currentMatch.Analysis = secondResponse
+	currentMatch.Opponent = opponentName
+
+	collection := mongoClient.Database("chess_match_database").Collection("individual_games")
+	result, err := collection.InsertOne(context.TODO(), currentMatch)
+	// result, err := collection.InsertOne(context.TODO(), document)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	} else {
+		fmt.Println(result.InsertedID)
+	}
+	return
+}
+
+func connectToChessApi(username string) {
+	var chessMatches ChessApiStruct
+
+	client := &http.Client{}
+
+	// Create request
+	req, err := http.NewRequest("GET", "https://api.chess.com/pub/player/noopdogg07/games/2023/07", nil)
+
+	parseFormErr := req.ParseForm()
+	if parseFormErr != nil {
+		fmt.Println(parseFormErr)
+	}
+
+	// Fetch Request
+	resp, err := client.Do(req)
+
+	if err != nil {
+		fmt.Println("Failure : ", err)
+	}
+
+	// Read Response Body
+	respBody, _ := ioutil.ReadAll(resp.Body)
+
+	// Display Results
+	// fmt.Println("response Status : ", resp.Status)
+	// fmt.Println("response Headers : ", resp.Header)
+	// fmt.Println("response Body : ", string(respBody))
+
+	json.Unmarshal(respBody, &chessMatches)
+	// err = ioutil.WriteFile("scraped.html", chessMatche, 0644)
+	// fmt.Println(chessMatches.Games[0].Pgn)
+
+	// k := 0
+	// go threw each game and get the moves
+
+	// for _, currentGame := range chessMatches.Games
+
+	// for i := 0; i < len(stringSections); i++ {
+	// 	go func(i int) {
+	// 		defer wg.Done()
+	// 		callGpt(stringSections[i])
+	// 	}(i)
+	// }
+
+	// wg.Wait()
+	var wg sync.WaitGroup
+	numGamesParsed := 0
+
+	wg.Add(5)
+	for k := 0; k < 5; k++ {
+		fmt.Println(k)
+		go func(k int) {
+			splitStrings := strings.Split(chessMatches.Games[k].Pgn, "\n")
+			isWhite := true
+
+			// fmt.Println(currentGame)
+
+			var whiteMoves []string
+			var blackMoves []string
+			var playerColor string
+			var opponentName string
+
+			for _, v := range splitStrings {
+				if len(v) >= 6 && strings.Contains(v, username) {
+					if v[0:6] == "[White" {
+						playerColor = "White"
+					} else if v[0:6] == "[Black" {
+						playerColor = "Black"
+					}
+					// fmt.Println(username + " color = " + playerColor)
+				} else if len(v) >= 6 && !strings.Contains(v, username) {
+					if v[0:7] == "[White " {
+						opponentName = v[8 : len(v)-2]
+					} else if v[0:7] == "[Black " {
+						opponentName = v[8 : len(v)-2]
+					}
+				}
+
+				if len(v) >= 1 && v[0:1] == "[" {
+					continue
+				} else {
+					moves := strings.Split(splitStrings[len(splitStrings)-2], " ")
+
+					for _, m := range moves {
+						// fmt.Println(m)
+						if !strings.Contains(m, "{") && !strings.Contains(m, ".") && !strings.Contains(m, "}") {
+							// fmt.Println(m)
+							if isWhite {
+								whiteMoves = append(whiteMoves, m)
+								isWhite = false
+							} else {
+								blackMoves = append(blackMoves, m)
+								isWhite = true
+							}
+						}
+					}
+
+					isWhite = true
+					// get response
+				}
+			}
+			getGptResponse(opponentName, playerColor, whiteMoves, blackMoves)
+		}(k)
+
+		fmt.Println("done")
+		numGamesParsed++
+	}
+
+	fmt.Println("done2")
+	if numGamesParsed == 5 {
+		wg.Done()
+	}
+
+	wg.Wait()
+
+	// fmt.Println("White Moves:")
+	// for _, m := range whiteMoves {
+	// 	fmt.Println(m)
+	// }
+
+	// fmt.Println("*********")
+	// fmt.Println("Black Moves:")
+	// for _, m := range blackMoves {
+	// 	fmt.Println(m)
+	// }
+
+	fmt.Println("done3")
+	return
+}
+
 func main() {
 	// Command to execute the Bash script
 	cmd := exec.Command("./cleanup.sh")
@@ -751,26 +1086,27 @@ func main() {
 	// Print the output
 	fmt.Println(string(output))
 
-	http.HandleFunc("/chessGameAnalysis", publicHandler) // set router
-	fmt.Println("Server started on port 8080")
-	err = http.ListenAndServe(":8080", nil) // set listen port
+	// http.HandleFunc("/chessGameAnalysis", publicHandler) // set router
+	// fmt.Println("Server started on port 8080")
+	// err = http.ListenAndServe(":8080", nil) // set listen port
 
-	if err != nil {
-		fmt.Println("Error starting server")
-		return
-	}
+	// if err != nil {
+	// 	fmt.Println("Error starting server")
+	// 	return
+	// }
 
-	// Command to execute the Bash script
-	cmd = exec.Command("./cleanup.sh")
+	// // Command to execute the Bash script
+	// cmd = exec.Command("./cleanup.sh")
 
-	// Run the command and capture the output and error streams
-	output, err = cmd.CombinedOutput()
+	// // Run the command and capture the output and error streams
+	// output, err = cmd.CombinedOutput()
 
-	// Check for errors
-	if err != nil {
-		fmt.Println("Error executing command:", err)
-		return
-	}
+	// // Check for errors
+	// if err != nil {
+	// 	fmt.Println("Error executing command:", err)
+	// 	return
+	// }
 
+	connectToChessApi("noopdogg07")
 	// getChessGames("noopdogg07")
 }
