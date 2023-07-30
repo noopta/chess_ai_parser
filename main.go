@@ -16,6 +16,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/golang/gddo/httputil/header"
+	"github.com/rs/cors"
+
 	// "github.com/golang/gddo/httputil/header"
 
 	"github.com/PuerkitoBio/goquery"
@@ -627,75 +630,35 @@ func convertToString(value map[string]interface{}) string {
 func publicHandler(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println(r.Header)
 
-	// if r.Header.Get("Content-Type") != "" {
-	// 	value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
-	// 	if value != "application/json" {
-	// 		msg := "Content-Type header is not application/json"
-	// 		http.Error(w, msg, http.StatusUnsupportedMediaType)
-	// 		return
-	// 	}
-	// }
-
-	// // Use http.MaxBytesReader to enforce a maximum read of 1MB from the
-	// // response body. A request body larger than that will now result in
-	// // Decode() returning a "http: request body too large" error.
-	// r.Body = http.MaxBytesReader(w, r.Body, 1048576)
-
-	// // Setup the decoder and call the DisallowUnknownFields() method on it.
-	// // This will cause Decode() to return a "json: unknown field ..." error
-	// // if it encounters any extra unexpected fields in the JSON. Strictly
-	// // speaking, it returns an error for "keys which do not match any
-	// // non-ignored, exported fields in the destination".
-	// dec := json.NewDecoder(r.Body)
-	// dec.DisallowUnknownFields()
-
-	// var frontEndRequest FrontEndRequest
-
-	// err := dec.Decode(&frontEndRequest)
-
-	// if err != nil {
-	// 	handleDecodingError(err, w)
-	// }
-
-	// // Call decode again, using a pointer to an empty anonymous struct as
-	// // the destination. If the request body only contained a single JSON
-	// // object this will return an io.EOF error. So if we get anything else,
-	// // we know that there is additional data in the request body.
-	// err = dec.Decode(&struct{}{})
-
-	// if !errors.Is(err, io.EOF) {
-	// 	msg := "Request body must only contain a single JSON object"
-	// 	http.Error(w, msg, http.StatusBadRequest)
-	// 	return
-	// }
-
-	// fmt.Println(frontEndRequest)
-
-	fmt.Println("yo")
-	if r.Method == "POST" {
-		fmt.Println("yo")
-		// Parse the request body
-		decoder := json.NewDecoder(r.Body)
-		var data map[string]string
-		err := decoder.Decode(&data)
-		if err != nil {
-			http.Error(w, "Invalid request body", http.StatusBadRequest)
+	if r.Header.Get("Content-Type") != "" {
+		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
+		if value != "application/json" {
+			msg := "Content-Type header is not application/json"
+			http.Error(w, msg, http.StatusUnsupportedMediaType)
 			return
 		}
-
-		// Access the data received in the request body
-		username := data["username"]
-		fmt.Println("Received username:", username)
-
-		// Do further processing with the received data
-		// ...
-	} else {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
 
-	fmt.Fprintf(w, "Getting chess games")
-	getChessGames("noopdogg07")
-	fmt.Fprintf(w, "Done")
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Failed to read request body", http.StatusInternalServerError)
+		return
+	}
+
+	// Print the request body as a byte slice
+	fmt.Println("Request Body (byte slice):", body)
+
+	// Print the request body as a string
+	fmt.Println("Request Body (string):", string(body))
+
+	// ... Process the data ...
+
+	// Send a response if required
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Request processed successfully"))
+
+	return
+	connectToChessApi("noopdogg07")
 }
 
 func handleDecodingError(err error, w http.ResponseWriter) {
@@ -965,28 +928,8 @@ func connectToChessApi(username string) {
 	// Read Response Body
 	respBody, _ := ioutil.ReadAll(resp.Body)
 
-	// Display Results
-	// fmt.Println("response Status : ", resp.Status)
-	// fmt.Println("response Headers : ", resp.Header)
-	// fmt.Println("response Body : ", string(respBody))
-
 	json.Unmarshal(respBody, &chessMatches)
-	// err = ioutil.WriteFile("scraped.html", chessMatche, 0644)
-	// fmt.Println(chessMatches.Games[0].Pgn)
 
-	// k := 0
-	// go threw each game and get the moves
-
-	// for _, currentGame := range chessMatches.Games
-
-	// for i := 0; i < len(stringSections); i++ {
-	// 	go func(i int) {
-	// 		defer wg.Done()
-	// 		callGpt(stringSections[i])
-	// 	}(i)
-	// }
-
-	// wg.Wait()
 	var wg sync.WaitGroup
 	numGamesParsed := 0
 
@@ -1057,17 +1000,6 @@ func connectToChessApi(username string) {
 
 	wg.Wait()
 
-	// fmt.Println("White Moves:")
-	// for _, m := range whiteMoves {
-	// 	fmt.Println(m)
-	// }
-
-	// fmt.Println("*********")
-	// fmt.Println("Black Moves:")
-	// for _, m := range blackMoves {
-	// 	fmt.Println(m)
-	// }
-
 	fmt.Println("done3")
 	return
 }
@@ -1086,14 +1018,24 @@ func main() {
 	// Print the output
 	fmt.Println(string(output))
 
-	// http.HandleFunc("/chessGameAnalysis", publicHandler) // set router
-	// fmt.Println("Server started on port 8080")
-	// err = http.ListenAndServe(":8080", nil) // set listen port
+	// Your Golang server setup code here...
 
-	// if err != nil {
-	// 	fmt.Println("Error starting server")
-	// 	return
-	// }
+	// Create a new CORS handler with desired options
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:3000"}, // Replace with your React app's domain
+		AllowedMethods: []string{"POST", "OPTIONS"},       // Allow POST and OPTIONS requests
+	})
+
+	// corsHandler.Handler(http.HandlerFunc(yourHandlerFunc))
+
+	http.Handle("/chessGameAnalysis", corsHandler.Handler(http.HandlerFunc(publicHandler))) // set router
+	fmt.Println("Server started on port 8080")
+	err = http.ListenAndServe(":8080", nil) // set listen port
+
+	if err != nil {
+		fmt.Println("Error starting server")
+		return
+	}
 
 	// // Command to execute the Bash script
 	// cmd = exec.Command("./cleanup.sh")
@@ -1107,6 +1049,6 @@ func main() {
 	// 	return
 	// }
 
-	connectToChessApi("noopdogg07")
+	// connectToChessApi("noopdogg07")
 	// getChessGames("noopdogg07")
 }
