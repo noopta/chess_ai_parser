@@ -685,7 +685,7 @@ func publicHandler(w http.ResponseWriter, r *http.Request) {
 	// w.Write(jsonData)
 	// return
 	connectToChessApi(requestBody.Username)
-
+	deleteDocuments()
 	w.Header().Set("Content-Type", "text/plain") // You can set the Content-Type as needed
 
 	// Write the response message to the response writer
@@ -1063,8 +1063,8 @@ func main() {
 	// corsHandler.Handler(http.HandlerFunc(yourHandlerFunc))
 
 	http.Handle("/chessGameAnalysis", corsHandler.Handler(http.HandlerFunc(publicHandler))) // set router
-	// fmt.Println("Server started on port 8080")
-	// err = http.ListenAndServe(":8080", nil) // set listen port
+	fmt.Println("Server started on port 8080")
+	err = http.ListenAndServe(":8080", nil) // set listen port
 
 	if err != nil {
 		fmt.Println("Error starting server")
@@ -1083,8 +1083,7 @@ func main() {
 	// 	return
 	// }
 
-	connectToChessApi("noopdogg07")
-	deleteDocuments()
+	// connectToChessApi("noopdogg07")
 	// getChessGames("noopdogg07")
 }
 
