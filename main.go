@@ -645,20 +645,54 @@ func publicHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var requestBody FrontEndRequest
+
 	// Print the request body as a byte slice
 	fmt.Println("Request Body (byte slice):", body)
 
 	// Print the request body as a string
 	fmt.Println("Request Body (string):", string(body))
 
+	// Unmarshal the JSON byte slice to a FrontEndRequest struct
+	err = json.Unmarshal(body, &requestBody)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	// ... Process the data ...
 
 	// Send a response if required
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Request processed successfully"))
+	// w.WriteHeader(http.StatusOK)
+	// w.Write([]byte("Request processed successfully"))
 
+	// Send the requestBody as a response
+	// Encode the data into JSON format
+	// jsonData, err := json.Marshal(requestBody)
+	// if err != nil {
+	// 	http.Error(w, "Failed to encode JSON response", http.StatusInternalServerError)
+	// 	return
+	// }
+
+	// json.NewEncoder(w).Encode(requestBody)
+
+	// Set the appropriate headers for a JSON response
+	// w.Header().Set("Content-Type", "application/json")
+	// w.WriteHeader(http.StatusOK)
+
+	// // Write the JSON-encoded data to the response writer
+	// w.Write(jsonData)
+	// return
+	connectToChessApi(requestBody.Username)
+
+	w.Header().Set("Content-Type", "text/plain") // You can set the Content-Type as needed
+
+	// Write the response message to the response writer
+	// responseMessage := "Request processed successfully"
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("200"))
 	return
-	connectToChessApi("noopdogg07")
 }
 
 func handleDecodingError(err error, w http.ResponseWriter) {
@@ -930,10 +964,11 @@ func connectToChessApi(username string) {
 
 	json.Unmarshal(respBody, &chessMatches)
 
+	// Channel to signal goroutine completion
 	var wg sync.WaitGroup
-	numGamesParsed := 0
 
 	wg.Add(5)
+	done := make(chan struct{})
 	for k := 0; k < 5; k++ {
 		fmt.Println(k)
 		go func(k int) {
@@ -986,19 +1021,18 @@ func connectToChessApi(username string) {
 					// get response
 				}
 			}
-			getGptResponse(opponentName, playerColor, whiteMoves, blackMoves)
-		}(k)
 
-		fmt.Println("done")
-		numGamesParsed++
+			getGptResponse(opponentName, playerColor, whiteMoves, blackMoves)
+			done <- struct{}{}
+		}(k)
+	}
+	// Wait for all goroutines to complete
+	for k := 0; k < 5; k++ {
+		<-done
 	}
 
 	fmt.Println("done2")
-	if numGamesParsed == 5 {
-		wg.Done()
-	}
-
-	wg.Wait()
+	// wg.Wait()
 
 	fmt.Println("done3")
 	return
@@ -1029,8 +1063,8 @@ func main() {
 	// corsHandler.Handler(http.HandlerFunc(yourHandlerFunc))
 
 	http.Handle("/chessGameAnalysis", corsHandler.Handler(http.HandlerFunc(publicHandler))) // set router
-	fmt.Println("Server started on port 8080")
-	err = http.ListenAndServe(":8080", nil) // set listen port
+	// fmt.Println("Server started on port 8080")
+	// err = http.ListenAndServe(":8080", nil) // set listen port
 
 	if err != nil {
 		fmt.Println("Error starting server")
@@ -1049,6 +1083,30 @@ func main() {
 	// 	return
 	// }
 
-	// connectToChessApi("noopdogg07")
+	connectToChessApi("noopdogg07")
+	deleteDocuments()
 	// getChessGames("noopdogg07")
+}
+
+func deleteDocuments() {
+	// Set up MongoDB client
+	clientOptions := options.Client().ApplyURI(os.Getenv("atlas_uri"))
+	client, err := mongo.Connect(context.Background(), clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Set up MongoDB collection
+	collection := client.Database("chess_match_database").Collection("individual_games")
+
+	// Create a filter to match all documents (empty filter to match all)
+	filter := bson.D{}
+
+	// Delete all documents that match the filter
+	deleteResult, err := collection.DeleteMany(context.Background(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Deleted %d documents\n", deleteResult.DeletedCount)
 }
