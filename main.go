@@ -661,22 +661,38 @@ func publicHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var mongoDBGames []MoveSet
+
 	if r.Method == "POST" {
 		// connectToChessApi(requestBody.Username)
-		getMongoDbGames()
+		mongoDBGames = getMongoDbGames()
 	}
 
 	// deleteDocuments()
-	w.Header().Set("Content-Type", "text/plain") // You can set the Content-Type as needed
+	// w.Header().Set("Content-Type", "json") // You can set the Content-Type as needed
+	w.Header().Set("Content-Type", "json") // You can set the Content-Type as needed
 
 	// Write the response message to the response writer
 	// responseMessage := "Request processed successfully"
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("200"))
+	jsonData, err := json.Marshal(mongoDBGames)
+
+	if err != nil {
+		fmt.Println("Error marshaling to JSON:", err)
+		return
+	}
+	// convert mongoDBGames to json and store in a variable called jsonData
+
+	// write the json to the response writer
+	w.Write(jsonData)
+	// w.Write([]byte("200"))
+
+	// w.Write([]byte("200"))
 	return
 }
 
-func getMongoDbGames() {
+func getMongoDbGames() []MoveSet {
+	var allMongoGames []MoveSet
 	// Set up MongoDB client
 	clientOptions := options.Client().ApplyURI(os.Getenv("atlas_uri"))
 	client, err := mongo.Connect(context.Background(), clientOptions)
@@ -709,21 +725,26 @@ func getMongoDbGames() {
 
 		// moveSet is the struct that will be used to store the data from the database
 		var moveSet MoveSet
-		// we want to convert the result to a string and then unmarshal it into the moveSet struct
-		err = bson.UnmarshalExtJSON([]byte(convertToString(result)), true, &moveSet)
+
+		// Convert the bson.M to MoveSet
+		data, err := bson.Marshal(result)
+
+		// Unmarshal the bson.M to MoveSet
+		err = bson.Unmarshal(data, &moveSet)
 
 		if err != nil {
 			fmt.Println("Error:", err)
-			return
+			return []MoveSet{}
 		}
 
-		fmt.Println(moveSet) // Process the document as needed
+		allMongoGames = append(allMongoGames, moveSet)
 	}
 
 	if err := cursor.Err(); err != nil {
 		log.Fatal(err)
 	}
 
+	return allMongoGames
 }
 
 func handleDecodingError(err error, w http.ResponseWriter) {
