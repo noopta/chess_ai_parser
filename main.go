@@ -661,31 +661,12 @@ func publicHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// ... Process the data ...
+	if r.Method == "POST" {
+		// connectToChessApi(requestBody.Username)
+		getMongoDbGames()
+	}
 
-	// Send a response if required
-	// w.WriteHeader(http.StatusOK)
-	// w.Write([]byte("Request processed successfully"))
-
-	// Send the requestBody as a response
-	// Encode the data into JSON format
-	// jsonData, err := json.Marshal(requestBody)
-	// if err != nil {
-	// 	http.Error(w, "Failed to encode JSON response", http.StatusInternalServerError)
-	// 	return
-	// }
-
-	// json.NewEncoder(w).Encode(requestBody)
-
-	// Set the appropriate headers for a JSON response
-	// w.Header().Set("Content-Type", "application/json")
-	// w.WriteHeader(http.StatusOK)
-
-	// // Write the JSON-encoded data to the response writer
-	// w.Write(jsonData)
-	// return
-	connectToChessApi(requestBody.Username)
-	deleteDocuments()
+	// deleteDocuments()
 	w.Header().Set("Content-Type", "text/plain") // You can set the Content-Type as needed
 
 	// Write the response message to the response writer
@@ -693,6 +674,56 @@ func publicHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("200"))
 	return
+}
+
+func getMongoDbGames() {
+	// Set up MongoDB client
+	clientOptions := options.Client().ApplyURI(os.Getenv("atlas_uri"))
+	client, err := mongo.Connect(context.Background(), clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Check the connection
+	err = client.Ping(context.Background(), nil)
+	if err != nil {
+		log.Fatal("Could not connect to the database:", err)
+	}
+	fmt.Println("Connected to MongoDB!")
+
+	// Set up MongoDB collection
+	collection := client.Database("chess_match_database").Collection("individual_games")
+
+	// Find all documents
+	cursor, err := collection.Find(context.Background(), bson.D{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer cursor.Close(context.Background())
+
+	// Iterate through the cursor and process each document
+	for cursor.Next(context.Background()) {
+		var result bson.M
+		if err := cursor.Decode(&result); err != nil {
+			log.Fatal(err)
+		}
+
+		// moveSet is the struct that will be used to store the data from the database
+		var moveSet MoveSet
+		// we want to convert the result to a string and then unmarshal it into the moveSet struct
+		err = bson.UnmarshalExtJSON([]byte(convertToString(result)), true, &moveSet)
+
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+
+		fmt.Println(moveSet) // Process the document as needed
+	}
+
+	if err := cursor.Err(); err != nil {
+		log.Fatal(err)
+	}
+
 }
 
 func handleDecodingError(err error, w http.ResponseWriter) {
@@ -813,7 +844,7 @@ func rodFunc() {
 
 }
 
-func getGptResponse(opponentName string, playerColor string, whiteMoves []string, blackMoves []string) {
+func getGptResponse(opponentName string, playerColor string, whiteMoves []string, blackMoves []string) string {
 	// var gptResponses []string
 	var firstResponse string
 	var secondResponse string
@@ -859,7 +890,7 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 
 	if err != nil {
 		fmt.Printf("ChatCompletion error: %v\n", err)
-		return
+		return ""
 	}
 
 	firstResponse = resp.Choices[0].Message.Content
@@ -879,7 +910,7 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 
 	if err != nil {
 		fmt.Println(err)
-		return
+		return ""
 	}
 
 	secondResponse = resp.Choices[0].Message.Content
@@ -888,6 +919,7 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 
 	if err != nil {
 		log.Fatal(err)
+		return ""
 	}
 
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
@@ -895,17 +927,19 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	err = mongoClient.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
+		return ""
 	}
 	defer mongoClient.Disconnect(ctx)
 
 	err = mongoClient.Ping(ctx, readpref.Primary())
 	if err != nil {
 		log.Fatal(err)
+		return ""
 	}
 
 	if err != nil {
 		fmt.Println(err)
-		return
+		return ""
 	}
 
 	// type MoveSet struct {
@@ -932,14 +966,14 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 
 	if err != nil {
 		fmt.Println(err)
-		return
+		return ""
 	} else {
 		fmt.Println(result.InsertedID)
 	}
-	return
+	return "200"
 }
 
-func connectToChessApi(username string) {
+func connectToChessApi(username string) string {
 	var chessMatches ChessApiStruct
 
 	client := &http.Client{}
@@ -948,8 +982,10 @@ func connectToChessApi(username string) {
 	req, err := http.NewRequest("GET", "https://api.chess.com/pub/player/noopdogg07/games/2023/07", nil)
 
 	parseFormErr := req.ParseForm()
+
 	if parseFormErr != nil {
 		fmt.Println(parseFormErr)
+		return ""
 	}
 
 	// Fetch Request
@@ -957,6 +993,7 @@ func connectToChessApi(username string) {
 
 	if err != nil {
 		fmt.Println("Failure : ", err)
+		return ""
 	}
 
 	// Read Response Body
@@ -1022,8 +1059,13 @@ func connectToChessApi(username string) {
 				}
 			}
 
-			getGptResponse(opponentName, playerColor, whiteMoves, blackMoves)
+			gptResp := getGptResponse(opponentName, playerColor, whiteMoves, blackMoves)
+
 			done <- struct{}{}
+
+			if gptResp != "200" {
+				return
+			}
 		}(k)
 	}
 	// Wait for all goroutines to complete
@@ -1035,7 +1077,7 @@ func connectToChessApi(username string) {
 	// wg.Wait()
 
 	fmt.Println("done3")
-	return
+	return "200"
 }
 
 func main() {
@@ -1085,6 +1127,7 @@ func main() {
 
 	// connectToChessApi("noopdogg07")
 	// getChessGames("noopdogg07")
+
 }
 
 func deleteDocuments() {

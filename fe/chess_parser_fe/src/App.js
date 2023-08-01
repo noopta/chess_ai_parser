@@ -48,6 +48,7 @@ const LandingForm = (showComponent, setShowComponent) => {
           <div>
             <button
               type="submit"
+              onClick={getGames}
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Analyze Games
@@ -66,6 +67,69 @@ const LandingForm = (showComponent, setShowComponent) => {
     </>
   )
 }
+
+function getData() {
+  // create a new XMLHttpRequest
+  var xhr = new XMLHttpRequest()
+
+  // get a callback when the server responds
+  xhr.addEventListener('load', () => {
+    // update the state of the component with the result here
+    console.log(xhr.responseText)
+  })
+  // open the request with the verb and the url
+  xhr.open('POST', 'http://18.223.168.24:8080/chessGameAnalysis')
+  // send the request
+  xhr.send(JSON.stringify({ example: 'data' }))
+}
+
+function getGames() {
+  console.log("get games")
+
+  // const requestOptions = {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({ username: 'noopdogg07' })
+  // };
+
+  // fetch('http://18.223.168.24:8080/chessGameAnalysis', requestOptions);
+
+  makePostRequest()
+}
+
+const makePostRequest = async () => {
+  const url = 'http://3.23.85.43:8080/chessGameAnalysis';
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Set the appropriate content-type
+      },
+      body: JSON.stringify({
+        /* Your request data here */
+        username: 'noopdogg07'
+      }), // Convert your request data to JSON
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok.');
+    }
+
+    const data = await response.text();
+    console.log(data)
+
+    if (data == "200") {
+      // get games from MongoDB
+      console.log("200")
+    }
+    // setResponseData(data); // Handle the response data as needed
+  } catch (error) {
+    console.error('Error:', error);
+    // Handle errors appropriately (e.g., show an error message to the user)
+  }
+};
+
 
 const Grid = () => {
   return (
