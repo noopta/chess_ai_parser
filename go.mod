@@ -52,6 +52,7 @@ require (
 require (
 	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/andybalholm/cascadia v1.3.2 // indirect
+	github.com/aws/aws-lambda-go v1.41.0
 	github.com/gocolly/colly v1.2.0 // indirect
 	github.com/headzoo/ut v0.0.0-20181013193318-a13b5a7a02ca // indirect
 	golang.org/x/net v0.12.0 // indirect

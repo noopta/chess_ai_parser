@@ -11,13 +11,11 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"os/exec"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/golang/gddo/httputil/header"
-	"github.com/rs/cors"
+	"github.com/aws/aws-lambda-go/lambda"
 
 	// "github.com/golang/gddo/httputil/header"
 
@@ -56,6 +54,13 @@ type MoveSet struct {
 	Opponent    string   `bson:"opponent"`
 	MatchBlurb  string   `bson:"matchBlurb"`
 	Analysis    string   `bson:"analysis"`
+}
+
+// APIGatewayProxyResponse represents the response to be returned by the Lambda function
+type APIGatewayProxyResponse struct {
+	StatusCode int               `json:"-"`
+	Headers    map[string]string `json:"headers"`
+	Body       string            `json:"body"`
 }
 
 var counter = struct {
@@ -627,68 +632,88 @@ func convertToString(value map[string]interface{}) string {
 	return unescapedResult
 }
 
-func publicHandler(w http.ResponseWriter, r *http.Request) {
-	// fmt.Println(r.Header)
+// func publicHandler(w http.ResponseWriter, r *http.Request) {\
+func publicHandler(ctx context.Context, name FrontEndRequest) (APIGatewayProxyResponse, error) {
+	fmt.Println("Pritning name")
+	fmt.Println(name.Username)
 
-	if r.Header.Get("Content-Type") != "" {
-		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
-		if value != "application/json" {
-			msg := "Content-Type header is not application/json"
-			http.Error(w, msg, http.StatusUnsupportedMediaType)
-			return
-		}
+	// Create the response body
+	responseBody := fmt.Sprintf("Hello %s!", name.Username)
+
+	// Create the response headers, including CORS headers
+	headers := map[string]string{
+		"Content-Type":                "application/json",
+		"Access-Control-Allow-Origin": "*", // Replace '*' with 'http://localhost:3000' or specific origins in production
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, "Failed to read request body", http.StatusInternalServerError)
-		return
+	// Create the APIGatewayProxyResponse
+	response := APIGatewayProxyResponse{
+		StatusCode: http.StatusOK,
+		Headers:    headers,
+		Body:       responseBody,
 	}
 
-	var requestBody FrontEndRequest
+	return response, nil
 
-	// Print the request body as a byte slice
-	fmt.Println("Request Body (byte slice):", body)
+	// if r.Header.Get("Content-Type") != "" {
+	// 	value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
+	// 	if value != "application/json" {
+	// 		msg := "Content-Type header is not application/json"
+	// 		http.Error(w, msg, http.StatusUnsupportedMediaType)
+	// 		return
+	// 	}
+	// }
 
-	// Print the request body as a string
-	fmt.Println("Request Body (string):", string(body))
+	// body, err := ioutil.ReadAll(r.Body)
+	// if err != nil {
+	// 	http.Error(w, "Failed to read request body", http.StatusInternalServerError)
+	// 	return
+	// }
 
-	// Unmarshal the JSON byte slice to a FrontEndRequest struct
-	err = json.Unmarshal(body, &requestBody)
+	// var requestBody FrontEndRequest
 
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	// // Print the request body as a byte slice
+	// fmt.Println("Request Body (byte slice):", body)
 
-	var mongoDBGames []MoveSet
+	// // Print the request body as a string
+	// fmt.Println("Request Body (string):", string(body))
 
-	if r.Method == "POST" {
-		// connectToChessApi(requestBody.Username)
-		mongoDBGames = getMongoDbGames()
-	}
+	// // Unmarshal the JSON byte slice to a FrontEndRequest struct
+	// err = json.Unmarshal(body, &requestBody)
+
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+
+	// var mongoDBGames []MoveSet
+
+	// if r.Method == "POST" {
+	// 	connectToChessApi(requestBody.Username)
+	// 	mongoDBGames = getMongoDbGames()
+	// }
 
 	// deleteDocuments()
 	// w.Header().Set("Content-Type", "json") // You can set the Content-Type as needed
-	w.Header().Set("Content-Type", "json") // You can set the Content-Type as needed
+	// w.Header().Set("Content-Type", "json") // You can set the Content-Type as needed
 
-	// Write the response message to the response writer
-	// responseMessage := "Request processed successfully"
-	w.WriteHeader(http.StatusOK)
-	jsonData, err := json.Marshal(mongoDBGames)
+	// // Write the response message to the response writer
+	// // responseMessage := "Request processed successfully"
+	// w.WriteHeader(http.StatusOK)
+	// jsonData, err := json.Marshal(mongoDBGames)
 
-	if err != nil {
-		fmt.Println("Error marshaling to JSON:", err)
-		return
-	}
-	// convert mongoDBGames to json and store in a variable called jsonData
+	// if err != nil {
+	// 	fmt.Println("Error marshaling to JSON:", err)
+	// 	return
+	// }
+	// // convert mongoDBGames to json and store in a variable called jsonData
 
-	// write the json to the response writer
-	w.Write(jsonData)
-	// w.Write([]byte("200"))
+	// // write the json to the response writer
+	// w.Write(jsonData)
+	// // w.Write([]byte("200"))
 
-	// w.Write([]byte("200"))
-	return
+	// // w.Write([]byte("200"))
+	// return
 }
 
 func getMongoDbGames() []MoveSet {
@@ -1103,36 +1128,36 @@ func connectToChessApi(username string) string {
 
 func main() {
 	// Command to execute the Bash script
-	cmd := exec.Command("./cleanup.sh")
+	// cmd := exec.Command("./cleanup.sh")
 
-	// Run the command and capture the output and error streams
-	output, err := cmd.CombinedOutput()
+	// // Run the command and capture the output and error streams
+	// output, err := cmd.CombinedOutput()
 
-	if err != nil {
-		fmt.Println(err)
-	}
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
 
-	// Print the output
-	fmt.Println(string(output))
+	// // Print the output
+	// fmt.Println(string(output))
 
 	// Your Golang server setup code here...
 
 	// Create a new CORS handler with desired options
-	corsHandler := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:3000"}, // Replace with your React app's domain
-		AllowedMethods: []string{"POST", "OPTIONS"},       // Allow POST and OPTIONS requests
-	})
+	// corsHandler := cors.New(cors.Options{
+	// 	AllowedOrigins: []string{"http://localhost:3000"}, // Replace with your React app's domain
+	// 	AllowedMethods: []string{"POST", "OPTIONS"},       // Allow POST and OPTIONS requests
+	// })
 
 	// corsHandler.Handler(http.HandlerFunc(yourHandlerFunc))
 
-	http.Handle("/chessGameAnalysis", corsHandler.Handler(http.HandlerFunc(publicHandler))) // set router
-	fmt.Println("Server started on port 8080")
-	err = http.ListenAndServe(":8080", nil) // set listen port
+	// http.Handle("/chessGameAnalysis", corsHandler.Handler(http.HandlerFunc(publicHandler))) // set router
+	// fmt.Println("Server started on port 8080")
+	// err = http.ListenAndServe(":8080", nil) // set listen port
 
-	if err != nil {
-		fmt.Println("Error starting server")
-		return
-	}
+	// if err != nil {
+	// 	fmt.Println("Error starting server")
+	// 	return
+	// }
 
 	// // Command to execute the Bash script
 	// cmd = exec.Command("./cleanup.sh")
@@ -1148,7 +1173,8 @@ func main() {
 
 	// connectToChessApi("noopdogg07")
 	// getChessGames("noopdogg07")
-
+	lambda.Start(publicHandler)
+	// connectToChessApi("noopdogg07")
 }
 
 func deleteDocuments() {
