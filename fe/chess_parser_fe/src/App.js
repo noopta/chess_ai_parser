@@ -1,14 +1,16 @@
 import logo from './logo.svg';
 import './App.css';
 // import './landingComponents/landingForm';
-import Reac, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+
+// Array of JSON objects
+var globalGames = [];
 
 function App() {
   return (
     HeroSection()
   );
 }
-
 
 const LandingForm = (showComponent, setShowComponent) => {
 
@@ -48,11 +50,21 @@ const LandingForm = (showComponent, setShowComponent) => {
           <div>
             <button
               type="submit"
-              onClick={getGames}
+              // onClick={GetGames}
+
+              // pass in the following function on click <GetGames showComponent={showComponent} setShowComponent={setShowComponent} />
+              // how do I pass in the showComponent state variable and the setShowComponent function as props?
+              // 
+              onClick={() => setShowComponent(false)}
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Analyze Games
             </button>
+
+            {/* // pass in the showComponent state variable and the setShowComponent function as props */}
+            <GetGames showComponent={showComponent} setShowComponent={setShowComponent} />
+            {/* {showComponent && <GetGames />} Render the GetGames component conditionally */}
+            {/* ... (remaining code) */}
           </div>
         </form >
 
@@ -68,67 +80,130 @@ const LandingForm = (showComponent, setShowComponent) => {
   )
 }
 
-function getData() {
-  // create a new XMLHttpRequest
-  var xhr = new XMLHttpRequest()
+function extractJSONFromBody(bodyString) {
+  // Remove backslashes from the body string
+  const unescapedBody = bodyString.replace(/\\/g, '');
 
-  // get a callback when the server responds
-  xhr.addEventListener('load', () => {
-    // update the state of the component with the result here
-    console.log(xhr.responseText)
-  })
-  // open the request with the verb and the url
-  xhr.open('POST', 'http://18.223.168.24:8080/chessGameAnalysis')
-  // send the request
-  xhr.send(JSON.stringify({ example: 'data' }))
-}
+  // Find the start and end indices of the actual JSON object
+  const startIndex = unescapedBody.indexOf('{');
+  const endIndex = unescapedBody.lastIndexOf('}') + 1;
 
-function getGames() {
-  console.log("get games")
+  // Extract the JSON body from the string
+  const jsonString = unescapedBody.slice(startIndex, endIndex);
 
-  // const requestOptions = {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ username: 'noopdogg07' })
-  // };
+  console.log(jsonString)
 
-  // fetch('http://18.223.168.24:8080/chessGameAnalysis', requestOptions);
-
-  makePostRequest()
-}
-
-const makePostRequest = async () => {
-  const url = 'http://3.23.85.43:8080/chessGameAnalysis';
-
+  // Parse the JSON string into a JavaScript object
   try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json', // Set the appropriate content-type
-      },
-      body: JSON.stringify({
-        /* Your request data here */
-        username: 'noopdogg07'
-      }), // Convert your request data to JSON
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok.');
-    }
-
-    const data = await response.text();
-    console.log(data)
-
-    if (data == "200") {
-      // get games from MongoDB
-      console.log("200")
-    }
-    // setResponseData(data); // Handle the response data as needed
+    const jsonObject = JSON.parse(jsonString);
+    return jsonObject;
   } catch (error) {
-    console.error('Error:', error);
-    // Handle errors appropriately (e.g., show an error message to the user)
+    console.error('Error parsing JSON:', error);
+    return null;
   }
+}
+
+
+function extractJSONFromBody2(bodyString) {
+  try {
+    const jsonObject = JSON.parse(bodyString);
+    return jsonObject;
+  } catch (error) {
+    console.error('Error parsing JSON:', error);
+    return null;
+  }
+}
+
+const MakePostRequest = ({ setIsLoading, setData }) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      const url = 'https://ol4gm9f3k0.execute-api.us-east-2.amazonaws.com/chess-parser-lambda'
+
+      try {
+        setIsLoading(true);
+
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json', // Set the appropriate content-type
+          },
+          body: JSON.stringify({
+            /* Your request data here */
+            username: 'noopdogg07'
+          }), // Convert your request data to JSON
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok.');
+        }
+
+        const responseData = await response.text();
+        setData(responseData);
+        // while awaiting response, the screen should show a loading spinner
+
+        var jsonBody = extractJSONFromBody(extractJSONFromBody2(responseData)['body'])
+
+        for (var i = 0; i < jsonBody.length; i++) {
+          globalGames.push(jsonBody[i])
+        }
+
+        console.log(globalGames)
+
+        if (responseData == "200") {
+          // get games from MongoDB
+          console.log("200")
+        }
+        // setResponseData(data); // Handle the response data as needed
+      } catch (error) {
+        console.error('Error:', error);
+        // Handle errors appropriately (e.g., show an error message to the user)
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  return globalGames.length > 0 ? 200 : 400;
 };
+
+
+const GetGames = (showComponent, setShowComponent) => {
+  console.log("get games")
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState(null);
+
+  var requestResponse = MakePostRequest({ setIsLoading, setData });
+
+  if (requestResponse == 200) { // if the request was successful
+    setShowComponent(true)
+  }
+
+  const Spinner = () => {
+    return (
+      <div role="status">
+        <svg aria-hidden="true" class="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+          <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+        </svg>
+        <span class="sr-only">Loading...</span>
+      </div>
+    )
+  }
+
+  // MakePostRequest()
+
+  // if (isLoading) return (
+  //   <Spinner />
+  // )
+
+  if (!data) return (
+    <span>Data not available</span>
+  )
+}
+
+
 
 
 const Grid = () => {
@@ -144,6 +219,8 @@ const Grid = () => {
     </div>
   );
 };
+
+
 
 function gameCard() {
   var whiteKnight = "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/chess_piece_knight_white.png"
@@ -201,38 +278,6 @@ const HeroSection = (props) => {
               <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
             </div>
           </nav>
-          {/* <!-- Mobile menu, show/hide based on menu open state. --> */}
-          {/* <div class="lg:hidden" role="dialog" aria-modal="true"> */}
-          {/* <!-- Background backdrop, show/hide based on slide-over state. --> */}
-          {/* <div class="fixed inset-0 z-50"></div>
-            <div class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-              <div class="flex items-center justify-between">
-                <a href="#" class="-m-1.5 p-1.5">
-                  <span class="sr-only">Your Company</span>
-                  <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="" />
-                </a>
-                <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
-                  <span class="sr-only">Close menu</span>
-                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <div class="mt-6 flow-root">
-                <div class="-my-6 divide-y divide-gray-500/10">
-                  <div class="space-y-2 py-6">
-                    <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Product</a>
-                    <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Features</a>
-                    <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Marketplace</a>
-                    <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Company</a>
-                  </div>
-                  <div class="py-6">
-                    <a href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log in</a>
-                  </div>
-                </div>
-              </div>
-            </div> */}
-          {/* </div> */}
         </header>
 
         <div class="relative isolate px-6 lg:px-8">
