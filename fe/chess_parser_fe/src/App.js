@@ -20,10 +20,12 @@ const LandingForm = (showComponent, setShowComponent) => {
     // For example, you can access form data using event.target and perform actions based on it
     console.log("yo")
 
-    setShowComponent(true)
+    // setShowComponent(true)
   }
 
   const [showModel, setShowModel] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState(null);
 
   const handleModelToggle = () => {
     setShowModel(!showModel);
@@ -50,19 +52,15 @@ const LandingForm = (showComponent, setShowComponent) => {
           <div>
             <button
               type="submit"
-              // onClick={GetGames}
-
-              // pass in the following function on click <GetGames showComponent={showComponent} setShowComponent={setShowComponent} />
-              // how do I pass in the showComponent state variable and the setShowComponent function as props?
-              // 
-              onClick={() => setShowComponent(false)}
+              onClick={() => GetGames(showComponent, setShowComponent, isLoading, setIsLoading, data, setData)}
+              // onClick={() => setShowModel(true)}
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Analyze Games
             </button>
 
             {/* // pass in the showComponent state variable and the setShowComponent function as props */}
-            <GetGames showComponent={showComponent} setShowComponent={setShowComponent} />
+            {/* <GetGames showComponent={showComponent} setShowComponent={setShowComponent} /> */}
             {/* {showComponent && <GetGames />} Render the GetGames component conditionally */}
             {/* ... (remaining code) */}
           </div>
@@ -91,14 +89,13 @@ function extractJSONFromBody(bodyString) {
   // Extract the JSON body from the string
   const jsonString = unescapedBody.slice(startIndex, endIndex);
 
-  console.log(jsonString)
-
   // Parse the JSON string into a JavaScript object
   try {
     const jsonObject = JSON.parse(jsonString);
     return jsonObject;
   } catch (error) {
     console.error('Error parsing JSON:', error);
+    console.log(jsonString)
     return null;
   }
 }
@@ -114,71 +111,110 @@ function extractJSONFromBody2(bodyString) {
   }
 }
 
-const MakePostRequest = ({ setIsLoading, setData }) => {
-  useEffect(() => {
-    const fetchData = async () => {
-      const url = 'https://ol4gm9f3k0.execute-api.us-east-2.amazonaws.com/chess-parser-lambda'
+const MakePostRequest = async ({ setIsLoading, setData }) => {
 
-      try {
-        setIsLoading(true);
+  // useEffect(() => {
+  // const fetchData = async () => {
+  console.log("fetching data")
+  // const url = 'https://ol4gm9f3k0.execute-api.us-east-2.amazonaws.com/chess-parser-lambda'
+  // const url = 'https://non68do8s4.execute-api.us-east-2.amazonaws.com/prod'
+  const url = 'https://4vz6fr5rinuhsspb6rh5alkige0jrcmo.lambda-url.us-east-2.on.aws/'
+  try {
+    console.log("here")
+    // setIsLoading(true);
+    console.log("before fetch")
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Set the appropriate content-type
+        // Set the appropriate content-type
+      },
+      body: JSON.stringify({
+        /* Your request data here */
+        'username': 'noopdogg07'
+      }), // Convert your request data to JSON
+    });
 
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json', // Set the appropriate content-type
-          },
-          body: JSON.stringify({
-            /* Your request data here */
-            username: 'noopdogg07'
-          }), // Convert your request data to JSON
-        });
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok.');
-        }
-
-        const responseData = await response.text();
-        setData(responseData);
-        // while awaiting response, the screen should show a loading spinner
-
-        var jsonBody = extractJSONFromBody(extractJSONFromBody2(responseData)['body'])
-
-        for (var i = 0; i < jsonBody.length; i++) {
-          globalGames.push(jsonBody[i])
-        }
-
-        console.log(globalGames)
-
-        if (responseData == "200") {
-          // get games from MongoDB
-          console.log("200")
-        }
-        // setResponseData(data); // Handle the response data as needed
-      } catch (error) {
-        console.error('Error:', error);
-        // Handle errors appropriately (e.g., show an error message to the user)
-      } finally {
-        setIsLoading(false);
-      }
+    if (!response.ok) {
+      throw new Error('Network response was not ok.');
     }
 
-    fetchData();
-  }, []);
+    console.log("here2")
+    const responseData = await response.text();
+    console.log("loggin response")
+    // console.log(responseData)
+    // setData(responseData);
+    // while awaiting response, the screen should show a loading spinner
+
+    // var jsonBody = extractJSONFromBody(extractJSONFromBody2(responseData))
+    var jsonBody = JSON.parse(responseData)
+    // var jsonBody = extractJSONFromBody2(responseData)
+    // var temp = extractJSONFromBody2(responseData)
+    for (var i = 0; i < jsonBody.length; i++) {
+
+      var cleanedWhiteMoves = jsonBody[i]['whiteMoves']
+      var cleanedBlackMoves = jsonBody[i]['blackMoves']
+      var cleanedOpponentName = jsonBody[i]['opponent']
+      var cleanedPlayerColor = jsonBody[i]['playerColor']
+      var cleanedMatchBlurb = jsonBody[i]['matchBlurb']
+      var cleanedAnalysis = jsonBody[i]['analysis']
+
+      var jsonObj = {
+        "WhiteMoves": cleanedWhiteMoves,
+        "BlackMoves": cleanedBlackMoves,
+        "Opponent": cleanedOpponentName,
+        "PlayerColor": cleanedPlayerColor,
+        "MatchBlurb": cleanedMatchBlurb,
+        "Analysis": cleanedAnalysis
+      }
+
+      // console.log(jsonBody[i])
+
+      globalGames.push(jsonObj)
+    }
+
+    if (responseData == "200") {
+      // get games from MongoDB
+      console.log("200")
+    }
+    // setResponseData(data); // Handle the response data as needed
+  } catch (error) {
+    console.error('Error:', error);
+    // Handle errors appropriately (e.g., show an error message to the user)
+  } finally {
+    setIsLoading(false);
+  }
+  // }
+  // fetchData();
+  console.log("after fetch")
+  // }, []);
 
   return globalGames.length > 0 ? 200 : 400;
 };
 
 
-const GetGames = (showComponent, setShowComponent) => {
+const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading, data, setData) => {
   console.log("get games")
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState(null);
 
-  var requestResponse = MakePostRequest({ setIsLoading, setData });
+  setIsLoading(true)
 
-  if (requestResponse == 200) { // if the request was successful
-    setShowComponent(true)
+  try {
+    var requestResponse = await MakePostRequest({ setIsLoading, setData })
+
+    console.log(globalGames[0])
+    // console.log(requestResponse)
+  } catch {
+    console.log("error")
+  } finally {
+    console.log("finally")
+    if (requestResponse == 200) {
+      setShowComponent(true)
+    }
   }
+
+  setIsLoading(false)
+
 
   const Spinner = () => {
     return (
@@ -192,11 +228,13 @@ const GetGames = (showComponent, setShowComponent) => {
     )
   }
 
+
+
   // MakePostRequest()
 
-  // if (isLoading) return (
-  //   <Spinner />
-  // )
+  if (isLoading) return (
+    <Spinner />
+  )
 
   if (!data) return (
     <span>Data not available</span>
@@ -204,36 +242,98 @@ const GetGames = (showComponent, setShowComponent) => {
 }
 
 
+const GenerateGrid = () => {
+  // Check if gameObjects is an object and not null
 
 
-const Grid = () => {
-  return (
-    <div className="grid grid-cols-3 gap-4">
-      {/* Replace the divs below with your content for each cell */}
-      <div className="p-4">{gameCard()}</div>
-      <div className="p-4">{gameCard()}</div>
-      <div className="p-4">{gameCard()}</div>
-      <div className="p-4">{gameCard()}</div>
-      <div className="p-4">{gameCard()}</div>
-      <div className="p-4">{gameCard()}</div>
-    </div>
-  );
-};
-
-
-
-function gameCard() {
+  const jsonArray = Object.values(globalGames)
   var whiteKnight = "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/chess_piece_knight_white.png"
   var blackKnight = "https://img.freepik.com/free-icon/strategy_318-302817.jpg?t=st=1689738547~exp=1689739147~hmac=40c7bf99944a8259d71ce85d01caed61863e4a7facc32d784cb8a2ce917271db"
+  var knightToUse = "";
+
+  // for (var i = 0; i < jsonArray.length; i++) {
+  //   console.log(jsonArray[i])
+  // }
+
+  return (
+    // <div className="grid grid-cols-3 gap-4">
+    //   {jsonArray.forEach((currentGame, index, jsonArray) => ( // Loop through each game object
+    //     console.log(currentGame)
+    //     // get currentGame and pass it into the component
+
+
+    //   ))}
+    // </div>
+
+    <div className="grid grid-cols-3 gap-4">
+      {jsonArray.map((currentGame, index, globalGames) => (
+        knightToUse = currentGame["PlayerColor"] == "White" ? whiteKnight : blackKnight,
+        <div key={index} className="max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
+          <div className="flex justify-center md:justify-end -mt-16">
+            <img className="w-20 h-20 object-cover rounded-full border-2 border-indigo-500" src={knightToUse} alt="Knight" />
+          </div>
+          <div>
+            <h2 className="text-gray-800 text-3xl font-semibold">{currentGame["Opponent"]}</h2>
+            <p className="mt-2 text-gray-600">{currentGame["MatchBlurb"]}!</p>
+          </div>
+          <div className="flex justify-end mt-4">
+            <a href="#" className="text-xl font-medium text-indigo-500">View Game</a>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  // return (
+  //   <>
+  //     <div class="max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
+  //       <div class="flex justify-center md:justify-end -mt-16">
+  //         <img class="w-20 h-20 object-cover rounded-full border-2 border-indigo-500" src={knightToUse} />
+  //       </div>
+  //       <div>
+  //         <h2 class="text-gray-800 text-3xl font-semibold">{gameObject["Opponent"]}</h2>
+  //         <p class="mt-2 text-gray-600">{gameObject["PlayerColor"]}!</p>
+  //       </div>
+  //       <div class="flex justify-end mt-4">
+  //         <a href="#" class="text-xl font-medium text-indigo-500">View Game</a>
+  //       </div>
+  //     </div>
+  //   </>
+  // )
+}
+
+// const Grid = () => {
+//   return (
+//     <div className="grid grid-cols-3 gap-4">
+//       {/* Replace the divs below with your content for each cell */}
+//       <div className="p-4">{gameCard()}</div>
+//       <div className="p-4">{gameCard()}</div>
+//       <div className="p-4">{gameCard()}</div>
+//       <div className="p-4">{gameCard()}</div>
+//       <div className="p-4">{gameCard()}</div>
+//       <div className="p-4">{gameCard()}</div>
+//     </div>
+//   );
+// };
+
+
+
+function GameCard(gameObject) {
+  var whiteKnight = "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/chess_piece_knight_white.png"
+  var blackKnight = "https://img.freepik.com/free-icon/strategy_318-302817.jpg?t=st=1689738547~exp=1689739147~hmac=40c7bf99944a8259d71ce85d01caed61863e4a7facc32d784cb8a2ce917271db"
+  var knightToUse = gameObject.PlayerColor == "White" ? whiteKnight : blackKnight
+  console.log("game card")
+  console.log(gameObject)
+  // console.log(gameObject["PlayerColor"])
   return (
     <>
       <div class="max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
         <div class="flex justify-center md:justify-end -mt-16">
-          <img class="w-20 h-20 object-cover rounded-full border-2 border-indigo-500" src={blackKnight} />
+          <img class="w-20 h-20 object-cover rounded-full border-2 border-indigo-500" src={knightToUse} />
         </div>
         <div>
-          <h2 class="text-gray-800 text-3xl font-semibold">noopdogg07</h2>
-          <p class="mt-2 text-gray-600">Seems like you played well here, but couldn't quite get the win!</p>
+          <h2 class="text-gray-800 text-3xl font-semibold">{gameObject["Opponent"]}</h2>
+          <p class="mt-2 text-gray-600">{gameObject["PlayerColor"]}!</p>
         </div>
         <div class="flex justify-end mt-4">
           <a href="#" class="text-xl font-medium text-indigo-500">View Game</a>
@@ -246,9 +346,9 @@ function gameCard() {
 const HeroSection = (props) => {
   const [showComponent, setShowComponent] = useState(false);
 
-  const handleButtonClick = () => {
-    setShowComponent(true);
-  };
+  // const handleButtonClick = () => {
+  //   setShowComponent(true);
+  // };
 
   return (
     <>
@@ -293,7 +393,7 @@ const HeroSection = (props) => {
         </div>
       </div>
 
-      {showComponent ? <Grid /> : null}
+      {showComponent ? <GenerateGrid /> : null}
     </>
   )
 }
