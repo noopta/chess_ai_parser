@@ -15,11 +15,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/aws/aws-lambda-go/lambda"
-
 	// "github.com/golang/gddo/httputil/header"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/chromedp/chromedp"
 	"github.com/go-rod/rod"
 	openai "github.com/sashabaranov/go-openai"
@@ -45,6 +45,17 @@ type FrontEndRequest struct {
 
 type ChessMatchHtml struct {
 	HtmlContent string
+}
+
+// MIGHT HAVE TO USE A NEW STRUCT WITH JSON INSTEAD OF BSON
+
+type MongoGame struct {
+	WhiteMoves  []string `json:"whiteMoves"`
+	BlackMoves  []string `json:"blackMoves"`
+	PlayerColor string   `json:"playerColor"`
+	Opponent    string   `json:"opponent"`
+	MatchBlurb  string   `json:"matchBlurb"`
+	Analysis    string   `json:"analysis"`
 }
 
 type MoveSet struct {
@@ -125,7 +136,7 @@ func callGpt(currentGame MoveSet) {
 	_, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT3Dot5Turbo,
+			Model: openai.GPT4,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
@@ -345,7 +356,7 @@ func getChessBlurb(currentMatch MoveSet) {
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT3Dot5Turbo,
+			Model: openai.GPT4,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
@@ -365,7 +376,7 @@ func getChessBlurb(currentMatch MoveSet) {
 	resp, err = client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT3Dot5Turbo,
+			Model: openai.GPT4,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
@@ -632,92 +643,94 @@ func convertToString(value map[string]interface{}) string {
 	return unescapedResult
 }
 
+// func HandleRequest(ctx context.Context, name MyEvent) (events.APIGatewayProxyResponse, error) {
+// 	fmt.Sprintf("Hello %s!", name.Name)
+
+// 	responseBody := map[string]interface{}{
+// 		"message": "Hello!",
+// 	}
+
+// 	responseJSON, err := json.Marshal(responseBody)
+// 	if err != nil {
+// 		return events.APIGatewayProxyResponse{}, err
+// 	}
+
+// 	return events.APIGatewayProxyResponse{
+// 		StatusCode: http.StatusOK,
+// 		Headers: map[string]string{
+// 			"Content-Type": "application/json",
+// 		},
+// 		Body: string(responseJSON),
+// 	}, nil
+// }
+
 // func publicHandler(w http.ResponseWriter, r *http.Request) {\
-func publicHandler(ctx context.Context, name FrontEndRequest) (APIGatewayProxyResponse, error) {
-	fmt.Println("Pritning name")
-	fmt.Println(name.Username)
-
-	// Create the response body
-	responseBody := fmt.Sprintf("Hello %s!", name.Username)
-
-	// Create the response headers, including CORS headers
-	headers := map[string]string{
-		"Content-Type":                "application/json",
-		"Access-Control-Allow-Origin": "*", // Replace '*' with 'http://localhost:3000' or specific origins in production
-	}
-
-	// Create the APIGatewayProxyResponse
-	response := APIGatewayProxyResponse{
-		StatusCode: http.StatusOK,
-		Headers:    headers,
-		Body:       responseBody,
-	}
-
-	return response, nil
-
-	// if r.Header.Get("Content-Type") != "" {
-	// 	value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
-	// 	if value != "application/json" {
-	// 		msg := "Content-Type header is not application/json"
-	// 		http.Error(w, msg, http.StatusUnsupportedMediaType)
-	// 		return
-	// 	}
-	// }
-
-	// body, err := ioutil.ReadAll(r.Body)
-	// if err != nil {
-	// 	http.Error(w, "Failed to read request body", http.StatusInternalServerError)
-	// 	return
-	// }
-
-	// var requestBody FrontEndRequest
-
-	// // Print the request body as a byte slice
-	// fmt.Println("Request Body (byte slice):", body)
-
-	// // Print the request body as a string
-	// fmt.Println("Request Body (string):", string(body))
-
-	// // Unmarshal the JSON byte slice to a FrontEndRequest struct
-	// err = json.Unmarshal(body, &requestBody)
-
+// func publicHandler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func publicHandler(ctx context.Context, request FrontEndRequest) (Response, error) {
+	// var req FrontEndRequest
+	// err := json.Unmarshal([]byte(request.Body), &req)
 	// if err != nil {
 	// 	fmt.Println(err)
-	// 	return
+	// }
+
+	fmt.Println("Request Username:")
+	fmt.Println(request.Username)
+
+	// Create the response body
+	// responseBody := fmt.Sprintf("Hello %s!", name.Username)
+	// Create the response headers, including CORS headers
+	// headers := map[string]string{
+	// 	"Content-Type":                 "application/json",
+	// 	"Access-Control-Allow-Origin":  "*", // Replace '*' with 'http://localhost:3000' or specific origins in production
+	// 	"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+	// 	"Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
 	// }
 
 	// var mongoDBGames []MoveSet
 
-	// if r.Method == "POST" {
-	// 	connectToChessApi(requestBody.Username)
-	// 	mongoDBGames = getMongoDbGames()
-	// }
+	// connectToChessApi(req.Username)
+	// mongoDBGames = getMongoDbGames()
+	// // convert mongoDBGames to a json string and store in a variable called jsonData
 
-	// deleteDocuments()
-	// w.Header().Set("Content-Type", "json") // You can set the Content-Type as needed
-	// w.Header().Set("Content-Type", "json") // You can set the Content-Type as needed
+	// fmt.Println("Printing mongoDBGames")
+	// fmt.Println(mongoDBGames[0])
 
-	// // Write the response message to the response writer
-	// // responseMessage := "Request processed successfully"
-	// w.WriteHeader(http.StatusOK)
+	// fmt.Println("Printing jsonData")
 	// jsonData, err := json.Marshal(mongoDBGames)
 
 	// if err != nil {
 	// 	fmt.Println("Error marshaling to JSON:", err)
-	// 	return
+	// 	return events.APIGatewayProxyResponse{}, err
 	// }
-	// // convert mongoDBGames to json and store in a variable called jsonData
 
-	// // write the json to the response writer
-	// w.Write(jsonData)
-	// // w.Write([]byte("200"))
+	// fmt.Println(string(jsonData))
 
-	// // w.Write([]byte("200"))
-	// return
+	// // Create the APIGatewayProxyResponse
+	// response := APIGatewayProxyResponse{
+	// 	StatusCode: http.StatusOK,
+	// 	Headers:    headers,
+	// 	Body:       string(jsonData),
+	// }
+	// deleteDocuments()
+
+	// Set response headers
+	return Response{
+			StatusCode: 200,
+			Headers:    map[string]string{"Content-Type": "application/json"},
+			Body:       request.Username,
+		},
+		nil
+	// return request.Username, nil
 }
 
-func getMongoDbGames() []MoveSet {
-	var allMongoGames []MoveSet
+type Response struct {
+	StatusCode int               `json:"statusCode"`
+	Headers    map[string]string `json:"headers"`
+	Body       string            `json:"body"`
+}
+
+func getMongoDbGames() []MongoGame {
+	var allMongoGames []MongoGame
 	// Set up MongoDB client
 	clientOptions := options.Client().ApplyURI(os.Getenv("atlas_uri"))
 	client, err := mongo.Connect(context.Background(), clientOptions)
@@ -749,7 +762,7 @@ func getMongoDbGames() []MoveSet {
 		}
 
 		// moveSet is the struct that will be used to store the data from the database
-		var moveSet MoveSet
+		var moveSet MongoGame
 
 		// Convert the bson.M to MoveSet
 		data, err := bson.Marshal(result)
@@ -759,7 +772,7 @@ func getMongoDbGames() []MoveSet {
 
 		if err != nil {
 			fmt.Println("Error:", err)
-			return []MoveSet{}
+			return []MongoGame{}
 		}
 
 		allMongoGames = append(allMongoGames, moveSet)
@@ -924,7 +937,7 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT3Dot5Turbo,
+			Model: openai.GPT4,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
@@ -944,7 +957,7 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	resp, err = client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT3Dot5Turbo,
+			Model: openai.GPT4,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
@@ -1053,7 +1066,6 @@ func connectToChessApi(username string) string {
 	wg.Add(5)
 	done := make(chan struct{})
 	for k := 0; k < 5; k++ {
-		fmt.Println(k)
 		go func(k int) {
 			splitStrings := strings.Split(chessMatches.Games[k].Pgn, "\n")
 			isWhite := true
@@ -1066,6 +1078,7 @@ func connectToChessApi(username string) string {
 			var opponentName string
 
 			for _, v := range splitStrings {
+				// fmt.Println(v)
 				if len(v) >= 6 && strings.Contains(v, username) {
 					if v[0:6] == "[White" {
 						playerColor = "White"
@@ -1173,8 +1186,66 @@ func main() {
 
 	// connectToChessApi("noopdogg07")
 	// getChessGames("noopdogg07")
-	lambda.Start(publicHandler)
+	// TODO: uncomment when done testing
+	lambda.Start(HandleRequest)
+	// lambda.Start(HandleRequest)
 	// connectToChessApi("noopdogg07")
+}
+
+type MyEvent struct {
+	Name string `json:"name"`
+}
+
+func HandleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	var e FrontEndRequest
+	err := json.Unmarshal([]byte(request.Body), &e)
+	if err != nil {
+		log.Fatalln("Failed to unmarshal request body")
+	}
+
+	log.Println("Received username: ", e.Username)
+
+	var mongoDBGames []MongoGame
+
+	connectToChessApi(e.Username)
+	mongoDBGames = getMongoDbGames()
+	// convert mongoDBGames to a json string and store in a variable called jsonData
+
+	fmt.Println("Printing mongoDBGames")
+	fmt.Println(mongoDBGames[0])
+	// convert mongoDBGames to a string and store in a variable called mongoString
+
+	// fmt.Println("Printing jsonData")
+	jsonData, err := json.Marshal(mongoDBGames)
+
+	if err != nil {
+		fmt.Println("Error marshaling to JSON:", err)
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	// fmt.Println(string(jsonData))
+
+	// // Create the APIGatewayProxyResponse
+	// response := APIGatewayProxyResponse{
+	// 	StatusCode: http.StatusOK,
+	// 	Headers:    headers,
+	// 	Body:       string(jsonData),
+	// }
+	// deleteDocuments()
+
+	// return request.Username in a JSON formatted response for Lambda
+	// return Response{
+	// 		StatusCode: 200,
+	// 		Headers:    map[string]string{"Content-Type": "application/json"},
+	// 		// Body:       "Hello World",
+	// 		Body: string(jsonData),
+	// 	},
+	// 	nil
+
+	return events.APIGatewayProxyResponse{
+		StatusCode: http.StatusOK,
+		Body:       string(jsonData),
+	}, nil
 }
 
 func deleteDocuments() {
