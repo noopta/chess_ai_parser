@@ -1,14 +1,23 @@
 import logo from './logo.svg';
 import './App.css';
 // import './landingComponents/landingForm';
+import Analysis from './analysisComponents/Analysis.js';
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
 
 // Array of JSON objects
 var globalGames = [];
+export const gameMap = new Map();
 
 function App() {
   return (
-    HeroSection()
+    <Router>
+      <Routes>
+        <Route exact path="/" element={<HeroSection />} />
+        <Route path="/analysis" element={<Analysis />} />
+      </Routes>
+    </Router>
+    // HeroSection()
   );
 }
 
@@ -195,6 +204,20 @@ const LoadingModel = () => {
   )
 }
 
+function toHexString(byteArray) {
+  return Array.from(byteArray, byte => ('0' + (byte & 0xFF).toString(16)).slice(-2)).join('');
+}
+
+// Generate a random hash using the Crypto API
+async function generateRandomHash() {
+  const data = new Uint8Array(32); // 32 bytes for a 256-bit hash
+  window.crypto.getRandomValues(data); // Fill the array with random values
+
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data); // Generate the hash
+  const hashHex = toHexString(new Uint8Array(hashBuffer)); // Convert hash to hex string
+  return hashHex;
+}
+
 const MakePostRequest = async ({ isLoading, setIsLoading, setData }) => {
 
   // useEffect(() => {
@@ -246,6 +269,11 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData }) => {
       var cleanedMatchBlurb = jsonBody[i]['matchBlurb']
       var cleanedAnalysis = jsonBody[i]['analysis']
 
+      // generate a random hash for each game 
+      var matchHash = await generateRandomHash();
+
+      console.log(matchHash)
+
       var jsonObj = {
         "WhiteMoves": cleanedWhiteMoves,
         "BlackMoves": cleanedBlackMoves,
@@ -255,9 +283,8 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData }) => {
         "Analysis": cleanedAnalysis
       }
 
-      // console.log(jsonBody[i])
-
       globalGames.push(jsonObj)
+      gameMap.set(matchHash, jsonObj)
     }
 
     if (responseData == "200") {
@@ -317,57 +344,58 @@ const GenerateGrid = () => {
   const jsonArray = Object.values(globalGames)
   var whiteKnight = "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/chess_piece_knight_white.png"
   var blackKnight = "https://img.freepik.com/free-icon/strategy_318-302817.jpg?t=st=1689738547~exp=1689739147~hmac=40c7bf99944a8259d71ce85d01caed61863e4a7facc32d784cb8a2ce917271db"
-  var knightToUse = "";
-
-  // for (var i = 0; i < jsonArray.length; i++) {
-  //   console.log(jsonArray[i])
-  // }
-
+  // var knightToUse = "";
+  const navigate = useNavigate();
   return (
+    <div className="grid grid-cols-3 gap-4">
+      {/* {[...gameMap.values()].map((currentGame, index) => { */}
+      {[...gameMap.entries()].map(([key, currentGame]) => {
+        const knightToUse = currentGame["PlayerColor"] === "White" ? whiteKnight : blackKnight;
+        return (
+          <div className="max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
+            <div className="flex justify-center md:justify-end -mt-16">
+              <img className="w-20 h-20 object-cover rounded-full border-2 border-indigo-500" src={knightToUse} alt="Knight" />
+            </div>
+            <div>
+              <h2 className="text-gray-800 text-3xl font-semibold">{currentGame["Opponent"]}</h2>
+              <p className="mt-2 text-gray-600">{currentGame["MatchBlurb"]}!</p>
+            </div>
+            <div className="flex justify-end mt-4">
+              {/* <Link to={`/analysis/${encodeURIComponent(key)}`}> */}
+              <a onClick={() => {
+                navigate('/analysis', {
+                  state: { key: encodeURIComponent(key) }
+                });
+              }} href="#" className="text-xl font-medium text-indigo-500">
+                View Game
+              </a>
+              {/* </Link> */}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
     // <div className="grid grid-cols-3 gap-4">
-    //   {jsonArray.forEach((currentGame, index, jsonArray) => ( // Loop through each game object
-    //     console.log(currentGame)
-    //     // get currentGame and pass it into the component
-
-
+    //   {jsonArray.map((currentGame, index, globalGames) => (
+    //     knightToUse = currentGame["PlayerColor"] == "White" ? whiteKnight : blackKnight,
+    //     <div key={index} className="max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
+    //       <div className="flex justify-center md:justify-end -mt-16">
+    //         <img className="w-20 h-20 object-cover rounded-full border-2 border-indigo-500" src={knightToUse} alt="Knight" />
+    //       </div>
+    //       <div>
+    //         <h2 className="text-gray-800 text-3xl font-semibold">{currentGame["Opponent"]}</h2>
+    //         <p className="mt-2 text-gray-600">{currentGame["MatchBlurb"]}!</p>
+    //       </div>
+    //       <div className="flex justify-end mt-4">
+    //         <Link to="/analysis">
+    //           <a href="#" className="text-xl font-medium text-indigo-500">View Game</a>
+    //         </Link>
+    //       </div>
+    //     </div>
     //   ))}
     // </div>
-
-    <div className="grid grid-cols-3 gap-4">
-      {jsonArray.map((currentGame, index, globalGames) => (
-        knightToUse = currentGame["PlayerColor"] == "White" ? whiteKnight : blackKnight,
-        <div key={index} className="max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
-          <div className="flex justify-center md:justify-end -mt-16">
-            <img className="w-20 h-20 object-cover rounded-full border-2 border-indigo-500" src={knightToUse} alt="Knight" />
-          </div>
-          <div>
-            <h2 className="text-gray-800 text-3xl font-semibold">{currentGame["Opponent"]}</h2>
-            <p className="mt-2 text-gray-600">{currentGame["MatchBlurb"]}!</p>
-          </div>
-          <div className="flex justify-end mt-4">
-            <a href="#" className="text-xl font-medium text-indigo-500">View Game</a>
-          </div>
-        </div>
-      ))}
-    </div>
   );
-
-  // return (
-  //   <>
-  //     <div class="max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
-  //       <div class="flex justify-center md:justify-end -mt-16">
-  //         <img class="w-20 h-20 object-cover rounded-full border-2 border-indigo-500" src={knightToUse} />
-  //       </div>
-  //       <div>
-  //         <h2 class="text-gray-800 text-3xl font-semibold">{gameObject["Opponent"]}</h2>
-  //         <p class="mt-2 text-gray-600">{gameObject["PlayerColor"]}!</p>
-  //       </div>
-  //       <div class="flex justify-end mt-4">
-  //         <a href="#" class="text-xl font-medium text-indigo-500">View Game</a>
-  //       </div>
-  //     </div>
-  //   </>
-  // )
 }
 
 // const Grid = () => {
