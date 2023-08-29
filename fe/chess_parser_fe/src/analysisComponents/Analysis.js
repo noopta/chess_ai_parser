@@ -4,6 +4,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import { Chessboard } from "react-chessboard";
 import { useParams, useLocation } from 'react-router-dom';
 import { gameMap } from '../App.js';
+import { Chess } from 'chess.js';
 
 export default function Analysis(currentGame) {
     const [open, setOpen] = useState(true)
@@ -50,6 +51,113 @@ const LeftSide = ({
     chessOpponent,
     setChessOpponent
 }) => {
+
+    const [fen, setFen] = useState('start');
+    // split the string based on the string delimetor "Resources"
+    var analysisArray = chessAnalysis.split("Resources");
+    var analysis = analysisArray[0];
+    var resources = analysisArray[1];
+    var analysisArray = [];
+    // get all occurances of "(" in the analysis string
+    // get all occurances of ")" in the analysis string and store to a list
+
+    let indexOccurance = analysis.indexOf("(", 0);
+    var startingIndices = [];
+    var i = 0;
+    const chess = new Chess();
+
+    while (indexOccurance >= 0) {
+        startingIndices.push(indexOccurance);
+        indexOccurance = analysis.indexOf("(", indexOccurance + 1);
+    }
+
+    console.log("logging starting indices")
+    console.log(startingIndices)
+
+    for (i = 0; i < startingIndices.length; i++) {
+        var index = startingIndices[i];
+        var endIndex = analysis.indexOf(")", index);
+        var substring = analysis.substring(index, endIndex + 1);
+        analysisArray.push(substring);
+    }
+
+    console.log("logging analysis array")
+    console.log(analysisArray)
+
+    // if (analysisArray.length > 0) {
+    //     const whiteMoves = gameMap.get(decodeKey).WhiteMoves;
+    //     const blackMoves = gameMap.get(decodeKey).BlackMoves;
+    //     var previousMove = 0;
+
+    //     for (i = 0; i < analysisArray.length; i++) {
+    //         var currentRound = analysisArray[i];
+
+    //         // get the move number between the brackets
+    //         var moveNumber = currentRound.substring(currentRound.indexOf("(") + 1, currentRound.indexOf(")"));
+    //         // convert the move number to an integer
+    //         var convertedMoveNumber = parseInt(moveNumber);
+
+    //         var j = 0;
+
+    //         for (j = previousMove; j < convertedMoveNumber; j++) {
+    //             chess.move(whiteMoves[j]);
+    //             chess.move(blackMoves[j]);
+    //         }
+
+    //         setFen(chess.fen());
+    //         break;
+    //     }
+    // }
+
+    useEffect(() => {
+        var chess = new Chess();
+
+        if (analysisArray.length > 0) {
+            const whiteMoves = gameMap.get(decodeKey).WhiteMoves;
+            const blackMoves = gameMap.get(decodeKey).BlackMoves;
+            var previousMove = 0;
+
+            for (let i = 0; i < analysisArray.length; i++) {
+                var currentRound = analysisArray[i];
+                chess = new Chess();
+
+                // get the move number between the brackets
+                var moveNumber = currentRound.substring(currentRound.indexOf("(") + 1, currentRound.indexOf(")"));
+                // convert the move number to an integer
+                var convertedMoveNumber = parseInt(moveNumber);
+
+                var j = 0;
+                // iterate through whitemoves 
+                // remove any duplications 
+                // iterate through blackmoves
+                // remove any duplications
+
+                // make a map and append the moves to the map
+                // if a move is repeated break out of the for loop
+                console.group("logging analysis length")
+                console.log(analysisArray.length)
+
+                var moveMap = new Map();
+
+                for (j = previousMove; j < convertedMoveNumber; j++) {
+                    console.log(whiteMoves[j] + " " + blackMoves[j] + "\n");
+                    if (moveMap.has(whiteMoves[j])) {
+                        // repeat of moves
+                        break;
+                    };
+
+                    chess.move(whiteMoves[j]);
+                    chess.move(blackMoves[j]);
+
+                    moveMap.set(whiteMoves[j], blackMoves[j]);
+                }
+            }
+        }
+
+        setFen(chess.fen());
+    }, [decodeKey]);
+
+
     return (
         <div class="relative isolate overflow-hidden bg-white px-6 py-12 sm:py- lg:overflow-visible lg:px-0">
             <div class="absolute inset-0 -z-10 overflow-hidden">
@@ -71,18 +179,18 @@ const LeftSide = ({
                         <div class="lg:max-w-lg">
                             <p class="text-base font-semibold leading-7 text-indigo-600">Deploy faster</p>
                             <h1 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Your match with {chessOpponent}</h1>
-                            <p class="mt-6 text-xl leading-8 text-gray-700">{chessAnalysis}</p>
+                            <p class="mt-6 text-xl leading-8 text-gray-700">{analysis}</p>
                         </div>
                     </div>
                 </div>
                 <div class="-ml-12 -mt-12 p-12 lg:sticky lg:top-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-hidden">
                     {/* <img class="w-[48rem] max-w-none rounded-xl bg-gray-900 shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]" src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png" alt="" /> */}
-                    <Chessboard class="w-[48rem] max-w-none rounded-xl bg-gray-900 shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]" id="BasicBoard" />
+                    <Chessboard class="w-[48rem] max-w-none rounded-xl bg-gray-900 shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]" id="BasicBoard" position={fen} />
                 </div>
                 <div class="lg:col-span-2 lg:col-start-1 lg:row-start-2 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
                     <div class="lg:pr-4">
                         <div class="max-w-xl text-base leading-7 text-gray-700 lg:max-w-lg">
-                            <p>Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus enim. Mattis mauris semper sed amet vitae sed turpis id. Id dolor praesent donec est. Odio penatibus risus viverra tellus varius sit neque erat velit. Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus enim. Mattis mauris semper sed amet vitae sed turpis id.</p>
+                            <p>{resources}</p>
                             <ul role="list" class="mt-8 space-y-8 text-gray-600">
                                 <li class="flex gap-x-3">
                                     <svg class="mt-1 h-5 w-5 flex-none text-indigo-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

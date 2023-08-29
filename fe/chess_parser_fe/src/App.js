@@ -340,7 +340,6 @@ const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading
 const GenerateGrid = () => {
   // Check if gameObjects is an object and not null
 
-
   const jsonArray = Object.values(globalGames)
   var whiteKnight = "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/chess_piece_knight_white.png"
   var blackKnight = "https://img.freepik.com/free-icon/strategy_318-302817.jpg?t=st=1689738547~exp=1689739147~hmac=40c7bf99944a8259d71ce85d01caed61863e4a7facc32d784cb8a2ce917271db"
@@ -398,21 +397,6 @@ const GenerateGrid = () => {
   );
 }
 
-// const Grid = () => {
-//   return (
-//     <div className="grid grid-cols-3 gap-4">
-//       {/* Replace the divs below with your content for each cell */}
-//       <div className="p-4">{gameCard()}</div>
-//       <div className="p-4">{gameCard()}</div>
-//       <div className="p-4">{gameCard()}</div>
-//       <div className="p-4">{gameCard()}</div>
-//       <div className="p-4">{gameCard()}</div>
-//       <div className="p-4">{gameCard()}</div>
-//     </div>
-//   );
-// };
-
-
 
 function GameCard(gameObject) {
   var whiteKnight = "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/chess_piece_knight_white.png"
@@ -440,7 +424,7 @@ function GameCard(gameObject) {
 }
 
 const HeroSection = (props) => {
-  const [showComponent, setShowComponent] = useState(false);
+  const [showComponent, setShowComponent] = useState(true);
 
   // const handleButtonClick = () => {
   //   setShowComponent(true);
