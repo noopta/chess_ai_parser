@@ -269,7 +269,7 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData }) => {
       var cleanedMatchBlurb = jsonBody[i]['matchBlurb']
       var cleanedAnalysis = jsonBody[i]['analysis']
 
-      // generate a random hash for each game 
+      // generate a random hash fmor each game 
       var matchHash = await generateRandomHash();
 
       console.log(matchHash)

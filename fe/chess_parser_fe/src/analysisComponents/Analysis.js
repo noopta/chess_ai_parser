@@ -58,6 +58,7 @@ const LeftSide = ({
     var analysis = analysisArray[0];
     var resources = analysisArray[1];
     var analysisArray = [];
+    const [analysisArrayState, setAnalysisArrayState] = useState([]);
     // get all occurances of "(" in the analysis string
     // get all occurances of ")" in the analysis string and store to a list
 
@@ -78,44 +79,35 @@ const LeftSide = ({
         var index = startingIndices[i];
         var endIndex = analysis.indexOf(")", index);
         var substring = analysis.substring(index, endIndex + 1);
+
         analysisArray.push(substring);
     }
 
     console.log("logging analysis array")
     console.log(analysisArray)
 
-    // if (analysisArray.length > 0) {
-    //     const whiteMoves = gameMap.get(decodeKey).WhiteMoves;
-    //     const blackMoves = gameMap.get(decodeKey).BlackMoves;
-    //     var previousMove = 0;
-
-    //     for (i = 0; i < analysisArray.length; i++) {
-    //         var currentRound = analysisArray[i];
-
-    //         // get the move number between the brackets
-    //         var moveNumber = currentRound.substring(currentRound.indexOf("(") + 1, currentRound.indexOf(")"));
-    //         // convert the move number to an integer
-    //         var convertedMoveNumber = parseInt(moveNumber);
-
-    //         var j = 0;
-
-    //         for (j = previousMove; j < convertedMoveNumber; j++) {
-    //             chess.move(whiteMoves[j]);
-    //             chess.move(blackMoves[j]);
-    //         }
-
-    //         setFen(chess.fen());
-    //         break;
-    //     }
-    // }
-
     useEffect(() => {
         var chess = new Chess();
+        var chessMovesArray = [];
 
         if (analysisArray.length > 0) {
             const whiteMoves = gameMap.get(decodeKey).WhiteMoves;
             const blackMoves = gameMap.get(decodeKey).BlackMoves;
-            var previousMove = 0;
+
+
+            for (i = 0; i < startingIndices.length; i++) {
+                var index = startingIndices[i];
+                var endIndex = analysis.indexOf(")", index);
+                var substring = analysis.substring(index, endIndex + 1);
+
+                setAnalysisArrayState(analysisArrayState => [...analysisArrayState, substring]);
+            }
+
+            // loop through each of the analsysi rounds 
+
+            // we can have an array of Chess objects 
+            // when a user selects go forward or backwards 
+            // get that index Chess object, and add it to the game board
 
             for (let i = 0; i < analysisArray.length; i++) {
                 var currentRound = analysisArray[i];
@@ -127,19 +119,13 @@ const LeftSide = ({
                 var convertedMoveNumber = parseInt(moveNumber);
 
                 var j = 0;
-                // iterate through whitemoves 
-                // remove any duplications 
-                // iterate through blackmoves
-                // remove any duplications
 
-                // make a map and append the moves to the map
-                // if a move is repeated break out of the for loop
                 console.group("logging analysis length")
                 console.log(analysisArray.length)
 
                 var moveMap = new Map();
 
-                for (j = previousMove; j < convertedMoveNumber; j++) {
+                for (j = 0; j < convertedMoveNumber; j++) {
                     console.log(whiteMoves[j] + " " + blackMoves[j] + "\n");
                     if (moveMap.has(whiteMoves[j])) {
                         // repeat of moves
@@ -149,13 +135,53 @@ const LeftSide = ({
                     chess.move(whiteMoves[j]);
                     chess.move(blackMoves[j]);
 
-                    moveMap.set(whiteMoves[j], blackMoves[j]);
+                    chessMovesArray.push(chess);
+                    // moveMap.set(whiteMoves[j], blackMoves[j]);
                 }
             }
+
+            console.log("chess moves array");
+            console.log(chessMovesArray);
+            moveMap.set(chessMovesArray[0]);
         }
 
         setFen(chess.fen());
     }, [decodeKey]);
+
+    const Pagination = () => {
+
+        let itemList = analysisArrayState.map((item, index) => {
+            return <a href="#" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">{index + 1}</a>
+        })
+
+        return (
+            <div>
+                <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                    <a href="#" class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                        <span class="sr-only">Previous</span>
+                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    {/* make a loop  to populate a tags*/}
+                    <a href="#" aria-current="page" class="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">1</a>
+                    {itemList}
+                    {/* <a href="#" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">2</a>
+                    <a href="#" class="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex">3</a>
+                    <span class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">...</span>
+                    <a href="#" class="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex">8</a>
+                    <a href="#" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">9</a>
+                    <a href="#" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">10</a> */}
+                    <a href="#" class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                        <span class="sr-only">Next</span>
+                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </nav>
+            </div>
+        )
+    }
 
 
     return (
@@ -186,6 +212,7 @@ const LeftSide = ({
                 <div class="-ml-12 -mt-12 p-12 lg:sticky lg:top-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-hidden">
                     {/* <img class="w-[48rem] max-w-none rounded-xl bg-gray-900 shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]" src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png" alt="" /> */}
                     <Chessboard class="w-[48rem] max-w-none rounded-xl bg-gray-900 shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]" id="BasicBoard" position={fen} />
+                    <Pagination analysisArray={analysisArray} />
                 </div>
                 <div class="lg:col-span-2 lg:col-start-1 lg:row-start-2 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
                     <div class="lg:pr-4">
