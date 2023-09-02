@@ -909,6 +909,7 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	var secondResponse string
 	var whiteMovesConcat string
 	var blackMovesConcat string
+	var intertwinedMoves string
 
 	for i := 0; i < len(whiteMoves); i++ {
 		whiteMovesConcat += whiteMoves[i] + " "
@@ -918,20 +919,25 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 		blackMovesConcat += blackMoves[i] + " "
 	}
 
-	// var wg sync.WaitGroup
+	if len(whiteMoves) <= len(blackMoves) {
+		for i := 0; i < len(whiteMoves); i++ {
+			intertwinedMoves += whiteMoves[i] + " " + blackMoves[i] + " "
+		}
+	} else {
+		for i := 0; i < len(blackMoves); i++ {
+			intertwinedMoves += whiteMoves[i] + " " + blackMoves[i] + " "
+		}
+	}
 
-	// wg.Add(len(stringSections))
+	log.Println("intertwined moves")
+	log.Println(intertwinedMoves)
 
-	// fmt.Println("calling Chat GPT")
-	// fmt.Println()
-	// for i := 0; i < len(stringSections); i++ {
-	// 	go func(i int) {
-	// 		defer wg.Done()
-	// 		callGpt(stringSections[i])
-	// 	}(i)
-	// }
+	log.Println("whiteMovesConcat")
+	log.Println(whiteMovesConcat)
+	log.Println("blackMovesConcat")
+	log.Println(blackMovesConcat)
 
-	// wg.Wait()
+	prompt := "I am going to give you the transcript from a Chess match. The moves alternate back and forth between white and black. I will also give the current players piece color. I want you to analyze the transcript by the player who's piece color is specified and determine 3 of their core weaknesses or areas of improvement. Provide feedback referring to specific moves and what move they should have done instead, and provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.). BE STRICT ABOUT THIS. Keep track of the state of the board after every move, initially, the board is set in the default opening state. When you mention specific moves, mention in brackets the round it occurred in (e.g. (5)). A round is defined as every 2 moves. So for example, the first two moves in the transcript (first by white then by black) would be considered (1). Do not include letters, pieces or anything else in these brackets. Only the round number. Mention the move the user did, and mention the alternative move with the same round number in brackets. You must be strict, ONLY put numbers in the brackets. DO NOT PUT MOVE NUMBERS OUTSIDE THE BRACKET. It must be exactly in that format, and right beside the move being mentioned. When you talk about the weaknesses and alternate moves, prefix the content by saying Analysis followed by a new line. Similarily, when you describe resources prefix the content by Resources and a new line. Here are the moves from white, black, and the player color respectively."
 
 	client := openai.NewClient(os.Getenv("open_api_key"))
 	resp, err := client.CreateChatCompletion(
@@ -961,7 +967,7 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
-					Content: "I am going to give you 2 sets of chess moves from the same game and the current players piece color. I want you to analyze the set of moves by the player who's piece color is specified and determine 3 of their core weaknesses or areas of improvement. Provide feedback referring to specific moves and what move they should have done instead, and provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.)" + whiteMovesConcat + "\n" + blackMovesConcat + "\n" + playerColor,
+					Content: prompt + " \n" + intertwinedMoves + "\n" + playerColor,
 				},
 			},
 		},
@@ -1203,6 +1209,8 @@ func HandleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		log.Fatalln("Failed to unmarshal request body")
 	}
 
+	deleteDocuments()
+
 	log.Println("Received username: ", e.Username)
 
 	var mongoDBGames []MongoGame
@@ -1218,29 +1226,12 @@ func HandleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	// fmt.Println("Printing jsonData")
 	jsonData, err := json.Marshal(mongoDBGames)
 
+	deleteDocuments()
+
 	if err != nil {
 		fmt.Println("Error marshaling to JSON:", err)
 		return events.APIGatewayProxyResponse{}, err
 	}
-
-	// fmt.Println(string(jsonData))
-
-	// // Create the APIGatewayProxyResponse
-	// response := APIGatewayProxyResponse{
-	// 	StatusCode: http.StatusOK,
-	// 	Headers:    headers,
-	// 	Body:       string(jsonData),
-	// }
-	// deleteDocuments()
-
-	// return request.Username in a JSON formatted response for Lambda
-	// return Response{
-	// 		StatusCode: 200,
-	// 		Headers:    map[string]string{"Content-Type": "application/json"},
-	// 		// Body:       "Hello World",
-	// 		Body: string(jsonData),
-	// 	},
-	// 	nil
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusOK,
