@@ -14,17 +14,9 @@ export default function Analysis(currentGame) {
     const [chessOpponent, setChessOpponent] = useState("")
     const location = useLocation();
 
-    console.log("logging location")
-    if (location.state != null) {
-        console.log(location.state.key)
-    }
-
     useEffect(() => {
         if (gameMap.size > 0 && location.state != null) {
             setDecodeKey(location.state.key);
-            console.log("logging decoding key")
-            console.log(decodeKey)
-            console.log(gameMap.get(location.state.key))
             setChessAnalysis(gameMap.get(location.state.key).Analysis);
             setChessOpponent(gameMap.get(location.state.key).Opponent);
         }
@@ -44,6 +36,27 @@ export default function Analysis(currentGame) {
     )
 }
 
+const reformatResponse = (response, type) => {
+    var reformattedResponse = [];
+
+    if (type == "A") {
+        // Analysis
+        // split the string based on numeric bullet points (e.g. 1. 2. 3. 4.)
+        var splitStrings = [];
+        splitStrings = response.split("\n");
+
+        for (var i = 0; i < splitStrings.length; i++) {
+            // update stateText using setStateText function by appending splitStrings[i]
+            reformattedResponse.push(splitStrings[i]);
+        }
+
+    } else {
+        // Resources
+    }
+
+    return reformattedResponse;
+}
+
 const LeftSide = ({
     decodeKey,
     chessAnalysis,
@@ -56,9 +69,11 @@ const LeftSide = ({
     // split the string based on the string delimetor "Resources"
     var analysisArray = chessAnalysis.split("Resources");
     var analysis = analysisArray[0];
+    // reformatResponse(analysisArray[1], "R");
     var resources = analysisArray[1];
     var analysisArray = [];
     const [analysisArrayState, setAnalysisArrayState] = useState([]);
+    const [parsedFirstText, setParsedFirstTextState] = useState([]);
     // get all occurances of "(" in the analysis string
     // get all occurances of ")" in the analysis string and store to a list
 
@@ -72,9 +87,6 @@ const LeftSide = ({
         indexOccurance = analysis.indexOf("(", indexOccurance + 1);
     }
 
-    console.log("logging starting indices")
-    console.log(startingIndices)
-
     for (i = 0; i < startingIndices.length; i++) {
         var index = startingIndices[i];
         var endIndex = analysis.indexOf(")", index);
@@ -82,9 +94,6 @@ const LeftSide = ({
 
         analysisArray.push(substring);
     }
-
-    console.log("logging analysis array")
-    console.log(analysisArray)
 
     useEffect(() => {
         var chess = new Chess();
@@ -103,11 +112,10 @@ const LeftSide = ({
                 setAnalysisArrayState(analysisArrayState => [...analysisArrayState, substring]);
             }
 
-            // loop through each of the analsysi rounds 
 
-            // we can have an array of Chess objects 
-            // when a user selects go forward or backwards 
-            // get that index Chess object, and add it to the game board
+            // set parsedFirstText to the return response of reformatResponse function
+            console.log(analysis)
+            setParsedFirstTextState(reformatResponse(analysis, "A"));
 
             for (let i = 0; i < analysisArray.length; i++) {
                 var currentRound = analysisArray[i];
@@ -120,29 +128,25 @@ const LeftSide = ({
 
                 var j = 0;
 
-                console.group("logging analysis length")
-                console.log(analysisArray.length)
-
                 var moveMap = new Map();
 
                 for (j = 0; j < convertedMoveNumber; j++) {
-                    console.log(whiteMoves[j] + " " + blackMoves[j] + "\n");
                     if (moveMap.has(whiteMoves[j])) {
                         // repeat of moves
                         break;
                     };
 
+                    if (whiteMoves[j] == "1-0" || blackMoves[j] == "1-0") {
+                        continue;
+                    }
+
                     chess.move(whiteMoves[j]);
                     chess.move(blackMoves[j]);
 
                     chessMovesArray.push(chess);
-                    // moveMap.set(whiteMoves[j], blackMoves[j]);
+                    moveMap.set(whiteMoves[j], blackMoves[j]);
                 }
             }
-
-            console.log("chess moves array");
-            console.log(chessMovesArray);
-            moveMap.set(chessMovesArray[0]);
         }
 
         setFen(chess.fen());
@@ -183,6 +187,10 @@ const LeftSide = ({
         )
     }
 
+    let parsedFirstTextList = parsedFirstText.map((item, index) => {
+        console.log(item);
+        return <p mt-6 text-xl leading-8 text-gray-700>{item}<br /></p>
+    });
 
     return (
         <div class="relative isolate overflow-hidden bg-white px-6 py-12 sm:py- lg:overflow-visible lg:px-0">
@@ -205,7 +213,8 @@ const LeftSide = ({
                         <div class="lg:max-w-lg">
                             <p class="text-base font-semibold leading-7 text-indigo-600">Deploy faster</p>
                             <h1 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Your match with {chessOpponent}</h1>
-                            <p class="mt-6 text-xl leading-8 text-gray-700">{analysis}</p>
+                            {/* <p class="mt-6 text-xl leading-8 text-gray-700">{temp}</p> */}
+                            {parsedFirstTextList}
                         </div>
                     </div>
                 </div>
@@ -239,9 +248,9 @@ const LeftSide = ({
                                     <span><strong class="font-semibold text-gray-900">Database backups.</strong> Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.</span>
                                 </li>
                             </ul>
-                            <p class="mt-8">Et vitae blandit facilisi magna lacus commodo. Vitae sapien duis odio id et. Id blandit molestie auctor fermentum dignissim. Lacus diam tincidunt ac cursus in vel. Mauris varius vulputate et ultrices hac adipiscing egestas. Iaculis convallis ac tempor et ut. Ac lorem vel integer orci.</p>
+                            {/* <p class="mt-8">Et vitae blandit facilisi magna lacus commodo. Vitae sapien duis odio id et. Id blandit molestie auctor fermentum dignissim. Lacus diam tincidunt ac cursus in vel. Mauris varius vulputate et ultrices hac adipiscing egestas. Iaculis convallis ac tempor et ut. Ac lorem vel integer orci.</p>
                             <h2 class="mt-16 text-2xl font-bold tracking-tight text-gray-900">No server? No problem.</h2>
-                            <p class="mt-6">Id orci tellus laoreet id ac. Dolor, aenean leo, ac etiam consequat in. Convallis arcu ipsum urna nibh. Pharetra, euismod vitae interdum mauris enim, consequat vulputate nibh. Maecenas pellentesque id sed tellus mauris, ultrices mauris. Tincidunt enim cursus ridiculus mi. Pellentesque nam sed nullam sed diam turpis ipsum eu a sed convallis diam.</p>
+                            <p class="mt-6">Id orci tellus laoreet id ac. Dolor, aenean leo, ac etiam consequat in. Convallis arcu ipsum urna nibh. Pharetra, euismod vitae interdum mauris enim, consequat vulputate nibh. Maecenas pellentesque id sed tellus mauris, ultrices mauris. Tincidunt enim cursus ridiculus mi. Pellentesque nam sed nullam sed diam turpis ipsum eu a sed convallis diam.</p> */}
                         </div>
                     </div>
                 </div>
