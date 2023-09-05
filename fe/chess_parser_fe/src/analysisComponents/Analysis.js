@@ -57,6 +57,8 @@ const reformatResponse = (response, type) => {
     return reformattedResponse;
 }
 
+
+
 const LeftSide = ({
     decodeKey,
     chessAnalysis,
@@ -74,6 +76,9 @@ const LeftSide = ({
     var analysisArray = [];
     const [analysisArrayState, setAnalysisArrayState] = useState([]);
     const [parsedFirstText, setParsedFirstTextState] = useState([]);
+    const [boardState, setBoardState] = useState(new Chess());
+    const [moveStateArray, setMoveStateArray] = useState([]);
+
     // get all occurances of "(" in the analysis string
     // get all occurances of ")" in the analysis string and store to a list
 
@@ -114,7 +119,6 @@ const LeftSide = ({
 
 
             // set parsedFirstText to the return response of reformatResponse function
-            console.log(analysis)
             setParsedFirstTextState(reformatResponse(analysis, "A"));
 
             for (let i = 0; i < analysisArray.length; i++) {
@@ -143,19 +147,43 @@ const LeftSide = ({
                     chess.move(whiteMoves[j]);
                     chess.move(blackMoves[j]);
 
-                    chessMovesArray.push(chess);
+
+                    // set the chess game to the move state array 
+
                     moveMap.set(whiteMoves[j], blackMoves[j]);
                 }
+
+                chessMovesArray.push(chess);
             }
         }
 
-        setFen(chess.fen());
+        console.log(chessMovesArray);
+        if (chessMovesArray != null && chessMovesArray.length > 0) {
+            setMoveStateArray(moveStateArray => [...moveStateArray, chessMovesArray]);
+        }
+
     }, [decodeKey]);
 
     const Pagination = () => {
 
+        const logInnerHtml = (e) => {
+            console.log(e.target.innerHTML);
+
+            if (moveStateArray.length > 0) {
+                console.log(typeof e.target.innerHTML)
+                if (parseInt(e.target.innerHTML == 1)) {
+                    console.log("string");
+                }
+
+                var index = parseInt(e.target.innerHTML) - 1;
+                console.log(moveStateArray)
+                setBoardState(moveStateArray[0][index]);
+                setFen(moveStateArray[0][index].fen());
+            }
+        }
+
         let itemList = analysisArrayState.map((item, index) => {
-            return <a href="#" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">{index + 1}</a>
+            return <a onClick={logInnerHtml} href="#" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">{index + 1}</a>
         })
 
         return (
@@ -188,7 +216,6 @@ const LeftSide = ({
     }
 
     let parsedFirstTextList = parsedFirstText.map((item, index) => {
-        console.log(item);
         return <p mt-6 text-xl leading-8 text-gray-700>{item}<br /></p>
     });
 
