@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 // import './landingComponents/landingForm';
 import Analysis from './analysisComponents/Analysis.js';
+import DarkModeAnalysis from './analysisComponents/DarkModeAnalysis';
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
 
@@ -14,7 +15,7 @@ function App() {
     <Router>
       <Routes>
         <Route exact path="/" element={<HeroSection />} />
-        <Route path="/analysis" element={<Analysis />} />
+        <Route path="/analysis" element={<DarkModeAnalysis />} />
       </Routes>
     </Router>
     // HeroSection()
