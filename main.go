@@ -8,9 +8,11 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -41,6 +43,9 @@ type Game struct {
 
 type FrontEndRequest struct {
 	Username string `json:"username"`
+	Month    string `json:"month"`
+	Year     string `json:"year"`
+	NumGames int    `json:"numGames"`
 }
 
 type ChessMatchHtml struct {
@@ -56,6 +61,7 @@ type MongoGame struct {
 	Opponent    string   `json:"opponent"`
 	MatchBlurb  string   `json:"matchBlurb"`
 	Analysis    string   `json:"analysis"`
+	Pgn         string   `json:"pgn"`
 }
 
 type MoveSet struct {
@@ -65,6 +71,7 @@ type MoveSet struct {
 	Opponent    string   `bson:"opponent"`
 	MatchBlurb  string   `bson:"matchBlurb"`
 	Analysis    string   `bson:"analysis"`
+	Pgn         string   `bson:"pgn"`
 }
 
 // APIGatewayProxyResponse represents the response to be returned by the Lambda function
@@ -296,7 +303,8 @@ func parseChessMatch(url string, index int, matchList *[]MoveSet) {
 		log.Fatal(err)
 	}
 
-	ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	err = client.Connect(ctx)
 	if err != nil {
@@ -398,7 +406,8 @@ func getChessBlurb(currentMatch MoveSet) {
 		log.Fatal(err)
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	err = mongoClient.Connect(ctx)
 	if err != nil {
@@ -506,7 +515,9 @@ func connectToMongoDb(htmlContent string) string {
 		log.Fatal(err)
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -562,7 +573,9 @@ func readChessGamesFromMongo() {
 		log.Fatal(err)
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -729,7 +742,7 @@ type Response struct {
 	Body       string            `json:"body"`
 }
 
-func getMongoDbGames() []MongoGame {
+func getMongoDbGames(userSessionHash string) []MongoGame {
 	var allMongoGames []MongoGame
 	// Set up MongoDB client
 	clientOptions := options.Client().ApplyURI(os.Getenv("atlas_uri"))
@@ -745,7 +758,8 @@ func getMongoDbGames() []MongoGame {
 	fmt.Println("Connected to MongoDB!")
 
 	// Set up MongoDB collection
-	collection := client.Database("chess_match_database").Collection("individual_games")
+	// collection := client.Database("chess_match_database").Collection("individual_games")
+	collection := client.Database("chess_match_database").Collection(userSessionHash)
 
 	// Find all documents
 	cursor, err := collection.Find(context.Background(), bson.D{})
@@ -781,6 +795,8 @@ func getMongoDbGames() []MongoGame {
 	if err := cursor.Err(); err != nil {
 		log.Fatal(err)
 	}
+
+	client.Database("chess_match_database").Collection(userSessionHash).Drop(context.Background())
 
 	return allMongoGames
 }
@@ -903,7 +919,7 @@ func rodFunc() {
 
 }
 
-func getGptResponse(opponentName string, playerColor string, whiteMoves []string, blackMoves []string) string {
+func getGptResponse(opponentName string, playerColor string, whiteMoves []string, blackMoves []string, userSessionHash string, pgn string) string {
 	// var gptResponses []string
 	var firstResponse string
 	var secondResponse string
@@ -921,15 +937,18 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 
 	if len(whiteMoves) <= len(blackMoves) {
 		for i := 0; i < len(whiteMoves); i++ {
-			intertwinedMoves += whiteMoves[i] + " " + blackMoves[i] + " "
+			moveRound := strconv.Itoa(i + 1)
+			intertwinedMoves += moveRound + "." + whiteMoves[i] + " " + blackMoves[i] + " "
 		}
 	} else {
 		for i := 0; i < len(blackMoves); i++ {
-			intertwinedMoves += whiteMoves[i] + " " + blackMoves[i] + " "
+			// convert i + 1 to string and store it in a variable
+			moveRound := strconv.Itoa(i + 1)
+			intertwinedMoves += moveRound + "." + whiteMoves[i] + " " + blackMoves[i] + " "
 		}
 	}
 
-	log.Println("intertwined moves")
+	log.Println("intertwined movess")
 	log.Println(intertwinedMoves)
 
 	log.Println("whiteMovesConcat")
@@ -937,7 +956,18 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	log.Println("blackMovesConcat")
 	log.Println(blackMovesConcat)
 
-	prompt := "I am going to give you the transcript from a Chess match. The moves alternate back and forth between white and black. I will also give the current players piece color. I want you to analyze the transcript by the player who's piece color is specified and determine 3 of their core weaknesses or areas of improvement. Provide feedback referring to specific moves and what move they should have done instead, and provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.). BE STRICT ABOUT THIS. Keep track of the state of the board after every move, initially, the board is set in the default opening state. When you mention specific moves, mention in brackets the round it occurred in (e.g. (5)). A round is defined as every 2 moves. So for example, the first two moves in the transcript (first by white then by black) would be considered (1). Do not include letters, pieces or anything else in these brackets. Only the round number. Mention the move the user did, and mention the alternative move with the same round number in brackets. You must be strict, ONLY put numbers in the brackets. DO NOT PUT MOVE NUMBERS OUTSIDE THE BRACKET. It must be exactly in that format, and right beside the move being mentioned. When you talk about the weaknesses and alternate moves, prefix the content by saying Analysis followed by a new line. Similarily, when you describe resources prefix the content by Resources and a new line. Here are the moves from white, black, and the player color respectively."
+	prompt := "I am going to give you the transcript from a Chess match in standard algebraic notation. " +
+		"I will also give the current players piece color. I want you to analyze the transcript by the " +
+		"player who's piece color is specified and determine 3 of their core weaknesses or areas of improvement. " +
+		"Provide feedback referring to specific moves and what move they should have done instead. Keep track of the state of the board after every move; initially, the board is set in the default opening state. When you suggest the moves based on your feedback, please do not include them in the board state change you are keeping track of. After every move, update your virtual board state and give the feedback I am asking based on the board state. When you mention specific moves, mention in brackets the round it occurred in (e.g. (5). BE STRICT ABOUT THIS, YOU MUST INCLUDE THE MOVE IN REFERENCE FOLLOWED BY MOVE NUMBER IN BRACKETS. Do not include letters, pieces or anything else in these brackets. Only the round number. Mention the move the user did, and mention the alternative move with the same round number in brackets. You must be strict, ONLY put numbers in the brackets. DO NOT PUT MOVE NUMBERS OUTSIDE THE BRACKET. " +
+		"It must be exactly in that format, and right beside the move being mentioned. When you talk about the weaknesses " +
+		"and alternate moves, prefix the content by saying Analysis followed by a new line. " +
+		"Provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.). " +
+		"Similarily, when you describe resources prefix the content by Resources and a new line. Here is the game transcript and the player color. \n" +
+
+		"Now, double-check each of your analysis points and alternative moves. Double check that the move is valid given the state of the board for each of the moves you suggested and the pieces exist and aren't blocking eachother. Make sure to keep track of which pieces remain on the board after every move. The board is starting out in the default opening for black and white. " +
+
+		"Here is the game transcript.\n"
 
 	client := openai.NewClient(os.Getenv("open_api_key"))
 	resp, err := client.CreateChatCompletion(
@@ -987,7 +1017,8 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 		return ""
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	err = mongoClient.Connect(ctx)
 	if err != nil {
@@ -1007,15 +1038,6 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 		return ""
 	}
 
-	// type MoveSet struct {
-	// 	WhiteMoves  []string `bson:"whiteMoves"`
-	// 	BlackMoves  []string `bson:"blackMoves"`
-	// 	PlayerColor string   `bson:"playerColor"`
-	// 	Opponent    string   `bson:"opponent"`
-	// 	MatchBlurb  string   `bson:"matchBlurb"`
-	// 	Analysis    string   `bson:"analysis"`
-	// }
-
 	var currentMatch MoveSet
 
 	currentMatch.WhiteMoves = whiteMoves
@@ -1024,8 +1046,9 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	currentMatch.MatchBlurb = firstResponse
 	currentMatch.Analysis = secondResponse
 	currentMatch.Opponent = opponentName
+	currentMatch.Pgn = pgn
 
-	collection := mongoClient.Database("chess_match_database").Collection("individual_games")
+	collection := mongoClient.Database("chess_match_database").Collection(userSessionHash)
 	result, err := collection.InsertOne(context.TODO(), currentMatch)
 	// result, err := collection.InsertOne(context.TODO(), document)
 
@@ -1038,13 +1061,15 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	return "200"
 }
 
-func connectToChessApi(username string) string {
+func connectToChessApi(jsonRequest FrontEndRequest, userSessionHash string) string {
 	var chessMatches ChessApiStruct
 
 	client := &http.Client{}
+	chessUrl := "https://api.chess.com/pub/player/" + jsonRequest.Username + "/games/" + jsonRequest.Year + "/" + jsonRequest.Month
 
 	// Create request
-	req, err := http.NewRequest("GET", "https://api.chess.com/pub/player/noopdogg07/games/2023/07", nil)
+	// req, err := http.NewRequest("GET", "https://api.chess.com/pub/player/noopdogg07/games/2023/07", nil)
+	req, err := http.NewRequest("GET", chessUrl, nil)
 
 	parseFormErr := req.ParseForm()
 
@@ -1068,31 +1093,44 @@ func connectToChessApi(username string) string {
 
 	// Channel to signal goroutine completion
 	var wg sync.WaitGroup
+	numGames := 0
 
-	wg.Add(5)
+	if jsonRequest.NumGames > len(chessMatches.Games) {
+		numGames = len(chessMatches.Games)
+	} else {
+		numGames = jsonRequest.NumGames
+	}
+
+	wg.Add(numGames)
+
 	done := make(chan struct{})
-	for k := 0; k < 5; k++ {
+	// get min of jsonRequest.NumGames and len(chessMatches.Games)
+
+	log.Println("going to for loop")
+	for k := 0; k < numGames; k++ {
 		go func(k int) {
 			splitStrings := strings.Split(chessMatches.Games[k].Pgn, "\n")
 			isWhite := true
 
 			// fmt.Println(currentGame)
-
+			var pgn string
 			var whiteMoves []string
 			var blackMoves []string
 			var playerColor string
 			var opponentName string
 
+			pgn = chessMatches.Games[k].Pgn
+
 			for _, v := range splitStrings {
 				// fmt.Println(v)
-				if len(v) >= 6 && strings.Contains(v, username) {
+				if len(v) >= 6 && strings.Contains(v, jsonRequest.Username) {
 					if v[0:6] == "[White" {
 						playerColor = "White"
 					} else if v[0:6] == "[Black" {
 						playerColor = "Black"
 					}
 					// fmt.Println(username + " color = " + playerColor)
-				} else if len(v) >= 6 && !strings.Contains(v, username) {
+				} else if len(v) >= 6 && !strings.Contains(v, jsonRequest.Username) {
 					if v[0:7] == "[White " {
 						opponentName = v[8 : len(v)-2]
 					} else if v[0:7] == "[Black " {
@@ -1124,7 +1162,7 @@ func connectToChessApi(username string) string {
 				}
 			}
 
-			gptResp := getGptResponse(opponentName, playerColor, whiteMoves, blackMoves)
+			gptResp := getGptResponse(opponentName, playerColor, whiteMoves, blackMoves, userSessionHash, pgn)
 
 			done <- struct{}{}
 
@@ -1134,7 +1172,7 @@ func connectToChessApi(username string) string {
 		}(k)
 	}
 	// Wait for all goroutines to complete
-	for k := 0; k < 5; k++ {
+	for k := 0; k < numGames; k++ {
 		<-done
 	}
 
@@ -1209,14 +1247,51 @@ func HandleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		log.Fatalln("Failed to unmarshal request body")
 	}
 
-	deleteDocuments()
+	// deleteDocuments()
+	deleteCollections()
 
 	log.Println("Received username: ", e.Username)
 
 	var mongoDBGames []MongoGame
+	// client stuff
+	clientOptions := options.Client().ApplyURI(os.Getenv("atlas_uri"))
+	client, err := mongo.Connect(context.Background(), clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Check the connection
+	err = client.Ping(context.Background(), nil)
+	if err != nil {
+		log.Fatal("Could not connect to the database:", err)
+	}
+	fmt.Println("Connected to MongoDB!")
 
-	connectToChessApi(e.Username)
-	mongoDBGames = getMongoDbGames()
+	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+	// create a random hash for the user and create a collection named with that hash
+	timeStamp := strconv.FormatInt(time.Now().UnixNano()/1e6, 10)
+
+	res := make([]rune, 3)
+	for i := range res {
+		res[i] = letters[rand.Intn(len(letters))]
+	}
+
+	hash := string(res)
+	command := bson.D{{Key: "create", Value: "individual_games" + timeStamp + hash}}
+	var result bson.M
+
+	if err := client.Database("chess_match_database").RunCommand(context.TODO(), command).Decode(&result); err != nil {
+		log.Fatal(err)
+	}
+
+	// disconnect
+	err = client.Disconnect(context.TODO())
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	connectToChessApi(e, "individual_games"+timeStamp+hash)
+	mongoDBGames = getMongoDbGames("individual_games" + timeStamp + hash)
 	// convert mongoDBGames to a json string and store in a variable called jsonData
 
 	fmt.Println("Printing mongoDBGames")
@@ -1226,7 +1301,8 @@ func HandleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	// fmt.Println("Printing jsonData")
 	jsonData, err := json.Marshal(mongoDBGames)
 
-	deleteDocuments()
+	// deleteDocuments()
+	deleteCollections()
 
 	if err != nil {
 		fmt.Println("Error marshaling to JSON:", err)
@@ -1237,6 +1313,44 @@ func HandleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		StatusCode: http.StatusOK,
 		Body:       string(jsonData),
 	}, nil
+}
+
+func deleteCollections() {
+	clientOptions := options.Client().ApplyURI(os.Getenv("atlas_uri"))
+	client, err := mongo.Connect(context.Background(), clientOptions)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Check the connection
+	err = client.Ping(context.TODO(), nil)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Get names of the collections
+	collectionNames, err := client.Database("chess_match_database").ListCollectionNames(context.Background(), bson.M{})
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Loop through the collections and drop each one
+	for _, collectionName := range collectionNames {
+		if err := client.Database("chess_match_database").Collection(collectionName).Drop(context.TODO()); err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	err = client.Disconnect(context.TODO())
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	println("Disconnected from MongoDB")
 }
 
 func deleteDocuments() {
