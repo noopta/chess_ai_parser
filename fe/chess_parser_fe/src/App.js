@@ -431,7 +431,7 @@ async function generateRandomHash() {
   return hashHex;
 }
 
-const MakePostRequest = async ({ isLoading, setIsLoading, setData }) => {
+const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername, monthState, yearState, numGames }) => {
 
   // useEffect(() => {
   // const fetchData = async () => {
@@ -451,9 +451,16 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData }) => {
         // Set the appropriate content-type
         // Set the appropriate content-type
       },
+      // body: JSON.stringify({
+      //   /* Your request data here */
+      //   'username': 'noopdogg07'
+      // }), // Convert your request data to JSON
       body: JSON.stringify({
         /* Your request data here */
-        'username': 'noopdogg07'
+        'username': chessUsername,
+        'month': monthState,
+        'year': yearState,
+        'numGames': numGames
       }), // Convert your request data to JSON
     });
 
@@ -520,10 +527,10 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData }) => {
 };
 
 
-const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading, data, setData) => {
+const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames) => {
   console.log("get games")
   try {
-    var requestResponse = await MakePostRequest({ isLoading, setIsLoading, setData })
+    var requestResponse = await MakePostRequest({ isLoading, setIsLoading, setData, chessUsername, monthState, yearState, numGames })
   } catch {
     console.log("error")
   } finally {
@@ -913,28 +920,69 @@ function InputForm() {
 }
 
 function LandingInputForm(showComponent, setShowComponent) {
-
-
-  const handleSubmit = (event) => {
-    event.preventDefault(); // This prevents the default behavior of form submission (page refresh)
-    // Add your form submission logic here, if needed
-    // For example, you can access form data using event.target and perform actions based on it
-    console.log("yo")
-
-    // setShowComponent(true)
-  }
+  const date = new Date();
+  const defaultMonth = String((date.getMonth() + 1)).padStart(2, '0');
+  const defaultYear = date.getFullYear().toString();
 
   const [showModel, setShowModel] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
+  const [chessUsername, setChessUsername] = useState("");
+  const [monthState, setMonthState] = useState(defaultMonth);
+  const [yearState, setYearState] = useState(defaultYear);
+  const [numGames, setNumGames] = useState(0);
+
+  const handleUsernameChange = (event) => {
+    setChessUsername(event.target.value);
+  };
+
+  const handleMonthStateChange = (event) => {
+    if (event.target.value == "Select Month") {
+      setMonthState(defaultMonth);
+      return;
+    }
+
+    setMonthState(event.target.value);
+  };
+
+  const handleYearStateChange = (event) => {
+    if (event.target.value == "Select Year") {
+      setYearState(defaultYear);
+      return;
+    }
+
+    setYearState(event.target.value);
+  };
+  const handleNumGamesChange = (event) => {
+    var val = event.target.value;
+
+    // if val is not an integer, set it to 0
+    if (isNaN(val)) {
+      val = 0;
+    } else {
+      // set val to an integer currently is a string
+      val = parseInt(val);
+    }
+
+    setNumGames(val);
+  };
 
   const handleModelToggle = () => {
     setShowModel(!showModel);
   };
 
 
+  const handleFormButtonClick = (event) => {
+    // Access the inputValue here and do whatever you want with it
+    event.preventDefault();
+    console.log("chess username = " + chessUsername);
+    console.log("month state = " + monthState);
+    console.log("year state = " + yearState);
+    console.log("num games " + numGames);
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleFormButtonClick}>
       <div className="space-y-12">
         <div className="border-b border-white/10 pb-12">
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -950,6 +998,7 @@ function LandingInputForm(showComponent, setShowComponent) {
                   id="username"
                   autoComplete="noopdogg07"
                   className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  onChange={handleUsernameChange}
                 />
               </div>
             </div>
@@ -964,7 +1013,9 @@ function LandingInputForm(showComponent, setShowComponent) {
                   name="year"
                   autoComplete="Enter year"
                   className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black"
+                  onChange={handleYearStateChange}
                 >
+                  <option>Select Year</option>
                   <option>2023</option>
                   <option>2022</option>
                   <option>2021</option>
@@ -985,7 +1036,9 @@ function LandingInputForm(showComponent, setShowComponent) {
                   name="month"
                   autoComplete="Enter month"
                   className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black"
+                  onChange={handleMonthStateChange}
                 >
+                  <option>Select Month</option>
                   <option>01</option>
                   <option>02</option>
                   <option>03</option>
@@ -1013,6 +1066,7 @@ function LandingInputForm(showComponent, setShowComponent) {
                   id="postal-code"
                   autoComplete="postal-code"
                   className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                  onChange={handleNumGamesChange}
                 />
               </div>
             </div>
@@ -1023,7 +1077,7 @@ function LandingInputForm(showComponent, setShowComponent) {
       <div>
         <button
           type="submit"
-          onClick={() => GetGames(showComponent, setShowComponent, isLoading, setIsLoading, data, setData)}
+          onClick={() => GetGames(showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames)}
           // onClick={() => setShowModel(true)}
           className="flex w-full justify-center rounded-md bg-indigo-500  px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
