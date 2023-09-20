@@ -1,7 +1,7 @@
 import './App.css';
 import DarkModeAnalysis from './analysisComponents/DarkModeAnalysis';
 import React, { Fragment, useState, useEffect } from 'react';
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, BellIcon, XMarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
 
@@ -204,149 +204,8 @@ const LandingForm = (showComponent, setShowComponent) => {
   return (
     <>
       {LandingInputForm(showComponent, setShowComponent)}
-
-      {/* <div className=" sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" onSubmit={handleSubmit}>
-
-
-          <div className="sm:col-span-4">
-            <label htmlFor="username" className="block text-sm font-medium leading-6 text-white">
-              Username
-            </label>
-            {isLoading && <LoadingModel />}
-            <div className="mt-2">
-              <div className="flex rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                <input
-                  type="text"
-                  name="username"
-                  id="username"
-                  autoComplete="username"
-                  className="flex-1 border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:text-sm sm:leading-6"
-                  placeholder="noopdogg07"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="sm:col-span-3">
-            <label htmlFor="year" className="block text-sm font-medium leading-6 text-white">
-              Year
-            </label>
-            <div className="mt-2">
-              <select
-                id="year"
-                name="year"
-                autoComplete="Enter year"
-                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black"
-              >
-                <option>2023</option>
-                <option>2022</option>
-                <option>2021</option>
-                <option>2020</option>
-                <option>2019</option>
-                <option>2018</option>
-              </select>
-            </div>
-          </div>
-
-
-          <div className="sm:col-span-3">
-            <label htmlFor="month" className="block text-sm font-medium leading-6 text-white">
-              Month
-            </label>
-            <div className="mt-2">
-              <select
-                id="month"
-                name="month"
-                autoComplete="Enter month"
-                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black"
-              >
-                <option>01</option>
-                <option>02</option>
-                <option>03</option>
-                <option>04</option>
-                <option>05</option>
-                <option>06</option>
-                <option>07</option>
-                <option>08</option>
-                <option>09</option>
-                <option>10</option>
-                <option>12</option>
-                <option>12</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="sm:col-span-3">
-            <label htmlFor="number-of-games" className="block text-sm font-medium leading-6 text-white">
-              Games
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name="number-of-games"
-                id="number-of-games"
-                autoComplete="5"
-                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              onClick={() => GetGames(showComponent, setShowComponent, isLoading, setIsLoading, data, setData)}
-              // onClick={() => setShowModel(true)}
-              className="flex w-full justify-center rounded-md bg-indigo-500  px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Analyze Games
-            </button>
-          </div>
-        </form >
-
-        <p className="mt-10 text-center text-sm text-gray-400">
-          Got a suggestion?{' '}
-          <a href="#" onClick={handleModelToggle} className="font-semibold leading-6 text-indigo-400 hover:text-indigo-300">
-            Submit any bugs here
-            {showModel && <FeedbackForm />}
-          </a>
-        </p>
-      </div > */}
     </>
   )
-}
-
-function extractJSONFromBody(bodyString) {
-  // Remove backslashes from the body string
-  const unescapedBody = bodyString.replace(/\\/g, '');
-
-  // Find the start and end indices of the actual JSON object
-  const startIndex = unescapedBody.indexOf('{');
-  const endIndex = unescapedBody.lastIndexOf('}') + 1;
-
-  // Extract the JSON body from the string
-  const jsonString = unescapedBody.slice(startIndex, endIndex);
-
-  // Parse the JSON string into a JavaScript object
-  try {
-    const jsonObject = JSON.parse(jsonString);
-    return jsonObject;
-  } catch (error) {
-    console.error('Error parsing JSON:', error);
-    console.log(jsonString)
-    return null;
-  }
-}
-
-
-function extractJSONFromBody2(bodyString) {
-  try {
-    const jsonObject = JSON.parse(bodyString);
-    return jsonObject;
-  } catch (error) {
-    console.error('Error parsing JSON:', error);
-    return null;
-  }
 }
 
 const CubeSpinner = () => {
@@ -391,11 +250,6 @@ const LoadingModel = () => {
           <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
             <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
               <div class="sm:flex sm:items-start">
-                {/* <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                  <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                </svg>
-                </div> */}
                 <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-centre">
                   <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Loading Games</h3>
                   <div class="mt-2 text-centre content-centre">
@@ -451,10 +305,6 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
         // Set the appropriate content-type
         // Set the appropriate content-type
       },
-      // body: JSON.stringify({
-      //   /* Your request data here */
-      //   'username': 'noopdogg07'
-      // }), // Convert your request data to JSON
       body: JSON.stringify({
         /* Your request data here */
         'username': chessUsername,
@@ -471,15 +321,9 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
     console.log("here2")
     const responseData = await response.text();
     console.log("loggin response")
-    // console.log(responseData)
-    // setData(responseData);
-    // while awaiting response, the screen should show a loading spinner
 
-    // var jsonBody = extractJSONFromBody(extractJSONFromBody2(responseData))
     var jsonBody = JSON.parse(responseData)
 
-    // var jsonBody = extractJSONFromBody2(responseData)
-    // var temp = extractJSONFromBody2(responseData)
     for (var i = 0; i < jsonBody.length; i++) {
 
       var cleanedWhiteMoves = jsonBody[i]['whiteMoves']
@@ -488,11 +332,12 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
       var cleanedPlayerColor = jsonBody[i]['playerColor']
       var cleanedMatchBlurb = jsonBody[i]['matchBlurb']
       var cleanedAnalysis = jsonBody[i]['analysis']
+      var matchPgn = jsonBody[i]['pgn']
 
       // generate a random hash fmor each game 
       var matchHash = await generateRandomHash();
 
-      console.log(matchHash)
+      console.log(matchPgn)
 
       var jsonObj = {
         "WhiteMoves": cleanedWhiteMoves,
@@ -539,17 +384,6 @@ const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading
       setShowComponent(true)
     }
   }
-
-
-
-  // MakePostRequest()
-
-  // if (isLoading) {
-  //   console.log("spinning")
-  //   return (
-  //     <Spinner />
-  //   )
-  // }
 
   if (!data) return (
     <span>Data not available</span>
@@ -598,39 +432,8 @@ const GenerateGrid = () => {
 }
 
 
-function GameCard(gameObject) {
-  var whiteKnight = "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/chess_piece_knight_white.png"
-  var blackKnight = "https://img.freepik.com/free-icon/strategy_318-302817.jpg?t=st=1689738547~exp=1689739147~hmac=40c7bf99944a8259d71ce85d01caed61863e4a7facc32d784cb8a2ce917271db"
-  var knightToUse = gameObject.PlayerColor == "White" ? whiteKnight : blackKnight
-  console.log("game card")
-  console.log(gameObject)
-  // console.log(gameObject["PlayerColor"])
-  return (
-    <>
-      <div class="max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
-        <div class="flex justify-center md:justify-end -mt-16">
-          <img class="w-20 h-20 object-cover rounded-full border-2 border-indigo-500" src={knightToUse} />
-        </div>
-        <div>
-          <h2 class="text-gray-800 text-3xl font-semibold">{gameObject["Opponent"]}</h2>
-          <p class="mt-2 text-gray-600">{gameObject["PlayerColor"]}!</p>
-        </div>
-        <div class="flex justify-end mt-4">
-          <a href="#" class="text-xl font-medium text-indigo-500">View Game</a>
-        </div>
-      </div>
-    </>
-  )
-}
-
 const HeroSection = (props) => {
   const [showComponent, setShowComponent] = useState(true);
-
-  // const handleButtonClick = () => {
-  //   setShowComponent(true);
-  // };
-
-
   const navigation = [
     { name: 'Home', href: '#', current: true },
     { name: 'Analysis', href: '#', current: false },
@@ -795,11 +598,11 @@ const HeroSection = (props) => {
                 </div>
               </div>
             </div>
+            {showComponent ? <ListGames /> : null}
           </div>
         </body>
       </html>
-
-      {showComponent ? <GenerateGrid /> : null}
+      {/* {showComponent ? <GenerateGrid /> : null} */}
     </>
   )
 }
@@ -825,20 +628,8 @@ function FeedbackForm() {
           <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg" onClick={(event) => event.stopPropagation()}>
             <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
               <div class="sm:flex sm:items-start">
-                {/* <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                  <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                  </svg>
-                </div> */}
                 <InputForm />
-                {/* <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                  <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Feedback</h3>
-                  <div class="mt-2">
-                    <p class="text-sm text-gray-500">Your critiques or compliments are important! Feel free to let us know about any improvements, things you liked, etc. below.</p>
-                  </div>
-                </div> */}
               </div>
-
             </div>
           </div>
         </div>
@@ -1093,6 +884,168 @@ function LandingInputForm(showComponent, setShowComponent) {
         </a>
       </p>
     </form>
+  )
+}
+
+const people = [
+  {
+    name: 'Leslie Alexander',
+    email: 'leslie.alexander@example.com',
+    role: 'Co-Founder / CEO',
+    imageUrl:
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    lastSeen: '3h ago',
+    lastSeenDateTime: '2023-01-23T13:23Z',
+  },
+  {
+    name: 'Michael Foster',
+    email: 'michael.foster@example.com',
+    role: 'Co-Founder / CTO',
+    imageUrl:
+      'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    lastSeen: '3h ago',
+    lastSeenDateTime: '2023-01-23T13:23Z',
+  },
+  {
+    name: 'Dries Vincent',
+    email: 'dries.vincent@example.com',
+    role: 'Business Relations',
+    imageUrl:
+      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    lastSeen: null,
+  },
+  {
+    name: 'Lindsay Walton',
+    email: 'lindsay.walton@example.com',
+    role: 'Front-end Developer',
+    imageUrl:
+      'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    lastSeen: '3h ago',
+    lastSeenDateTime: '2023-01-23T13:23Z',
+  },
+  {
+    name: 'Courtney Henry',
+    email: 'courtney.henry@example.com',
+    role: 'Designer',
+    imageUrl:
+      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    lastSeen: '3h ago',
+    lastSeenDateTime: '2023-01-23T13:23Z',
+  },
+  {
+    name: 'Tom Cook',
+    email: 'tom.cook@example.com',
+    role: 'Director of Product',
+    imageUrl:
+      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    lastSeen: null,
+  },
+]
+
+const statuses = {
+  offline: 'text-gray-500 bg-gray-100/10',
+  online: 'text-green-400 bg-green-400/10',
+  error: 'text-rose-400 bg-rose-400/10',
+}
+const environments = {
+  Preview: 'text-gray-400 bg-gray-400/10 ring-gray-400/20',
+  Production: 'text-indigo-400 bg-indigo-400/10 ring-indigo-400/30',
+}
+const deployments = [
+  {
+    id: 1,
+    href: '#',
+    projectName: 'ios-app',
+    teamName: 'Planetaria',
+    status: 'offline',
+    statusText: 'Initiated 1m 32s ago',
+    description: 'Deploys from GitHub',
+    environment: 'Preview',
+  },
+  {
+    id: 2,
+    href: '#',
+    projectName: 'mobile-api',
+    teamName: 'Planetaria',
+    status: 'online',
+    statusText: 'Deployed 3m ago',
+    description: 'Deploys from GitHub',
+    environment: 'Production',
+  },
+  {
+    id: 3,
+    href: '#',
+    projectName: 'tailwindcss.com',
+    teamName: 'Tailwind Labs',
+    status: 'offline',
+    statusText: 'Deployed 3h ago',
+    description: 'Deploys from GitHub',
+    environment: 'Preview',
+  },
+  {
+    id: 4,
+    href: '#',
+    projectName: 'api.protocol.chat',
+    teamName: 'Protocol',
+    status: 'error',
+    statusText: 'Failed to deploy 6d ago',
+    description: 'Deploys from GitHub',
+    environment: 'Preview',
+  },
+]
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
+
+function ListGames() {
+
+  const navigate = useNavigate();
+  return (
+    <ul role="list" className="divide-y divide-white/5">
+
+      {[...gameMap.entries()].map(([key, currentGame]) => {
+        return (
+          <li className="relative flex items-center space-x-4 py-4">
+            <div className="min-w-0 flex-auto">
+              <div className="flex items-center gap-x-3">
+                <div className={classNames("text-green-400 bg-green-400/10", 'flex-none rounded-full p-1')}>
+                  <div className="h-2 w-2 rounded-full bg-current" />
+                </div>
+                <h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
+                  <a onClick={() => {
+                    navigate('/analysis', {
+                      state: { key: encodeURIComponent(key) }
+                    });
+                  }} href="#" className="flex gap-x-2">
+                    <span className="truncate">{currentGame["Opponent"]}</span>
+                    <span className="text-gray-400">/</span>
+                    <span className="whitespace-nowrap">{currentGame["PlayerColor"]}</span>
+                    <span className="absolute inset-0" />
+                  </a>
+                </h2>
+              </div>
+              <div className="mt-3 flex items-center gap-x-2.5 text-xs leading-5 text-gray-400">
+                <p className="truncate">{currentGame["MatchBlurb"]}</p>
+                <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 flex-none fill-gray-300">
+                  <circle cx={1} cy={1} r={1} />
+                </svg>
+                <p className="whitespace-nowrap">Initiated</p>
+              </div>
+            </div>
+            <div
+              className={classNames(
+                environments["Production"],
+                'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset'
+              )}
+            >
+              View Game
+            </div>
+            <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+          </li>
+        );
+      })}
+    </ul>
   )
 }
 

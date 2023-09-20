@@ -79,13 +79,13 @@ const LeftSide = ({
     const [boardState, setBoardState] = useState(new Chess());
     const [moveStateArray, setMoveStateArray] = useState([]);
 
+    console.log("yo")
     // get all occurances of "(" in the analysis string
     // get all occurances of ")" in the analysis string and store to a list
 
     let indexOccurance = analysis.indexOf("(", 0);
     var startingIndices = [];
     var i = 0;
-    const chess = new Chess();
 
     while (indexOccurance >= 0) {
         startingIndices.push(indexOccurance);
@@ -108,7 +108,8 @@ const LeftSide = ({
             const whiteMoves = gameMap.get(decodeKey).WhiteMoves;
             const blackMoves = gameMap.get(decodeKey).BlackMoves;
 
-
+            console.log("game map")
+            console.log(gameMap)
             for (i = 0; i < startingIndices.length; i++) {
                 var index = startingIndices[i];
                 var endIndex = analysis.indexOf(")", index);
