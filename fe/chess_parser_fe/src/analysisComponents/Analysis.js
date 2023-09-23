@@ -57,8 +57,6 @@ const reformatResponse = (response, type) => {
     return reformattedResponse;
 }
 
-
-
 const LeftSide = ({
     decodeKey,
     chessAnalysis,
@@ -217,7 +215,8 @@ const LeftSide = ({
     }
 
     let parsedFirstTextList = parsedFirstText.map((item, index) => {
-        return <p mt-6 text-xl leading-8 text-gray-700>{item}<br /></p>
+        // return <p mt-6 text-xl leading-8 text-gray-700>{item}<br /></p>
+        return TextCard();
     });
 
     return (

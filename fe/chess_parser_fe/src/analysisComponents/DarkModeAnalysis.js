@@ -2,7 +2,7 @@ import { ChatBubbleOvalLeftEllipsisIcon, CloudArrowUpIcon, LockClosedIcon, Serve
 import { Chessboard } from "react-chessboard";
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, BellIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/outline'
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid'
 import { useParams, useLocation } from 'react-router-dom';
 import { gameMap } from '../App.js';
@@ -35,6 +35,88 @@ const navigation = [
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
+}
+
+
+function TextCard(textData, index) {
+    const [open, setOpen] = useState(false)
+
+    function ResourceModal() {
+        return (
+            <Transition.Root show={open} as={Fragment}>
+                <Dialog as="div" className="relative z-10" onClose={setOpen}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    </Transition.Child>
+
+                    <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+                        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            >
+                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                                    <div>
+                                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                                            <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
+                                        </div>
+                                        <div className="mt-3 text-center sm:mt-5">
+                                            <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
+                                                Payment successful
+                                            </Dialog.Title>
+                                            <div className="mt-2">
+                                                <p className="text-sm text-gray-500">
+                                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur amet labore.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="mt-5 sm:mt-6">
+                                        <button
+                                            type="button"
+                                            className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                            onClick={() => setOpen(false)}
+                                        >
+                                            Go back to dashboard
+                                        </button>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition.Root>
+        )
+    }
+    return (
+        <div class="dark">
+            <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                <a href="#">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Concept to Improve</h5>
+                </a>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{textData}</p>
+                <a onClick={setOpen(true)} href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    View Resource
+                    <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    )
 }
 
 function NavBar() {
@@ -187,7 +269,12 @@ const reformatResponse = (response, type) => {
         splitStrings = response.split("\n");
 
         for (var i = 0; i < splitStrings.length; i++) {
-            if (splitStrings[i].length == 0 || splitStrings[i] == "Analysis:") {
+            if (splitStrings[i].length == 0 || splitStrings[i] == "Analysis:" || splitStrings[i] == "Analysis") {
+                continue;
+            }
+
+            // check if the first 2 characters is a number followed by a period (e.g. 1.)
+            if (!splitStrings[i].substring(0, 2).match(/[0-9]+\./)) {
                 continue;
             }
             // update stateText using setStateText function by appending splitStrings[i]
@@ -408,44 +495,23 @@ const LeftSide = ({
                             <h2 className="text-base font-semibold leading-7 text-indigo-400">Deploy faster</h2>
                             <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">Your match with {chessOpponent}</p>
                             <p className="mt-6 text-lg leading-8 text-gray-300">
-                                {/* Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque,
-                                iste dolor cupiditate blanditiis ratione. */}
-                                {/* {parsedFirstTextList} */}
                                 Here is the analysis of your match! Use the pagination below to use the board to follow along with the feedback.
                             </p>
                             <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-300 lg:max-w-none">
-                                {/* {features.map((feature) => (
-                                    <div key={feature.name} className="relative pl-9">
-                                        <dt className="inline font-semibold text-white">
-                                            <feature.icon className="absolute left-1 top-1 h-5 w-5 text-indigo-500" aria-hidden="true" />
-                                            {feature.name}
-                                        </dt>{' '}
-                                        <dd className="inline">{feature.description}</dd>
-                                    </div>
-                                ))} */}
-
                                 {parsedFirstText.map((item, index) => (
-
-                                    <div key={index} className="relative pl-9">
-                                        <dt className="inline font-semibold text-white">
-                                            <ChatBubbleOvalLeftEllipsisIcon className="absolute left-1 top-1 h-5 w-5 text-indigo-500" aria-hidden="true" />
-                                        </dt>{' '}
-                                        <dd className="inline">{item}</dd>
-                                    </div>
+                                    TextCard(item, index)
+                                    // <div key={index} className="relative pl-9">
+                                    //     <dt className="inline font-semibold text-white">
+                                    //         <ChatBubbleOvalLeftEllipsisIcon className="absolute left-1 top-1 h-5 w-5 text-indigo-500" aria-hidden="true" />
+                                    //     </dt>{' '}
+                                    //     <dd className="inline">{item}</dd>
+                                    // </div>
                                 ))}
                             </dl>
-
                             <Pagination />
                         </div>
                     </div>
                     <Chessboard class="w-[48rem] max-w-none rounded-xl bg-gray-900 shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]" id="BasicBoard" position={fen} />
-                    {/* <img
-                        src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png"
-                        alt="Product screenshot"
-                        className="w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-white/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
-                        width={2432}
-                        height={1442}
-                    /> */}
                 </div>
             </div>
         </div>
