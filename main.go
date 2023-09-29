@@ -957,17 +957,13 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	log.Println(blackMovesConcat)
 
 	prompt := "I am going to give you the transcript from a Chess match in standard algebraic notation. " +
-		"I will also give the current players piece color. I want you to analyze the transcript by the " +
-		"player who's piece color is specified and determine 3 of their core weaknesses or areas of improvement. " +
-		"Provide feedback referring to specific moves and what move they should have done instead. Keep track of the state of the board after every move; initially, the board is set in the default opening state. When you suggest the moves based on your feedback, please do not include them in the board state change you are keeping track of. After every move, update your virtual board state and give the feedback I am asking based on the board state. When you mention specific moves, mention in brackets the round it occurred in (e.g. (5). BE STRICT ABOUT THIS, YOU MUST INCLUDE THE MOVE IN REFERENCE FOLLOWED BY MOVE NUMBER IN BRACKETS. Do not include letters, pieces or anything else in these brackets. Only the round number. Mention the move the user did, and mention the alternative move with the same round number in brackets. You must be strict, ONLY put numbers in the brackets. DO NOT PUT MOVE NUMBERS OUTSIDE THE BRACKET. " +
-		"It must be exactly in that format, and right beside the move being mentioned. When you talk about the weaknesses " +
-		"and alternate moves, prefix the content by saying Analysis followed by a new line. " +
-		"Provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.). " +
-		"Similarily, when you describe resources prefix the content by Resources and a new line. Here is the game transcript and the player color. \n" +
 
-		"Now, double-check each of your analysis points and alternative moves. Double check that the move is valid given the state of the board for each of the moves you suggested and the pieces exist and aren't blocking eachother. Make sure to keep track of which pieces remain on the board after every move. The board is starting out in the default opening for black and white. " +
-
-		"Here is the game transcript.\n"
+		"I will also give the current players piece color. I want you to analyze the transcript by the player " +
+		"who's piece color is specified and determine 3 of their core weaknesses or areas of improvement. " +
+		"Provide feedback referring to specific moves and what move they should have done instead. " +
+		"Mention the move the user did, and mention the alternative move with the same round number in brackets. " +
+		"Provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.)." +
+		"Here is the game transcript: "
 
 	client := openai.NewClient(os.Getenv("open_api_key"))
 	resp, err := client.CreateChatCompletion(
@@ -995,6 +991,24 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 		openai.ChatCompletionRequest{
 			Model: openai.GPT4,
 			Messages: []openai.ChatCompletionMessage{
+				{
+					Role: openai.ChatMessageRoleSystem,
+					Content: "You are a Chess AI, similar to Deepmind by Google. " +
+						"You will be given a chess board PGN transcript. Keep track of the" +
+						" state of the board after every move; initially, the board is set in " +
+						"the default opening state. When you suggest the moves based on your " +
+						"feedback, do not include them in the board state change you are keeping " +
+						"track of. After every move, update your virtual board state and give the " +
+						"feedback I am asking based on the board state at that move round number. " +
+						"When you mention specific moves, mention in brackets the round it occurred " +
+						"in (e.g. e5 (5)). Do the same for alternative moves you suggest. Do not " +
+						"include letters, pieces or anything else in these brackets. Only the round " +
+						"number. Make sure to keep track of which pieces remain on the board after " +
+						"every move. When you talk about the weaknesses  and alternate moves, prefix " +
+						"the content by saying Analysis followed by a new line. When you describe resources " +
+						"prefix the content by Resources and a new line. Here is the game transcript and the " +
+						"player color. ",
+				},
 				{
 					Role:    openai.ChatMessageRoleUser,
 					Content: prompt + " \n" + intertwinedMoves + "\n" + playerColor,
@@ -1184,56 +1198,7 @@ func connectToChessApi(jsonRequest FrontEndRequest, userSessionHash string) stri
 }
 
 func main() {
-	// Command to execute the Bash script
-	// cmd := exec.Command("./cleanup.sh")
-
-	// // Run the command and capture the output and error streams
-	// output, err := cmd.CombinedOutput()
-
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-
-	// // Print the output
-	// fmt.Println(string(output))
-
-	// Your Golang server setup code here...
-
-	// Create a new CORS handler with desired options
-	// corsHandler := cors.New(cors.Options{
-	// 	AllowedOrigins: []string{"http://localhost:3000"}, // Replace with your React app's domain
-	// 	AllowedMethods: []string{"POST", "OPTIONS"},       // Allow POST and OPTIONS requests
-	// })
-
-	// corsHandler.Handler(http.HandlerFunc(yourHandlerFunc))
-
-	// http.Handle("/chessGameAnalysis", corsHandler.Handler(http.HandlerFunc(publicHandler))) // set router
-	// fmt.Println("Server started on port 8080")
-	// err = http.ListenAndServe(":8080", nil) // set listen port
-
-	// if err != nil {
-	// 	fmt.Println("Error starting server")
-	// 	return
-	// }
-
-	// // Command to execute the Bash script
-	// cmd = exec.Command("./cleanup.sh")
-
-	// // Run the command and capture the output and error streams
-	// output, err = cmd.CombinedOutput()
-
-	// // Check for errors
-	// if err != nil {
-	// 	fmt.Println("Error executing command:", err)
-	// 	return
-	// }
-
-	// connectToChessApi("noopdogg07")
-	// getChessGames("noopdogg07")
-	// TODO: uncomment when done testing
 	lambda.Start(HandleRequest)
-	// lambda.Start(HandleRequest)
-	// connectToChessApi("noopdogg07")
 }
 
 type MyEvent struct {
