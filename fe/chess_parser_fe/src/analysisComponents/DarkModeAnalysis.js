@@ -4,9 +4,10 @@ import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/outline'
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid'
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigation } from 'react-router-dom';
 import { gameMap } from '../App.js';
 import { Chess } from 'chess.js';
+import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
 
 const features = [
     {
@@ -39,9 +40,9 @@ function classNames(...classes) {
 
 
 function TextCard(textData, index) {
-    const [open, setOpen] = useState(false)
-
     function ResourceModal() {
+        const [open, setOpen] = useState(true)
+
         return (
             <Transition.Root show={open} as={Fragment}>
                 <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -108,7 +109,7 @@ function TextCard(textData, index) {
                     <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Concept to Improve</h5>
                 </a>
                 <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{textData}</p>
-                <a onClick={setOpen(true)} href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     View Resource
                     <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
@@ -120,6 +121,7 @@ function TextCard(textData, index) {
 }
 
 function NavBar() {
+    const navigate = useNavigate();
     return (
         <Disclosure as="nav" className="bg-gray-800">
             {({ open }) => (
@@ -150,6 +152,14 @@ function NavBar() {
                                     <div className="flex space-x-4">
                                         {navigation.map((item) => (
                                             <a
+                                                onClick={() => {
+                                                    console.log(item.name)
+                                                    if (item.name == "Home") {
+                                                        navigate('/');
+                                                    } else {
+                                                        navigate('/' + item.name.toLowerCase());
+                                                    }
+                                                }}
                                                 key={item.name}
                                                 href={item.href}
                                                 className={classNames(
@@ -499,13 +509,13 @@ const LeftSide = ({
                             </p>
                             <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-300 lg:max-w-none">
                                 {parsedFirstText.map((item, index) => (
-                                    TextCard(item, index)
-                                    // <div key={index} className="relative pl-9">
-                                    //     <dt className="inline font-semibold text-white">
-                                    //         <ChatBubbleOvalLeftEllipsisIcon className="absolute left-1 top-1 h-5 w-5 text-indigo-500" aria-hidden="true" />
-                                    //     </dt>{' '}
-                                    //     <dd className="inline">{item}</dd>
-                                    // </div>
+                                    // TextCard(item, index)
+                                    <div key={index} className="relative pl-9">
+                                        <dt className="inline font-semibold text-white">
+                                            <ChatBubbleOvalLeftEllipsisIcon className="absolute left-1 top-1 h-5 w-5 text-indigo-500" aria-hidden="true" />
+                                        </dt>{' '}
+                                        <dd className="inline">{item}</dd>
+                                    </div>
                                 ))}
                             </dl>
                             <Pagination />
