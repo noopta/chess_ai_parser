@@ -956,6 +956,9 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	log.Println("blackMovesConcat")
 	log.Println(blackMovesConcat)
 
+	log.Println("pgn")
+	log.Println(pgn)
+
 	prompt := "I am going to give you the transcript from a Chess match in standard algebraic notation. " +
 
 		"I will also give the current players piece color. I want you to analyze the transcript by the player " +
