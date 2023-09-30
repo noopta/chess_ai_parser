@@ -938,6 +938,7 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	if len(whiteMoves) <= len(blackMoves) {
 		for i := 0; i < len(whiteMoves); i++ {
 			moveRound := strconv.Itoa(i + 1)
+			// if intertwinedMoves does not contain the substring "1-0" or "0-1" then add to intervinedMoves
 			intertwinedMoves += moveRound + "." + whiteMoves[i] + " " + blackMoves[i] + " "
 		}
 	} else {
@@ -959,14 +960,14 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	log.Println("pgn")
 	log.Println(pgn)
 
-	prompt := "I am going to give you the transcript from a Chess match in standard algebraic notation. " +
+	// prompt := "I am going to give you the transcript from a Chess match in standard algebraic notation. " +
 
-		"I will also give the current players piece color. I want you to analyze the transcript by the player " +
-		"who's piece color is specified and determine 3 of their core weaknesses or areas of improvement. " +
-		"Provide feedback referring to specific moves and what move they should have done instead. " +
-		"Mention the move the user did, and mention the alternative move with the same round number in brackets. " +
-		"Provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.)." +
-		"Here is the game transcript: "
+	// 	"I will also give the current players piece color. I want you to analyze the transcript by the player " +
+	// 	"who's piece color is specified and determine 3 of their core weaknesses or areas of improvement. " +
+	// 	"Provide feedback referring to specific moves and what move they should have done instead. " +
+	// 	"Mention the move the user did, and mention the alternative move with the same round number in brackets. " +
+	// 	"Provide resources for concepts to learn to overcome these weaknesses (e.g. Youtube videos, articles online, etc.)." +
+	// 	"Here is the game transcript: "
 
 	client := openai.NewClient(os.Getenv("open_api_key"))
 	resp, err := client.CreateChatCompletion(
@@ -988,6 +989,23 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	}
 
 	firstResponse = resp.Choices[0].Message.Content
+	systemSettings := `You are a Chess AI, similar to Deepmind by Google. You will be given a chess board transcript in standard algebraic notation. I will also give the current players piece color. I want you to analyze the transcript by the player who's piece color is specified and determine 3 of their core weaknesses or areas of improvement. Provide feedback referring to specific moves and what move they should have done instead. Mention the move the user did, and mention the alternative move with the same round number in brackets. Keep track of the state of the board after every move; initially, the board is set in the default opening state. When you suggest the moves based on your feedback, do not include them in the board state change you are keeping track of. After every move, update your virtual board state and give the feedback I am asking based on the board state at that move round number. When you mention specific moves, mention in brackets the round it occurred in (e.g. e5 (5)). Do the same for alternative moves you suggest. Do not include letters, pieces or anything else in these brackets. Only the round number. Make sure to keep track of which pieces remain on the board after every move. When you talk about the weaknesses  and alternate moves, prefix the content by saying Analysis followed by a new line. When you describe resources prefix the content by Resources and a new line. 
+
+	Here is an example response:
+	
+	Analysis: 
+	1. Pawn structure, the move of e4 (2) demonstrated weak pawn structure. User could have instead done e3(2).
+	
+	2. Same structure as first Analysis point, different topic
+	
+	3. Same structure as first Analysis point, different topic
+	
+	Resources:
+	1. To improve on the first concept mentioned, user can read the following article (URL)
+	
+	2. Same structure as first Resource point for the second topic.
+	
+	3. Same structure as first Resource point for the third topic.`
 
 	resp, err = client.CreateChatCompletion(
 		context.Background(),
@@ -995,26 +1013,12 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 			Model: openai.GPT4,
 			Messages: []openai.ChatCompletionMessage{
 				{
-					Role: openai.ChatMessageRoleSystem,
-					Content: "You are a Chess AI, similar to Deepmind by Google. " +
-						"You will be given a chess board PGN transcript. Keep track of the" +
-						" state of the board after every move; initially, the board is set in " +
-						"the default opening state. When you suggest the moves based on your " +
-						"feedback, do not include them in the board state change you are keeping " +
-						"track of. After every move, update your virtual board state and give the " +
-						"feedback I am asking based on the board state at that move round number. " +
-						"When you mention specific moves, mention in brackets the round it occurred " +
-						"in (e.g. e5 (5)). Do the same for alternative moves you suggest. Do not " +
-						"include letters, pieces or anything else in these brackets. Only the round " +
-						"number. Make sure to keep track of which pieces remain on the board after " +
-						"every move. When you talk about the weaknesses  and alternate moves, prefix " +
-						"the content by saying Analysis followed by a new line. When you describe resources " +
-						"prefix the content by Resources and a new line. Here is the game transcript and the " +
-						"player color. ",
+					Role:    openai.ChatMessageRoleSystem,
+					Content: systemSettings,
 				},
 				{
 					Role:    openai.ChatMessageRoleUser,
-					Content: prompt + " \n" + intertwinedMoves + "\n" + playerColor,
+					Content: intertwinedMoves + "\n" + playerColor,
 				},
 			},
 		},
