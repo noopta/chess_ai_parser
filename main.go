@@ -925,7 +925,7 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	var secondResponse string
 	var whiteMovesConcat string
 	var blackMovesConcat string
-	var intertwinedMoves string
+	var globalIntertwinedMoves string
 
 	for i := 0; i < len(whiteMoves); i++ {
 		whiteMovesConcat += whiteMoves[i] + " "
@@ -936,21 +936,27 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	}
 
 	if len(whiteMoves) <= len(blackMoves) {
+		var intertwinedMoves string
 		for i := 0; i < len(whiteMoves); i++ {
 			moveRound := strconv.Itoa(i + 1)
 			// if intertwinedMoves does not contain the substring "1-0" or "0-1" then add to intervinedMoves
-			intertwinedMoves += moveRound + "." + whiteMoves[i] + " " + blackMoves[i] + " "
+			intertwinedMoves += moveRound + ". " + whiteMoves[i] + " " + blackMoves[i] + " "
 		}
+
+		globalIntertwinedMoves = intertwinedMoves
 	} else {
+		var intertwinedMoves string
 		for i := 0; i < len(blackMoves); i++ {
 			// convert i + 1 to string and store it in a variable
 			moveRound := strconv.Itoa(i + 1)
 			intertwinedMoves += moveRound + "." + whiteMoves[i] + " " + blackMoves[i] + " "
 		}
+
+		globalIntertwinedMoves = intertwinedMoves
 	}
 
 	log.Println("intertwined movess")
-	log.Println(intertwinedMoves)
+	log.Println(globalIntertwinedMoves)
 
 	log.Println("whiteMovesConcat")
 	log.Println(whiteMovesConcat)
@@ -1018,7 +1024,7 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 				},
 				{
 					Role:    openai.ChatMessageRoleUser,
-					Content: intertwinedMoves + "\n" + playerColor,
+					Content: pgn + "\n" + playerColor,
 				},
 			},
 		},
@@ -1134,13 +1140,12 @@ func connectToChessApi(jsonRequest FrontEndRequest, userSessionHash string) stri
 			isWhite := true
 
 			// fmt.Println(currentGame)
-			var pgn string
 			var whiteMoves []string
 			var blackMoves []string
 			var playerColor string
 			var opponentName string
 
-			pgn = chessMatches.Games[k].Pgn
+			// pgn = chessMatches.Games[k].Pgn
 
 			for _, v := range splitStrings {
 				// fmt.Println(v)
@@ -1183,7 +1188,10 @@ func connectToChessApi(jsonRequest FrontEndRequest, userSessionHash string) stri
 				}
 			}
 
-			gptResp := getGptResponse(opponentName, playerColor, whiteMoves, blackMoves, userSessionHash, pgn)
+			gamePgn := strings.Split(chessMatches.Games[k].Pgn, "\n")
+			pgnString := gamePgn[len(gamePgn)-2]
+
+			gptResp := getGptResponse(opponentName, playerColor, whiteMoves, blackMoves, userSessionHash, pgnString)
 
 			done <- struct{}{}
 
