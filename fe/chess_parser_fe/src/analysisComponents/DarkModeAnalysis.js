@@ -39,13 +39,26 @@ function classNames(...classes) {
 }
 
 
-function TextCard(textData, index) {
-    function ResourceModal() {
-        const [open, setOpen] = useState(true)
+function TextCard(textData, index, open, setOpen) {
+    var splitStrings = textData.split(":");
+    var title = splitStrings[0];
+    var description = splitStrings[1];
 
+
+    function LogResource(open, setOpen, index) {
+        console.log("resource clicked");
+        // setOpen(true);
         return (
-            <Transition.Root show={open} as={Fragment}>
-                <Dialog as="div" className="relative z-10" onClose={setOpen}>
+            <ResourceModal open={open} setOpen={setOpen} index={index} />
+        );
+    }
+
+    function ResourceModal(open, setOpen, index) {
+        const [newOpen, setNewOpen] = useState(true);
+        console.log(newOpen);
+        return (
+            <Transition.Root show={newOpen} as={Fragment}>
+                <Dialog as="div" className="relative z-10" onClose={setNewOpen}>
                     <Transition.Child
                         as={Fragment}
                         enter="ease-out duration-300"
@@ -89,7 +102,7 @@ function TextCard(textData, index) {
                                         <button
                                             type="button"
                                             className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                            onClick={() => setOpen(false)}
+                                            onClick={() => setNewOpen(false)}
                                         >
                                             Go back to dashboard
                                         </button>
@@ -106,17 +119,20 @@ function TextCard(textData, index) {
         <div class="dark">
             <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 <a href="#">
-                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Concept to Improve</h5>
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
                 </a>
-                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{textData}</p>
-                <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{description}</p>
+                <a onClick={() => { LogResource(true, setOpen, index) }} href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     View Resource
                     <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
                     </svg>
                 </a>
+                {/* <button onClick={() => { console.log("yo") }} class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    View Resources
+                </button> */}
             </div>
-        </div>
+        </div >
     )
 }
 
@@ -307,6 +323,7 @@ const LeftSide = ({
 }) => {
 
     const [fen, setFen] = useState('start');
+    const [open, setOpen] = useState(false)
     // split the string based on the string delimetor "Resources"
     var analysisArray = chessAnalysis.split("Resources");
     var analysis = analysisArray[0];
@@ -439,44 +456,6 @@ const LeftSide = ({
                 <div className="hidden md:-mt-px md:flex">
 
                     {itemList}
-                    {/* <a
-                        href="#"
-                        className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                    >
-                        1
-                    </a>
-                    {/* Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" */}
-                    {/* <a
-                        href="#"
-                        className="inline-flex items-center border-t-2 border-indigo-500 px-4 pt-4 text-sm font-medium text-indigo-600"
-                        aria-current="page"
-                    >
-                        2
-                    </a>
-                    <a
-                        href="#"
-                        className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                    >
-                        3
-                    </a>
-                    <a
-                        href="#"
-                        className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                    >
-                        8
-                    </a>
-                    <a
-                        href="#"
-                        className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                    >
-                        9
-                    </a>
-                    <a
-                        href="#"
-                        className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                    >
-                        10
-                    </a>  */}
                 </div>
                 <div className="-mt-px flex w-0 flex-1 justify-end">
                     <a
@@ -509,13 +488,13 @@ const LeftSide = ({
                             </p>
                             <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-300 lg:max-w-none">
                                 {parsedFirstText.map((item, index) => (
-                                    // TextCard(item, index)
-                                    <div key={index} className="relative pl-9">
-                                        <dt className="inline font-semibold text-white">
-                                            <ChatBubbleOvalLeftEllipsisIcon className="absolute left-1 top-1 h-5 w-5 text-indigo-500" aria-hidden="true" />
-                                        </dt>{' '}
-                                        <dd className="inline">{item}</dd>
-                                    </div>
+                                    TextCard(item, index, open, setOpen)
+                                    // <div key={index} className="relative pl-9">
+                                    //     <dt className="inline font-semibold text-white">
+                                    //         <ChatBubbleOvalLeftEllipsisIcon className="absolute left-1 top-1 h-5 w-5 text-indigo-500" aria-hidden="true" />
+                                    //     </dt>{' '}
+                                    //     <dd className="inline">{item}</dd>
+                                    // </div>
                                 ))}
                             </dl>
                             <Pagination />
