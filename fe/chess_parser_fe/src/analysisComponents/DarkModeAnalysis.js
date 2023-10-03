@@ -39,99 +39,87 @@ function classNames(...classes) {
 }
 
 
-function TextCard(textData, index, open, setOpen) {
+function TextCard(textData, index, open, setOpen, resources) {
     var splitStrings = textData.split(":");
     var title = splitStrings[0];
     var description = splitStrings[1];
 
 
-    function LogResource(open, setOpen, index) {
-        console.log("resource clicked");
-        // setOpen(true);
-        return (
-            <ResourceModal open={open} setOpen={setOpen} index={index} />
-        );
-    }
-
-    function ResourceModal(open, setOpen, index) {
-        const [newOpen, setNewOpen] = useState(true);
-        console.log(newOpen);
-        return (
-            <Transition.Root show={newOpen} as={Fragment}>
-                <Dialog as="div" className="relative z-10" onClose={setNewOpen}>
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                    >
-                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                    </Transition.Child>
-
-                    <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-                        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            >
-                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
-                                    <div>
-                                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                                            <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
-                                        </div>
-                                        <div className="mt-3 text-center sm:mt-5">
-                                            <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                                                Payment successful
-                                            </Dialog.Title>
-                                            <div className="mt-2">
-                                                <p className="text-sm text-gray-500">
-                                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur amet labore.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="mt-5 sm:mt-6">
-                                        <button
-                                            type="button"
-                                            className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                            onClick={() => setNewOpen(false)}
-                                        >
-                                            Go back to dashboard
-                                        </button>
-                                    </div>
-                                </Dialog.Panel>
-                            </Transition.Child>
-                        </div>
-                    </div>
-                </Dialog>
-            </Transition.Root>
-        )
-    }
+    // 1. To improve on the first concept, get comfortable with different types of pawn structures: How to Play Chess Openings: https://www.chess.com/article/view/how-to-play-chess-openings
     return (
         <div class="dark">
             <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                <a href="#">
+                <a id={"card" + index} href="#">
                     <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
                 </a>
                 <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{description}</p>
-                <a onClick={() => { LogResource(true, setOpen, index) }} href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <a onClick={() => { setOpen(true); console.log(resources) }} href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     View Resource
                     <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
                     </svg>
                 </a>
-                {/* <button onClick={() => { console.log("yo") }} class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    View Resources
-                </button> */}
-            </div>
+
+                {open ? (
+                    < Transition.Root show={open} as={Fragment}>
+                        <Dialog as="div" className="relative z-10" onClose={setOpen}>
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0"
+                                enterTo="opacity-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100"
+                                leaveTo="opacity-0"
+                            >
+                                <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                            </Transition.Child>
+
+                            <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+                                <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                                    <Transition.Child
+                                        as={Fragment}
+                                        enter="ease-out duration-300"
+                                        enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                        enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                        leave="ease-in duration-200"
+                                        leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                        leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                    >
+                                        <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                                            <div>
+                                                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                                                    <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
+                                                </div>
+                                                <div className="mt-3 text-center sm:mt-5">
+                                                    <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
+                                                        {title}
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-sm text-gray-500">
+                                                            {resources[index]}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="mt-5 sm:mt-6">
+                                                <button
+                                                    type="button"
+                                                    className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                                    onClick={() => setOpen(false)}
+                                                >
+                                                    Go back to analysis
+                                                </button>
+                                            </div>
+                                        </Dialog.Panel>
+                                    </Transition.Child>
+                                </div>
+                            </div>
+                        </Dialog>
+                    </Transition.Root>
+                ) : null
+                }
+            </div >
         </div >
     )
 }
@@ -488,13 +476,7 @@ const LeftSide = ({
                             </p>
                             <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-300 lg:max-w-none">
                                 {parsedFirstText.map((item, index) => (
-                                    TextCard(item, index, open, setOpen)
-                                    // <div key={index} className="relative pl-9">
-                                    //     <dt className="inline font-semibold text-white">
-                                    //         <ChatBubbleOvalLeftEllipsisIcon className="absolute left-1 top-1 h-5 w-5 text-indigo-500" aria-hidden="true" />
-                                    //     </dt>{' '}
-                                    //     <dd className="inline">{item}</dd>
-                                    // </div>
+                                    TextCard(item, index, open, setOpen, resources)
                                 ))}
                             </dl>
                             <Pagination />
