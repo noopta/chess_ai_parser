@@ -30,7 +30,6 @@ const features = [
 
 const navigation = [
     { name: 'Home', href: '#', current: false },
-    { name: 'Analysis', href: '#', current: true },
     { name: 'About', href: '#', current: false }
 ]
 
@@ -39,11 +38,24 @@ function classNames(...classes) {
 }
 
 
-function TextCard(textData, index, open, setOpen, resources) {
+function TextCard({textData, index, open, setOpen, resources, resourceMap, setResourcePopUpText, resourcePopUpText, setTitlePopupText, titlePopupText}) {
     var splitStrings = textData.split(":");
     var title = splitStrings[0];
     var description = splitStrings[1];
+ 
+    // one option 
+    console.log("resource map: " + resourceMap.get(index + 1));
+    // so resoruces in an array 
+    // we just need to access the index of each element in some kind of organized way 
+    // we can pass in the resources OR store it to a global variable for slightly easier access 
+    // one thing that would help is it there was away to stroe the index as a key to each textComponent and then reference that 
+    // when we want to get the data from the global map 
+    const stringMatch = textData.match(/^(\d)\./);
+    const resourceIndex = stringMatch ? parseInt(stringMatch[1], 10) : null;
+    const resource = resourceIndex ? resourceMap.get(resourceIndex) : null;
 
+    // Logging for debugging
+    console.log("title: " + title);
 
     // 1. To improve on the first concept, get comfortable with different types of pawn structures: How to Play Chess Openings: https://www.chess.com/article/view/how-to-play-chess-openings
     return (
@@ -53,7 +65,7 @@ function TextCard(textData, index, open, setOpen, resources) {
                     <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
                 </a>
                 <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{description}</p>
-                <a onClick={() => { setOpen(true); console.log(resources) }} href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <a onClick={() => { setOpen(true); setResourcePopUpText(resourceMap.get(resourceIndex + 1)); setTitlePopupText(title)}} class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     View Resource
                     <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
@@ -93,11 +105,15 @@ function TextCard(textData, index, open, setOpen, resources) {
                                                 </div>
                                                 <div className="mt-3 text-center sm:mt-5">
                                                     <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                                                        {title}
+                                                        {titlePopupText}
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-sm text-gray-500">
-                                                            {resources[index]}
+                                                            {resourcePopUpText}
+                                                            {/* have a state variable here, because at any given point we will have one message on the popup, so when a user
+                                                             clicks on View Resource, we can set the state of the popup to the resource that we want to display
+                                                             very scrappy but I can use the title e.g. 1 or 2 or 3 as the key to the resourceMap
+                                                            */}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -145,19 +161,11 @@ function NavBar() {
                                 </Disclosure.Button>
                             </div>
                             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                                <div className="flex flex-shrink-0 items-center">
-                                    <img
-                                        className="h-8 w-auto"
-                                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                        alt="Your Company"
-                                    />
-                                </div>
                                 <div className="hidden sm:ml-6 sm:block">
                                     <div className="flex space-x-4">
                                         {navigation.map((item) => (
                                             <a
                                                 onClick={() => {
-                                                    console.log(item.name)
                                                     if (item.name == "Home") {
                                                         navigate('/');
                                                     } else {
@@ -179,71 +187,6 @@ function NavBar() {
                                 </div>
                             </div>
                             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                                <button
-                                    type="button"
-                                    className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                                >
-                                    <span className="absolute -inset-1.5" />
-                                    <span className="sr-only">View notifications</span>
-                                    <BellIcon className="h-6 w-6" aria-hidden="true" />
-                                </button>
-
-                                {/* Profile dropdown */}
-                                <Menu as="div" className="relative ml-3">
-                                    <div>
-                                        <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                                            <span className="absolute -inset-1.5" />
-                                            <span className="sr-only">Open user menu</span>
-                                            <img
-                                                className="h-8 w-8 rounded-full"
-                                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                                alt=""
-                                            />
-                                        </Menu.Button>
-                                    </div>
-                                    <Transition
-                                        as={Fragment}
-                                        enter="transition ease-out duration-100"
-                                        enterFrom="transform opacity-0 scale-95"
-                                        enterTo="transform opacity-100 scale-100"
-                                        leave="transition ease-in duration-75"
-                                        leaveFrom="transform opacity-100 scale-100"
-                                        leaveTo="transform opacity-0 scale-95"
-                                    >
-                                        <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                            <Menu.Item>
-                                                {({ active }) => (
-                                                    <a
-                                                        href="#"
-                                                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                                                    >
-                                                        Your Profile
-                                                    </a>
-                                                )}
-                                            </Menu.Item>
-                                            <Menu.Item>
-                                                {({ active }) => (
-                                                    <a
-                                                        href="#"
-                                                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                                                    >
-                                                        Settings
-                                                    </a>
-                                                )}
-                                            </Menu.Item>
-                                            <Menu.Item>
-                                                {({ active }) => (
-                                                    <a
-                                                        href="#"
-                                                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                                                    >
-                                                        Sign out
-                                                    </a>
-                                                )}
-                                            </Menu.Item>
-                                        </Menu.Items>
-                                    </Transition>
-                                </Menu>
                             </div>
                         </div>
                     </div>
@@ -313,19 +256,30 @@ const LeftSide = ({
     const [fen, setFen] = useState('start');
     const [open, setOpen] = useState(false)
     // split the string based on the string delimetor "Resources"
-    var analysisArray = chessAnalysis.split("Resources");
+    var analysisArray = chessAnalysis.split("Resources:");
     var analysis = analysisArray[0];
     // reformatResponse(analysisArray[1], "R");
     var resources = analysisArray[1];
+    // var resourceMap = new Map();
     var analysisArray = [];
     const [analysisArrayState, setAnalysisArrayState] = useState([]);
     const [parsedFirstText, setParsedFirstTextState] = useState([]);
     const [boardState, setBoardState] = useState(new Chess());
     const [moveStateArray, setMoveStateArray] = useState([]);
+    const [resourceMap, setResourceMap] = useState(new Map());
+
+    const [analysisSection, resourcesSection] = chessAnalysis.split("Resources:");
+    // Extract analysis points
+    var analysisPoints = null;
+    var resourcePoints = null;
+    var resourceArray = [];
+    const [organizedAnalysisArray, setOrganizedAnalysisArray] = useState([]);
+    const [resourcePopupText, setResourcePopupText] = useState("");
+    const [titlePopupText, setTitlePopupText] = useState("");
+
 
     // get all occurances of "(" in the analysis string
     // get all occurances of ")" in the analysis string and store to a list
-
     let indexOccurance = analysis.indexOf("(", 0);
     var startingIndices = [];
     var i = 0;
@@ -347,6 +301,7 @@ const LeftSide = ({
     useEffect(() => {
         var chess = new Chess();
         var chessMovesArray = [];
+        var tempMap = new Map();
 
         if (analysisArray.length > 0) {
             const whiteMoves = gameMap.get(decodeKey).WhiteMoves;
@@ -401,26 +356,50 @@ const LeftSide = ({
             }
         }
 
-        console.log(chessMovesArray);
         if (chessMovesArray != null && chessMovesArray.length > 0) {
             setMoveStateArray(moveStateArray => [...moveStateArray, chessMovesArray]);
         }
+
+        if(analysisSection != undefined && resourcesSection != undefined) {
+            analysisPoints = analysisSection.split('\n').filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.')).map(line => line.trim());
+    
+            // Extract resource points
+            resourcePoints = resourcesSection.split('\n').filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.')).map(line => line.trim());
+    
+            // Split the string by comma and then trim each part to remove any extra whitespace
+            if(resourcePoints != undefined) {
+                resourceArray = resourcesSection.split(/(?=\d\.)/).map(point => point.trim());
+    
+                for(i = 0; i < resourceArray.length; i++) {
+                    // what are our options here?
+                    // option 1: store the resources in a map and then access the resources by the index of the analysisArray 
+                    // option 2: store the resources in a map and then access the resources by the key of the html element (e.g. 1, 2, 3)
+                    tempMap.set(i + 1, resourceArray[i]);
+                    console.log("resource map: " + tempMap.get(i + 1));
+                }
+                setResourceMap(tempMap);
+            }
+          
+    
+            if(analysisPoints != undefined) {
+                setOrganizedAnalysisArray(analysisSection.split(/(?=\d\.)/).map(point => point.trim()));
+                console.log("organized analysis array: " + organizedAnalysisArray);
+                // organizedAnalysisArray = analysisSection.split(/(?=\d\.)/).map(point => point.trim());
+            }
+        }
+    
 
     }, [decodeKey]);
 
     function Pagination() {
 
         const logInnerHtml = (e) => {
-            console.log(e.target.innerHTML);
-
             if (moveStateArray.length > 0) {
-                console.log(typeof e.target.innerHTML)
                 if (parseInt(e.target.innerHTML == 1)) {
                     console.log("string");
                 }
 
                 var index = parseInt(e.target.innerHTML) - 1;
-                console.log(moveStateArray)
                 setBoardState(moveStateArray[0][index]);
                 setFen(moveStateArray[0][index].fen());
             }
@@ -475,9 +454,27 @@ const LeftSide = ({
                                 Here is the analysis of your match! Use the pagination below to use the board to follow along with the feedback.
                             </p>
                             <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-300 lg:max-w-none">
-                                {parsedFirstText.map((item, index) => (
-                                    TextCard(item, index, open, setOpen, resources)
-                                ))}
+                            {organizedAnalysisArray
+                            .filter((item, idx) => !item.includes("Analysis"))
+                            .map((item, index) => {
+                                const newVariable = index; // or your logic to create newVariable
+                            
+                                return (
+                                <TextCard
+                                    key={newVariable} // Provide a unique key
+                                    textData={item}
+                                    index={newVariable}
+                                    open={open}
+                                    setOpen={setOpen}
+                                    resources={resources}
+                                    resourceMap={resourceMap}
+                                    setResourcePopUpText={setResourcePopupText}
+                                    resourcePopUpText={resourcePopupText}
+                                    setTitlePopupText={setTitlePopupText}
+                                    titlePopupText={titlePopupText}
+                                />
+                                );
+                            })}
                             </dl>
                             <Pagination />
                         </div>
