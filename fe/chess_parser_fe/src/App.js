@@ -435,8 +435,8 @@ const GenerateGrid = () => {
 const HeroSection = (props) => {
   const [showComponent, setShowComponent] = useState(true);
   const navigation = [
-    { name: 'Home', href: '#', current: true },
-    { name: 'About', href: '#', current: false }
+    { name: 'Home', href: '#', current: true }
+    // { name: 'About', href: '#', current: false }
   ]
 
   function classNames(...classes) {

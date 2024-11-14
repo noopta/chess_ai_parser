@@ -29,8 +29,8 @@ const features = [
 ]
 
 const navigation = [
-    { name: 'Home', href: '#', current: false },
-    { name: 'About', href: '#', current: false }
+    { name: 'Home', href: '#', current: false }
+    // { name: 'About', href: '#', current: false }
 ]
 
 function classNames(...classes) {
@@ -38,7 +38,7 @@ function classNames(...classes) {
 }
 
 
-function TextCard({textData, index, open, setOpen, resources, resourceMap, setResourcePopUpText, resourcePopUpText, setTitlePopupText, titlePopupText}) {
+function TextCard({textData, index, open, setOpen, resources, resourceMap, setResourcePopUpText, resourcePopUpText, setTitlePopupText, titlePopupText, moveStateArray, setBoardState, setFen}) {
     var splitStrings = textData.split(":");
     var title = splitStrings[0];
     var description = splitStrings[1];
@@ -55,7 +55,16 @@ function TextCard({textData, index, open, setOpen, resources, resourceMap, setRe
     const resource = resourceIndex ? resourceMap.get(resourceIndex) : null;
 
     // Logging for debugging
-    console.log("title: " + title);
+    // console.log("title: " + title);
+
+    const updateBoard = (index) => {
+        console.log("logging move state board")
+        console.log(moveStateArray[0][index]);
+        console.log(moveStateArray)
+        console.log(index)
+        setBoardState(moveStateArray[0][index]);
+        setFen(moveStateArray[0][index].fen());
+    }
 
     // 1. To improve on the first concept, get comfortable with different types of pawn structures: How to Play Chess Openings: https://www.chess.com/article/view/how-to-play-chess-openings
     return (
@@ -72,6 +81,12 @@ function TextCard({textData, index, open, setOpen, resources, resourceMap, setRe
                     </svg>
                 </a>
 
+                <a onClick={() => { updateBoard(index)}} class="inline-flex items-center ml-5 px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Show On Board
+                    <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+                    </svg>
+                </a>
                 {open ? (
                     < Transition.Root show={open} as={Fragment}>
                         <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -256,6 +271,8 @@ const LeftSide = ({
     const [fen, setFen] = useState('start');
     const [open, setOpen] = useState(false)
     // split the string based on the string delimetor "Resources"
+
+    // console.log("chess analysis: " + chessAnalysis);
     var analysisArray = chessAnalysis.split("Resources:");
     var analysis = analysisArray[0];
     // reformatResponse(analysisArray[1], "R");
@@ -357,7 +374,21 @@ const LeftSide = ({
         }
 
         if (chessMovesArray != null && chessMovesArray.length > 0) {
-            setMoveStateArray(moveStateArray => [...moveStateArray, chessMovesArray]);
+            console.log("chessMovesArray: " + chessMovesArray);
+            var moveStateMap = new Map();
+            var tempArray = [];
+            var j = 0;
+            
+            for(j = 0; j < chessMovesArray.length; j++) {
+                if(!moveStateMap.has(chessMovesArray[j].fen())) {
+                    tempArray.push(chessMovesArray[j]);
+                    moveStateMap.set(chessMovesArray[j].fen(), 1);
+                }
+            }
+
+            console.log("tempArray: " + tempArray);
+
+            setMoveStateArray(moveStateArray => [...moveStateArray, tempArray]);
         }
 
         if(analysisSection != undefined && resourcesSection != undefined) {
@@ -375,15 +406,15 @@ const LeftSide = ({
                     // option 1: store the resources in a map and then access the resources by the index of the analysisArray 
                     // option 2: store the resources in a map and then access the resources by the key of the html element (e.g. 1, 2, 3)
                     tempMap.set(i + 1, resourceArray[i]);
-                    console.log("resource map: " + tempMap.get(i + 1));
+                    // console.log("resource map: " + tempMap.get(i + 1));
                 }
                 setResourceMap(tempMap);
             }
           
     
             if(analysisPoints != undefined) {
-                setOrganizedAnalysisArray(analysisSection.split(/(?=\d\.)/).map(point => point.trim()));
-                console.log("organized analysis array: " + organizedAnalysisArray);
+                setOrganizedAnalysisArray(analysisPoints);
+                // setOrganizedAnalysisArray(analysisSection.split(/(?=\d\.)/).map(point => point.trim()));
                 // organizedAnalysisArray = analysisSection.split(/(?=\d\.)/).map(point => point.trim());
             }
         }
@@ -448,7 +479,7 @@ const LeftSide = ({
                 <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
                     <div className="lg:pr-8 lg:pt-4">
                         <div className="lg:max-w-lg">
-                            <h2 className="text-base font-semibold leading-7 text-indigo-400">Deploy faster</h2>
+                            <h2 className="text-base font-semibold leading-7 text-indigo-400"> Analysis </h2>
                             <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">Your match with {chessOpponent}</p>
                             <p className="mt-6 text-lg leading-8 text-gray-300">
                                 Here is the analysis of your match! Use the pagination below to use the board to follow along with the feedback.
@@ -472,11 +503,15 @@ const LeftSide = ({
                                     resourcePopUpText={resourcePopupText}
                                     setTitlePopupText={setTitlePopupText}
                                     titlePopupText={titlePopupText}
+                                    setMoveStateArray={setMoveStateArray}
+                                    setFen={setFen}
+                                    moveStateArray={moveStateArray}
+                                    setBoardState={setBoardState}
                                 />
                                 );
                             })}
                             </dl>
-                            <Pagination />
+                            {/* <Pagination /> */}
                         </div>
                     </div>
                     <Chessboard class="w-[48rem] max-w-none rounded-xl bg-gray-900 shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]" id="BasicBoard" position={fen} />
