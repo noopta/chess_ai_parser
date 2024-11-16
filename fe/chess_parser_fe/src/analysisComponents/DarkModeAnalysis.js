@@ -2,12 +2,26 @@ import { ChatBubbleOvalLeftEllipsisIcon, CloudArrowUpIcon, LockClosedIcon, Serve
 import { Chessboard } from "react-chessboard";
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, BellIcon, XMarkIcon, CheckIcon, LightBulbIcon } from '@heroicons/react/24/outline'
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid'
 import { useParams, useLocation, useNavigation } from 'react-router-dom';
 import { gameMap } from '../App.js';
 import { Chess } from 'chess.js';
 import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
+
+
+const getFirstMoveRoundInBracket = (descriptionText) => {
+    const regex = /\((\d+)\)/;
+    const match = descriptionText.match(regex);
+
+    if (match) {
+        return match[1]
+        // boardMap.set(index, match[1])
+    }
+
+    return null;
+}
+
 
 const features = [
     {
@@ -38,11 +52,16 @@ function classNames(...classes) {
 }
 
 
-function TextCard({textData, index, open, setOpen, resources, resourceMap, setResourcePopUpText, resourcePopUpText, setTitlePopupText, titlePopupText, moveStateArray, setBoardState, setFen}) {
+function TextCard({textData, index, open, setOpen, resources, resourceMap, setResourcePopUpText, resourcePopUpText, setTitlePopupText, titlePopupText, moveStateArray, setBoardState, setFen, parsedMoveMap}) {
     var splitStrings = textData.split(":");
     var title = splitStrings[0];
     var description = splitStrings[1];
  
+    var prefixRegex = /^\d+\.\s*/;
+
+    title = title.replace(prefixRegex, ''); 
+    resourcePopUpText = resourcePopUpText.replace(prefixRegex, '');
+
     // one option 
     console.log("resource map: " + resourceMap.get(index + 1));
     // so resoruces in an array 
@@ -66,6 +85,23 @@ function TextCard({textData, index, open, setOpen, resources, resourceMap, setRe
         setFen(moveStateArray[0][index].fen());
     }
 
+
+    // given context 
+    // we will have three cards at min, max 
+    // so we need 3 board states 
+    // each description is basically guaratneed to have a chess move round in brackets but it could be 1,2, or even repeating rounds 
+    // so we can parse the description instead of trying to parse each description scepficially and just get the first element 
+    // then store the first element in an array or map, and access it via the data strcuture using the index of the card
+    // it's not the perfect approach but it can get the job done especiialy for a POC + and then we can improvise from there 
+    // also it's probably usefuul to eventually have the link of the game somewhere but that can be focused in later as well 
+    // now that I think about it it's actually very imporant lol 
+
+    // desigining the fucntion 
+    // return value -> not required as of now
+    // paramaters -> text, data structure we want to use
+    // goal -> update a data structure holding the board state for each card, so we can just pass in both the data strcuture we want to use and the text
+
+
     // 1. To improve on the first concept, get comfortable with different types of pawn structures: How to Play Chess Openings: https://www.chess.com/article/view/how-to-play-chess-openings
     return (
         <div class="dark">
@@ -76,15 +112,37 @@ function TextCard({textData, index, open, setOpen, resources, resourceMap, setRe
                 <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{description}</p>
                 <a onClick={() => { setOpen(true); setResourcePopUpText(resourceMap.get(resourceIndex + 1)); setTitlePopupText(title)}} class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     View Resource
-                    <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+                    {/* <svg
+                    class="w-3.5 h-3.5 ml-2"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    >
+                    <path d="M11 3a7 7 0 00-7 7c0 2.386 1.052 4.29 2.634 5.642A1.992 1.992 0 007 17h6a1.993 1.993 0 00.366-1.358A7.002 7.002 0 0011 3zm.895 13H8.105a1.002 1.002 0 01.895 1.448 7.978 7.978 0 002 0 1.002 1.002 0 01.895-1.448zM9 20h2v-1H9v1z" />
+                    </svg> */}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 ml-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
                     </svg>
+
                 </a>
 
-                <a onClick={() => { updateBoard(index)}} class="inline-flex items-center ml-5 px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                    Show On Board
-                    <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+                <a onClick={() => { updateBoard(index) }} class="inline-flex items-center ml-5 px-3 py-2 text-sm font-medium text-center text-white bg-[#6A5ACD] rounded-lg hover:bg-[#5a4cbf] focus:ring-4 focus:outline-none focus:ring-[#4e429f] dark:bg-[#6A5ACD] dark:hover:bg-[#5a4cbf] dark:focus:ring-[#4e429f]">
+                Show On Board
+                    <svg
+                        class="w-3.5 h-3.5 ml-2"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 14 10"
+                    >
+                        <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M1 5h12m0 0L9 1m4 4L9 9"
+                        />
                     </svg>
                 </a>
                 {open ? (
@@ -116,7 +174,7 @@ function TextCard({textData, index, open, setOpen, resources, resourceMap, setRe
                                         <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
                                             <div>
                                                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                                                    <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
+                                                    <LightBulbIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
                                                 </div>
                                                 <div className="mt-3 text-center sm:mt-5">
                                                     <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
@@ -293,6 +351,7 @@ const LeftSide = ({
     const [organizedAnalysisArray, setOrganizedAnalysisArray] = useState([]);
     const [resourcePopupText, setResourcePopupText] = useState("");
     const [titlePopupText, setTitlePopupText] = useState("");
+    const [parsedMoveMap, setParsedMoveMap] = useState(new Map());
 
 
     // get all occurances of "(" in the analysis string
@@ -320,36 +379,66 @@ const LeftSide = ({
         var chessMovesArray = [];
         var tempMap = new Map();
 
+        if(analysisSection != undefined && resourcesSection != undefined) {
+            console.log("here")
+            console.log(analysisSection)
+            console.log("done")
+            analysisPoints = analysisSection.split('\n').filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.')).map(line => line.trim());
+            const tempMoveArray = []
+
+            for(i = 0; i < analysisPoints.length; i++) {
+                // we can go through each analysisPoint, extract the move number store it to our map, 
+                // and then later we can use the map for when a user selects View on Board to get the appropriate board state   
+                // getFirstMoveRoundInBracket(analysisPoints[i], tempParsedMoveMap, i); 
+                tempMoveArray.push(getFirstMoveRoundInBracket(analysisPoints[i]));
+            }
+            //*********** */
+
+            setAnalysisArrayState(tempMoveArray);
+        }
+
+
         if (analysisArray.length > 0) {
             const whiteMoves = gameMap.get(decodeKey).WhiteMoves;
             const blackMoves = gameMap.get(decodeKey).BlackMoves;
 
 
-            for (i = 0; i < startingIndices.length; i++) {
-                var index = startingIndices[i];
-                var endIndex = analysis.indexOf(")", index);
-                var substring = analysis.substring(index, endIndex + 1);
+            // for (i = 0; i < startingIndices.length; i++) {
+            //     var index = startingIndices[i];
+            //     var endIndex = analysis.indexOf(")", index);
+            //     var substring = analysis.substring(index, endIndex + 1);
 
-                setAnalysisArrayState(analysisArrayState => [...analysisArrayState, substring]);
-            }
+            //     console.log("substring" + substring)
+
+            //     setAnalysisArrayState(analysisArrayState => [...analysisArrayState, substring]);
+            // }
 
 
             // set parsedFirstText to the return response of reformatResponse function
             setParsedFirstTextState(reformatResponse(analysis, "A"));
 
+            // how do I modify the move board with parsedMoveNumber 
+            // don't want to refactor at the moment so might do a hacky solution for now
+            // TODO: come back to this later to refactor because it'll become technical debt 
             for (let i = 0; i < analysisArray.length; i++) {
                 var currentRound = analysisArray[i];
                 chess = new Chess();
 
                 // get the move number between the brackets
+                console.log("intiial analysis: " + analysisArray[i]);
                 var moveNumber = currentRound.substring(currentRound.indexOf("(") + 1, currentRound.indexOf(")"));
                 // convert the move number to an integer
                 var convertedMoveNumber = parseInt(moveNumber);
-
                 var j = 0;
 
                 var moveMap = new Map();
 
+
+                //COME BACK HERE
+
+
+                // this is the ONLY place we need the converted move number, which affects our board array state 
+                // the issue with this current approach is our board state array can have 3,4,5,6,7,etc. moves dependingon AI output
                 for (j = 0; j < convertedMoveNumber; j++) {
                     if (moveMap.has(whiteMoves[j])) {
                         // repeat of moves
@@ -374,6 +463,8 @@ const LeftSide = ({
         }
 
         if (chessMovesArray != null && chessMovesArray.length > 0) {
+            // what does chessMovesArray represent?
+            // it is 
             console.log("chessMovesArray: " + chessMovesArray);
             var moveStateMap = new Map();
             var tempArray = [];
@@ -393,7 +484,17 @@ const LeftSide = ({
 
         if(analysisSection != undefined && resourcesSection != undefined) {
             analysisPoints = analysisSection.split('\n').filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.')).map(line => line.trim());
-    
+            const tempParsedMoveMap = new Map();
+
+            for(i = 0; i < analysisPoints.length; i++) {
+                // we can go through each analysisPoint, extract the move number store it to our map, 
+                // and then later we can use the map for when a user selects View on Board to get the appropriate board state   
+                getFirstMoveRoundInBracket(analysisPoints[i], tempParsedMoveMap, i); 
+            }
+
+            setParsedMoveMap(tempParsedMoveMap);
+
+            console.log("parsed move round map" + tempParsedMoveMap.get(0) + " " + tempParsedMoveMap.get(1) + " " + tempParsedMoveMap.get(2));
             // Extract resource points
             resourcePoints = resourcesSection.split('\n').filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.')).map(line => line.trim());
     
@@ -507,6 +608,7 @@ const LeftSide = ({
                                     setFen={setFen}
                                     moveStateArray={moveStateArray}
                                     setBoardState={setBoardState}
+                                    parsedMoveMap={parsedMoveMap}
                                 />
                                 );
                             })}
