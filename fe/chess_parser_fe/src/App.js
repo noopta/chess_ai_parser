@@ -1,9 +1,13 @@
 import './App.css';
 import DarkModeAnalysis from './analysisComponents/DarkModeAnalysis';
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect, useRef, forwardRef } from 'react';
 import { Bars3Icon, BellIcon, XMarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
+// import backgroundVideo from './chess_game_ai_2.mp4'
+import VideoBackground from './analysisComponents/VideoBackground';
+import Layout from './analysisComponents/Layout';
+import ChessLoading from './analysisComponents/ChessLoading';
 
 // Array of JSON objects
 var globalGames = [];
@@ -13,8 +17,10 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route element={<Layout />}>
         <Route exact path="/" element={<HeroSection />} />
         <Route path="/analysis" element={<DarkModeAnalysis />} />
+        </Route>
       </Routes>
     </Router>
     // HeroSection()
@@ -65,7 +71,7 @@ const LandingForm = (showComponent, setShowComponent) => {
 
   function NavBar() {
     return (
-      <Disclosure as="nav" className="bg-gray-800">
+      <Disclosure as="nav" className="bg-gray-800 z-20">
         {({ open }) => (
           <>
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -243,7 +249,7 @@ const CubeSpinner = () => {
 
 const LoadingModel = () => {
   return (
-    <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="relative z-30" aria-labelledby="modal-title" role="dialog" aria-modal="true">
       <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <div class="fixed inset-0 z-10 overflow-y-auto">
         <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
@@ -255,6 +261,7 @@ const LoadingModel = () => {
                   <div class="mt-2 text-centre content-centre">
                     {/* <Spinner /> */}
                     <CubeSpinner />
+                    {/* <ChessLoading/> */}
                     <p class="text-sm text-gray-500">Hold on! We are working our hardest to analyze your games, after all good things take time :p</p>
                   </div>
                 </div>
@@ -381,6 +388,7 @@ const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading
   } finally {
     console.log("finally")
     if (requestResponse == 200) {
+      // scroll down UI
       setShowComponent(true)
     }
   }
@@ -433,11 +441,20 @@ const GenerateGrid = () => {
 
 
 const HeroSection = (props) => {
-  const [showComponent, setShowComponent] = useState(true);
+  const [showComponent, setShowComponent] = useState(false);
+  const listGamesRef = useRef(null);
+
   const navigation = [
     { name: 'Home', href: '#', current: true }
     // { name: 'About', href: '#', current: false }
   ]
+
+  useEffect(() => {
+    if (showComponent && listGamesRef.current) {
+      // Scroll to the ListGames component
+      listGamesRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [showComponent]);
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -446,7 +463,7 @@ const HeroSection = (props) => {
   function NavBar() {
     const navigate = useNavigate();
     return (
-      <Disclosure as="nav" className="bg-gray-800">
+      <Disclosure as="nav" className="bg-transparent fixed w-full z-20">
         {({ open }) => (
           <>
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -464,13 +481,6 @@ const HeroSection = (props) => {
                   </Disclosure.Button>
                 </div>
                 <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                  {/* <div className="flex flex-shrink-0 items-center">
-                    <img
-                      className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                      alt="Your Company"
-                    />
-                  </div> */}
                   <div className="hidden sm:ml-6 sm:block">
                     <div className="flex space-x-4">
                       {navigation.map((item) => (
@@ -527,8 +537,8 @@ const HeroSection = (props) => {
 
   return (
     <>
-      <html class="h-full bg-gray-900">
-        <body class="h-full">
+      <html class="h-full">
+        {/* <body class="h-full">
           <NavBar />
           <div class="relative isolate px-6 lg:px-8">
             <div class="mx-auto max-w-2xl py-32">
@@ -541,6 +551,43 @@ const HeroSection = (props) => {
               </div>
             </div>
             {showComponent ? <ListGames /> : null}
+          </div>
+        </body> */}
+
+          <body className="h-full relative">
+          {/* Video Background */}
+
+          {/* <VideoBackground isVisible={true}/> */}
+          {/* <video
+            autoPlay
+            loop
+            muted
+            className="fixed inset-0 w-full h-full object-cover"
+          >
+            <source src={VideoBackground} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video> */}
+
+          {/* Optional Overlay */}
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+
+          {/* Content */}
+          <NavBar />
+          <div className="relative px-6 lg:px-8">
+            <div className="mx-auto max-w-2xl py-32">
+              <div className="text-center">
+                <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
+                  Chess analysis with AI, tailored for your skill set.
+                </h1>
+                <p className="mt-6 text-lg leading-8 text-gray-200">
+                  Get started by entering a Chess.com username to get feedback on your recent games.
+                </p>
+                <div className="mt-10 flex items-center justify-center gap-x-6">
+                  {LandingForm(showComponent, setShowComponent)}
+                </div>
+              </div>
+            </div>
+            {showComponent ? <ListGames ref={listGamesRef} /> : null}
           </div>
         </body>
       </html>
@@ -783,7 +830,7 @@ function LandingInputForm(showComponent, setShowComponent) {
                   <option>08</option>
                   <option>09</option>
                   <option>10</option>
-                  <option>12</option>
+                  <option>11</option>
                   <option>12</option>
                 </select>
               </div>
@@ -839,14 +886,15 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-function ListGames() {
-
+const ListGames = forwardRef((props, ref) => {
   const navigate = useNavigate();
-  return (
-    <ul role="list" className="divide-y divide-white/5">
 
+  return (
+    <div ref={ref}>
+    <ul role="list" className="divide-y divide-white/5">
       {[...gameMap.entries()].map(([key, currentGame]) => {
         return (
+         
           <li className="relative flex items-center space-x-4 py-4">
             <div className="min-w-0 flex-auto">
               <div className="flex items-center gap-x-3">
@@ -887,7 +935,8 @@ function ListGames() {
         );
       })}
     </ul>
+    </div>
   )
-}
+})
 
 export default App;
