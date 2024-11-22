@@ -1,0 +1,48 @@
+
+.chessboard body {
+    font-size: 0.75em;
+  }
+  .chessboard #wrapper {
+    width: 12em;
+    margin: 0 auto;
+    margin-top: 12.5em;
+    transform-origin: 6em 6em;
+    opacity: 0;
+  }
+  .chessboard .restart-css {
+    animation: setBoard 4s ease-in infinite, boardFadeFX 4s ease-in infinite;
+    -webkit-animation: setBoard 4s ease-in infinite, boardFadeFX 4s ease-in infinite;
+  }
+  .chessboard svg {
+    position: relative;
+    width: 1.375em;
+    left: 0;
+    top: -1.125em;
+    display: block;
+    opacity: 0;
+  }
+  .chessboard .pawnimate {
+    animation: settledown 4s ease-in infinite;
+    -webkit-animation: settledown 4s ease-in infinite;
+  }
+  .chessboard .whitefrontrow li svg { fill: url(#whiteGradient); }
+  .chessboard .whitebackrow li svg { fill: url(#whiteGradient); }
+  .chessboard .blackfrontrow li svg { fill: url(#blackGradient); }
+  .chessboard .blackbackrow li svg { fill: url(#blackGradient); }
+  
+  /* Example for animation delays */
+  .chessboard .blackfrontrow li:nth-child(2) > svg { animation-delay: 0.1s; }
+  
+  /* Other rules remain the same */
+  .chessboard ul {
+    list-style-type: none;
+    float: left;
+    margin: 0;
+    padding: 0;
+  }
+  .chessboard ul li {
+    float: left;
+    height: 1.25em;
+    width: 1.5em;
+  }
+  

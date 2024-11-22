@@ -8,6 +8,11 @@ import { useParams, useLocation, useNavigation } from 'react-router-dom';
 import { gameMap } from '../App.js';
 import { Chess } from 'chess.js';
 import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
+import AnimatedText from './AnimatedText.js';
+import { CardCarousel } from './CardCarousel.js';
+import { Carousel } from "@material-tailwind/react";
+import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'; // Import icons for arrows
+
 
 
 const getFirstMoveRoundInBracket = (descriptionText) => {
@@ -104,12 +109,16 @@ function TextCard({textData, index, open, setOpen, resources, resourceMap, setRe
 
     // 1. To improve on the first concept, get comfortable with different types of pawn structures: How to Play Chess Openings: https://www.chess.com/article/view/how-to-play-chess-openings
     return (
-        <div class="dark">
+        <div class="dark h-full w-full object-cover flex justify-center">
             <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 <a id={"card" + index} href="#">
                     <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
                 </a>
-                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{description}</p>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                    {/* {description} */}
+
+                    <AnimatedText text={description} speed={20} />
+                </p>
                 <a onClick={() => { setOpen(true); setResourcePopUpText(resourceMap.get(resourceIndex + 1)); setTitlePopupText(title)}} class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     View Resource
                     {/* <svg
@@ -402,18 +411,6 @@ const LeftSide = ({
             const whiteMoves = gameMap.get(decodeKey).WhiteMoves;
             const blackMoves = gameMap.get(decodeKey).BlackMoves;
 
-
-            // for (i = 0; i < startingIndices.length; i++) {
-            //     var index = startingIndices[i];
-            //     var endIndex = analysis.indexOf(")", index);
-            //     var substring = analysis.substring(index, endIndex + 1);
-
-            //     console.log("substring" + substring)
-
-            //     setAnalysisArrayState(analysisArrayState => [...analysisArrayState, substring]);
-            // }
-
-
             // set parsedFirstText to the return response of reformatResponse function
             setParsedFirstTextState(reformatResponse(analysis, "A"));
 
@@ -574,18 +571,39 @@ const LeftSide = ({
     });
 
     return (
-        <div className="overflow-hidden bg-gray-900 ">
+        <div className="overflow-hidden bg-gray-900 h-screen">
             <NavBar />
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
                 <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
                     <div className="lg:pr-8 lg:pt-4">
-                        <div className="lg:max-w-lg">
+                        <div className="lg:max-w-lg ">
                             <h2 className="text-base font-semibold leading-7 text-indigo-400"> Analysis </h2>
+                          
                             <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">Your match with {chessOpponent}</p>
                             <p className="mt-6 text-lg leading-8 text-gray-300">
                                 Here is the analysis of your match! Use the pagination below to use the board to follow along with the feedback.
                             </p>
-                            <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-300 lg:max-w-none">
+                            {/* <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-300 lg:max-w-none"> */}
+                            {/* <CardCarousel organizedAnalysisArray={organizedAnalysisArray} /> */}
+                            <Carousel
+        className="rounded-xl mt-10 max-w-xl mx-auto"
+        leftControl={
+          <button
+            type="button"
+            className="absolute top-1/2 -left-8 transform -translate-y-1/2 z-10"
+          >
+            <HiChevronLeft className="h-6 w-6 text-gray-500 hover:text-gray-700" />
+          </button>
+        }
+        rightControl={
+          <button
+            type="button"
+            className="absolute top-1/2 -right-8 transform -translate-y-1/2 z-10"
+          >
+            <HiChevronRight className="h-6 w-6 text-gray-500 hover:text-gray-700" />
+          </button>
+        }
+      >
                             {organizedAnalysisArray
                             .filter((item, idx) => !item.includes("Analysis"))
                             .map((item, index) => {
@@ -612,7 +630,8 @@ const LeftSide = ({
                                 />
                                 );
                             })}
-                            </dl>
+                            </Carousel>
+                            {/* </dl> */}
                             {/* <Pagination /> */}
                         </div>
                     </div>
