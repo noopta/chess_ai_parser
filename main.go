@@ -364,7 +364,7 @@ func getChessBlurb(currentMatch MoveSet) {
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: "o1-preview",
+			Model: openai.GPT4,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
@@ -979,7 +979,7 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT4,
+			Model: openai.GPT4Turbo,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
@@ -994,37 +994,61 @@ func getGptResponse(opponentName string, playerColor string, whiteMoves []string
 		return ""
 	}
 
+	goodResponse := `Analysis:
+
+	1. Poor pawn structure control: The move of d5 (14) allowed White to capture on d5 with their pawn. This gave up control of the center in the board, allowing White to gain an advantage in space and opening up the diagonal for the bishop. Instead, a safer move might have been ..., e6 (14) to solidify their pawn structure and decrease the chances of creating weaknesses. This would have also limited White's central control.
+	2. Questionable sacrifice: The player unnecessarily sacrificed a knight with ..., Nxd5 (6), which was not a good idea as it provided White with a clear advantage early in the game. They should have played ..., Bg7 (6) for better development and king side security.
+	3. Poor kingside defense: The combination of moves ..., e4 (15) and ..., Bxb2 (16) left the player's king's defense very weak. Instead of ..., Bxb2 (16), keeping the bishop to help with defense by moving ..., Qc7 (16) would have been a safer option.
+
+	Resources:
+
+	1. To improve pawn structure understanding, review this article on [Chess.com](http://chess.com/)'s blog that explains the fundamental concepts in detail: https://www.chess.com/article/view/chess-pawn-structure-fundamentals
+	2. Understanding the importance of not giving pieces away in the early game can be aided by this [Chess.com](http://chess.com/) article: https://www.chess.com/article/view/the-principles-of-the-opening
+	3. Actively managing king's safety and maintaining an organized defense is crucial. The following resource can provide insights on this subject: https://www.chess.com/article/view/how-to-keep-your-king-safe.`
+
+	badResponseOne := `Analysis:
+		1. In the second move c4 (2), the user attempted too aggressive a play early, losing the center pawn in the process. Instead of c4 (2), a move like Nf3 (2) could have supported center control while developing a piece.
+		2. The move b3 (5) is an attempt to create pawn tension, but it further disrupts the user's pawn structure. It delegitimizes the setup for a king-side castle and weakens the protection of the king. Instead, the player could have-controlled the center with Nf3 (5), developing a piece and preparing for short castle.
+		3. It is pivotal to note the move Qa4+ (11), which is a wasteful check. Check options should be evaluated more carefully. Instead, capturing the dark square bishop with Nxd4 (11) would have improved piece activity without inviting counterplay.
+
+		Resources:
+
+		1. To understand how center control affects the game, this article "The Importance of the Center" on [chess.com](http://chess.com/) [https://www.chess.com/article/view/the-importance-of-the-center] can provide detailed insights.
+		2. A resource for learning safer king-side pressure setups, especially focusing on pawn structures, would be "Pawn Structure Chess" by Andrew Soltis.
+		3. For improving understanding of when to give a check and when not, a useful resource is "The King: Chess Pieces" by David Shenk.`
+
+	badResponseTwo := `Analysis:
+
+	1. Lack of piece development: The move 2. c4 (2) is too aggressive early in the game, aiming to control the center but neglecting piece development. Instead, developing the knight with 2. Nf3 (2) could have strengthened center control and allowed for a potential kingside castle.
+
+	2. Inefficient king safety: With 5. b3 (5), the player aimed to create pawn tension but ended up disrupting pawn structure, limiting the options for a kingside castle. Instead, the player should have developed another knight with 5. Nc3 (5), ensuring better control of the center and preparation for castling.
+
+	3. Inaccurate checking: The move 11. Qa4+ (11) was a check that had no strategic advantage. More caution should be used before giving checks. Instead, capturing the enemy's bishop with 11. Nxd4 (11) would have improved piece activity without inviting counterplay.
+
+	Resources:
+
+	1. For understanding piece development and center control, this article on {insert_concept_you_pointed_out} can be a helpful start: {insert_url_you_find_online_of_free_resource}
+	2. A resource to understand king safety and pawn structures is "Pawn Structure Chess" by Andrew Soltis. This book gives detailed strategies about pawn structures, critical for maintaining king safety.
+	3. To improve on understanding when, and when not, to give a check, the book "The King: Chess Pieces" by David Shenk explores this topic in-depth.`
+
 	firstResponse = resp.Choices[0].Message.Content
 	systemSettings := `You are a Chess AI, similar to Deepmind by Google. You will be given a chess board transcript in standard algebraic notation. I will also give the current players piece color. I want you to analyze the transcript by the player who's piece color is specified and determine 3 of their core weaknesses or areas of improvement. Provide feedback referring to specific moves and what move they should have done instead. Mention the move the user did, and mention the alternative move with the same round number in brackets. Keep track of the state of the board after every move; initially, the board is set in the default opening state. When you suggest the moves based on your feedback, do not include them in the board state change you are keeping track of. After every move, update your virtual board state and give the feedback I am asking based on the board state at that move round number. When you mention specific moves, mention in brackets the round it occurred in (e.g. e5 (5)). Do the same for alternative moves you suggest. Do not include letters, pieces or anything else in these brackets. Only the round number. Make sure to keep track of which pieces remain on the board after every move. When you talk about the weaknesses  and alternate moves, prefix the content by saying Analysis followed by a new line. When you describe resources prefix the content by Resources and a new line. 
 
-	Here is an example response:
-	
-	Analysis: 
-	1. Pawn structure, the move of e4 (2) demonstrated weak pawn structure. User could have instead done e3(2).
-	
-	2. Same structure as first Analysis point, different topic
-	
-	3. Same structure as first Analysis point, different topic
-	
-	Resources:
-	1. To improve on the first concept mentioned, user can read the following article (URL)
-	
-	2. Same structure as first Resource point for the second topic.
-	
-	3. Same structure as first Resource point for the third topic.`
+	Here is the response format that is good and that we want. Note how after each point (e.g. 1.) there is no trailing periods after a number. Examples of text not to add for each point: no (...) no (3...), no (rx7.) etc.  NO PERIODS followed by a number - that is BAD. Here is the GOOD response:
+	` + goodResponse + ` \n and here is a response format that is BAD and that we don't want: \n` + badResponseOne + "\n here is another example of a bad respones format that we don't want: \n" + badResponseTwo
 
 	resp, err = client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT4,
+			Model: openai.O1Mini,
 			Messages: []openai.ChatCompletionMessage{
-				{
-					Role:    openai.ChatMessageRoleSystem,
-					Content: systemSettings,
-				},
+				// {
+				// 	Role:    openai.ChatMessageRoleSystem,
+				// 	Content: systemSettings,
+				// },
 				{
 					Role:    openai.ChatMessageRoleUser,
-					Content: pgn + "\n" + playerColor,
+					Content: systemSettings + "\n" + pgn + "\n" + playerColor,
 				},
 			},
 		},
@@ -1134,6 +1158,9 @@ func connectToChessApi(jsonRequest FrontEndRequest, userSessionHash string) stri
 	// get min of jsonRequest.NumGames and len(chessMatches.Games)
 
 	log.Println("going to for loop")
+	// I can make a list of the urls
+	// return the list of urls
+	// string match on the front end
 	for k := 0; k < numGames; k++ {
 		go func(k int) {
 			splitStrings := strings.Split(chessMatches.Games[k].Pgn, "\n")
