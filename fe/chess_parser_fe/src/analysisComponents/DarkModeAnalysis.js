@@ -12,7 +12,7 @@ import AnimatedText from './AnimatedText.js';
 import { CardCarousel } from './CardCarousel.js';
 import { Carousel } from "@material-tailwind/react";
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'; // Import icons for arrows
-
+import ResourceCard from './ResourceCard.js';
 
 
 const getFirstMoveRoundInBracket = (descriptionText) => {
@@ -26,26 +26,6 @@ const getFirstMoveRoundInBracket = (descriptionText) => {
 
     return null;
 }
-
-
-const features = [
-    {
-        name: '1.',
-        description:
-            'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
-        icon: ChatBubbleOvalLeftEllipsisIcon,
-    },
-    {
-        name: '2.',
-        description: 'Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.',
-        icon: ChatBubbleOvalLeftEllipsisIcon,
-    },
-    {
-        name: '3.',
-        description: 'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
-        icon: ChatBubbleOvalLeftEllipsisIcon,
-    },
-]
 
 const navigation = [
     { name: 'Home', href: '#', current: false }
@@ -90,26 +70,8 @@ function TextCard({textData, index, open, setOpen, resources, resourceMap, setRe
         setFen(moveStateArray[0][index].fen());
     }
 
-
-    // given context 
-    // we will have three cards at min, max 
-    // so we need 3 board states 
-    // each description is basically guaratneed to have a chess move round in brackets but it could be 1,2, or even repeating rounds 
-    // so we can parse the description instead of trying to parse each description scepficially and just get the first element 
-    // then store the first element in an array or map, and access it via the data strcuture using the index of the card
-    // it's not the perfect approach but it can get the job done especiialy for a POC + and then we can improvise from there 
-    // also it's probably usefuul to eventually have the link of the game somewhere but that can be focused in later as well 
-    // now that I think about it it's actually very imporant lol 
-
-    // desigining the fucntion 
-    // return value -> not required as of now
-    // paramaters -> text, data structure we want to use
-    // goal -> update a data structure holding the board state for each card, so we can just pass in both the data strcuture we want to use and the text
-
-
-    // 1. To improve on the first concept, get comfortable with different types of pawn structures: How to Play Chess Openings: https://www.chess.com/article/view/how-to-play-chess-openings
     return (
-        <div class="dark h-full w-full object-cover flex justify-center">
+        <div class="dark object-cover flex justify-center">
             <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 <a id={"card" + index} href="#">
                     <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
@@ -154,74 +116,78 @@ function TextCard({textData, index, open, setOpen, resources, resourceMap, setRe
                         />
                     </svg>
                 </a>
-                {open ? (
-                    < Transition.Root show={open} as={Fragment}>
-                        <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0"
-                                enterTo="opacity-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                            >
-                                <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                            </Transition.Child>
 
-                            <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-                                <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                                    <Transition.Child
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                        enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                        leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                    >
-                                        <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
-                                            <div>
-                                                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                                                    <LightBulbIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
-                                                </div>
-                                                <div className="mt-3 text-center sm:mt-5">
-                                                    <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                                                        {titlePopupText}
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-sm text-gray-500">
-                                                            {resourcePopUpText}
-                                                            {/* have a state variable here, because at any given point we will have one message on the popup, so when a user
-                                                             clicks on View Resource, we can set the state of the popup to the resource that we want to display
-                                                             very scrappy but I can use the title e.g. 1 or 2 or 3 as the key to the resourceMap
-                                                            */}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="mt-5 sm:mt-6">
-                                                <button
-                                                    type="button"
-                                                    className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                    onClick={() => setOpen(false)}
-                                                >
-                                                    Go back to analysis
-                                                </button>
-                                            </div>
-                                        </Dialog.Panel>
-                                    </Transition.Child>
-                                </div>
-                            </div>
-                        </Dialog>
-                    </Transition.Root>
-                ) : null
-                }
+                <ResourceCard open={open} setOpen={setOpen} titleText={titlePopupText} descriptionText={resourcePopUpText} />
+
             </div >
         </div >
     )
 }
 
+
+// {open ? (
+//     < Transition.Root show={open} as={Fragment}>
+//         <Dialog as="div" className="relative z-10" onClose={setOpen}>
+//             <Transition.Child
+//                 as={Fragment}
+//                 enter="ease-out duration-300"
+//                 enterFrom="opacity-0"
+//                 enterTo="opacity-100"
+//                 leave="ease-in duration-200"
+//                 leaveFrom="opacity-100"
+//                 leaveTo="opacity-0"
+//             >
+//                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+//             </Transition.Child>
+
+//             <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+//                 <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+//                     <Transition.Child
+//                         as={Fragment}
+//                         enter="ease-out duration-300"
+//                         enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+//                         enterTo="opacity-100 translate-y-0 sm:scale-100"
+//                         leave="ease-in duration-200"
+//                         leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+//                         leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+//                     >
+//                         <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+//                             <div>
+//                                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+//                                     <LightBulbIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
+//                                 </div>
+//                                 <div className="mt-3 text-center sm:mt-5">
+//                                     <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
+//                                         {titlePopupText}
+//                                     </Dialog.Title>
+//                                     <div className="mt-2">
+//                                         <p className="text-sm text-gray-500">
+//                                             {resourcePopUpText}
+//                                             {/* have a state variable here, because at any given point we will have one message on the popup, so when a user
+//                                              clicks on View Resource, we can set the state of the popup to the resource that we want to display
+//                                              very scrappy but I can use the title e.g. 1 or 2 or 3 as the key to the resourceMap
+//                                             */}
+//                                         </p>
+//                                     </div>
+//                                 </div>
+//                             </div>
+//                             <div className="mt-5 sm:mt-6">
+//                                 <button
+//                                     type="button"
+//                                     className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+//                                     onClick={() => setOpen(false)}
+//                                 >
+//                                     Go back to analysis
+//                                 </button>
+//                             </div>
+//                         </Dialog.Panel>
+//                     </Transition.Child>
+//                 </div>
+//             </div>
+//         </Dialog>
+//     </Transition.Root>
+// ) : null
+// }
 function NavBar() {
     const navigate = useNavigate();
     return (
@@ -328,6 +294,7 @@ const reformatResponse = (response, type) => {
 }
 
 const LeftSide = ({
+    game,
     decodeKey,
     chessAnalysis,
     setChessAnalysis,
@@ -336,7 +303,8 @@ const LeftSide = ({
 }) => {
 
     const [fen, setFen] = useState('start');
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
+    const [playerColor, setPlayerColor] = useState("")
     // split the string based on the string delimetor "Resources"
 
     // console.log("chess analysis: " + chessAnalysis);
@@ -408,6 +376,7 @@ const LeftSide = ({
 
 
         if (analysisArray.length > 0) {
+            setPlayerColor(gameMap.get(decodeKey).PlayerColor);
             const whiteMoves = gameMap.get(decodeKey).WhiteMoves;
             const blackMoves = gameMap.get(decodeKey).BlackMoves;
 
@@ -432,8 +401,6 @@ const LeftSide = ({
 
 
                 //COME BACK HERE
-
-
                 // this is the ONLY place we need the converted move number, which affects our board array state 
                 // the issue with this current approach is our board state array can have 3,4,5,6,7,etc. moves dependingon AI output
                 for (j = 0; j < convertedMoveNumber; j++) {
@@ -520,126 +487,156 @@ const LeftSide = ({
 
     }, [decodeKey]);
 
-    function Pagination() {
-
-        const logInnerHtml = (e) => {
-            if (moveStateArray.length > 0) {
-                if (parseInt(e.target.innerHTML == 1)) {
-                    console.log("string");
-                }
-
-                var index = parseInt(e.target.innerHTML) - 1;
-                setBoardState(moveStateArray[0][index]);
-                setFen(moveStateArray[0][index].fen());
-            }
-        }
-
-        let itemList = analysisArrayState.map((item, index) => {
-            return <a onClick={logInnerHtml} href="#" class="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">{index + 1}</a>
-        })
-
-        return (
-            <nav className="flex items-center justify-between border-gray-200 px-4 sm:px-6 py-10">
-                <div className="-mt-px flex w-0 flex-1">
-                    <a
-                        href="#"
-                        className="inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                    >
-                        <ArrowLongLeftIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
-                        Previous
-                    </a>
-                </div>
-                <div className="hidden md:-mt-px md:flex">
-
-                    {itemList}
-                </div>
-                <div className="-mt-px flex w-0 flex-1 justify-end">
-                    <a
-                        href="#"
-                        className="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                    >
-                        Next
-                        <ArrowLongRightIcon className="ml-3 h-5 w-5 text-gray-400" aria-hidden="true" />
-                    </a>
-                </div>
-            </nav>
-        )
-    }
-
-    let parsedFirstTextList = parsedFirstText.map((item, index) => {
-        return <p mt-6 text-xl leading-8 text-gray-700>{item}<br /></p>
-    });
-
     return (
-        <div className="overflow-hidden bg-gray-900 h-screen">
-            <NavBar />
-            <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
-                    <div className="lg:pr-8 lg:pt-4">
-                        <div className="lg:max-w-lg ">
-                            <h2 className="text-base font-semibold leading-7 text-indigo-400"> Analysis </h2>
-                          
-                            <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">Your match with {chessOpponent}</p>
-                            <p className="mt-6 text-lg leading-8 text-gray-300">
-                                Here is the analysis of your match! Use the pagination below to use the board to follow along with the feedback.
-                            </p>
-                            {/* <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-300 lg:max-w-none"> */}
-                            {/* <CardCarousel organizedAnalysisArray={organizedAnalysisArray} /> */}
-                            <Carousel
-        className="rounded-xl mt-10 max-w-xl mx-auto"
-        leftControl={
-          <button
-            type="button"
-            className="absolute top-1/2 -left-8 transform -translate-y-1/2 z-10"
-          >
-            <HiChevronLeft className="h-6 w-6 text-gray-500 hover:text-gray-700" />
-          </button>
-        }
-        rightControl={
-          <button
-            type="button"
-            className="absolute top-1/2 -right-8 transform -translate-y-1/2 z-10"
-          >
-            <HiChevronRight className="h-6 w-6 text-gray-500 hover:text-gray-700" />
-          </button>
-        }
-      >
-                            {organizedAnalysisArray
-                            .filter((item, idx) => !item.includes("Analysis"))
-                            .map((item, index) => {
-                                const newVariable = index; // or your logic to create newVariable
-                            
-                                return (
-                                <TextCard
-                                    key={newVariable} // Provide a unique key
-                                    textData={item}
-                                    index={newVariable}
-                                    open={open}
-                                    setOpen={setOpen}
-                                    resources={resources}
-                                    resourceMap={resourceMap}
-                                    setResourcePopUpText={setResourcePopupText}
-                                    resourcePopUpText={resourcePopupText}
-                                    setTitlePopupText={setTitlePopupText}
-                                    titlePopupText={titlePopupText}
-                                    setMoveStateArray={setMoveStateArray}
-                                    setFen={setFen}
-                                    moveStateArray={moveStateArray}
-                                    setBoardState={setBoardState}
-                                    parsedMoveMap={parsedMoveMap}
-                                />
-                                );
-                            })}
-                            </Carousel>
-                            {/* </dl> */}
-                            {/* <Pagination /> */}
-                        </div>
-                    </div>
-                    <Chessboard class="w-[48rem] max-w-none rounded-xl bg-gray-900 shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]" id="BasicBoard" position={fen} />
+        <div className="overflow-hidden bg-gray-900 min-h-screen">
+          <NavBar />
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="mx-auto grid grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:grid-cols-2 items-start">
+              {/* Left Column */}
+              <div className="lg:pr-8 lg:pt-4">
+                <div>
+                  <h2 className="text-base font-semibold leading-7 text-indigo-400">
+                    Analysis - you played as {playerColor}
+                  </h2>
+                  <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                    Your match with {chessOpponent}
+                  </p>
+                  <p className="mt-6 text-lg leading-8 text-gray-300">
+                    Here is the analysis of your match! Use the carousel below to follow along with the
+                    feedback and view the board state at each move.
+                  </p>
+    
+                  {/* Carousel Wrapper */}
+                  <div className="mt-10">
+                    <Carousel
+                      className="relative rounded-xl w-full pb-12"
+                      leftControl={
+                        <button
+                          type="button"
+                          className="absolute top-1/2 -left-12 transform -translate-y-1/2 z-10"
+                        >
+                          <HiChevronLeft className="h-6 w-6 text-gray-500 hover:text-gray-700" />
+                        </button>
+                      }
+                      rightControl={
+                        <button
+                          type="button"
+                          className="absolute top-1/2 -right-12 transform -translate-y-1/2 z-10"
+                        >
+                          <HiChevronRight className="h-6 w-6 text-gray-500 hover:text-gray-700" />
+                        </button>
+                      }
+                    >
+                      {organizedAnalysisArray
+                        .filter((item, idx) => !item.includes('Analysis'))
+                        .map((item, index) => (
+                            <TextCard
+                            key={index} // Provide a unique key
+                            textData={item}
+                            index={index}
+                            open={open}
+                            setOpen={setOpen}
+                            resources={resources}
+                            resourceMap={resourceMap}
+                            setResourcePopUpText={setResourcePopupText}
+                            resourcePopUpText={resourcePopupText}
+                            setTitlePopupText={setTitlePopupText}
+                            titlePopupText={titlePopupText}
+                            setMoveStateArray={setMoveStateArray}
+                            setFen={setFen}
+                            moveStateArray={moveStateArray}
+                            setBoardState={setBoardState}
+                            parsedMoveMap={parsedMoveMap}
+                        />
+                        ))}
+                    </Carousel>
+                  </div>
                 </div>
+              </div>
+    
+              {/* Right Column - Chessboard */}
+              <div className="mt-4">
+                <Chessboard
+                  className="w-[48rem] max-w-none rounded-xl bg-gray-900 shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]"
+                  id="BasicBoard"
+                  position={fen}
+                />
+              </div>
             </div>
+          </div>
         </div>
-    )
+      );
+
+    // return (
+    //     <div className="overflow-hidden bg-gray-900 h-screen">
+    //         <NavBar />
+    //         <div className="mx-auto max-w-7xl px-6 lg:px-8">
+    //             <div className="mx-auto grid grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:grid-cols-2">
+    //                 <div className="lg:pr-8 lg:pt-4">
+    //                     <div className=" ">
+    //                         <h2 className="text-base font-semibold leading-7 text-indigo-400"> Analysis - you played as {playerColor} </h2>
+                          
+    //                         <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">Your match with {chessOpponent}</p>
+    //                         <p className="mt-6 text-lg leading-8 text-gray-300">
+    //                             Here is the analysis of your match! Use the carousel below follow along with the feedback and view the board state at each move.
+    //                         </p>
+    //                         {/* <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-300 lg:max-w-none"> */}
+    //                         {/* <CardCarousel organizedAnalysisArray={organizedAnalysisArray} /> */}
+    //                         <Carousel
+    //                             className="relative rounded-xl mt-10 w-full pb-12"
+    //                             leftControl={
+    //                             <button
+    //                                 type="button"
+    //                                 className="absolute top-1/2 -left-12 transform -translate-y-1/2 z-10"
+    //                             >
+    //                                 <HiChevronLeft className="h-6 w-6 text-gray-500 hover:text-gray-700" />
+    //                             </button>
+    //                             }
+    //                             rightControl={
+    //                             <button
+    //                                 type="button"
+    //                                 className="absolute top-1/2 -right-12 transform -translate-y-1/2 z-10"
+    //                             >
+    //                                 <HiChevronRight className="h-6 w-6 text-gray-500 hover:text-gray-700" />
+    //                             </button>
+    //                             }
+    //                         >
+    //                         {organizedAnalysisArray
+    //                         .filter((item, idx) => !item.includes("Analysis"))
+    //                         .map((item, index) => {
+    //                             const newVariable = index; // or your logic to create newVariable
+                            
+    //                             return (
+    //                             <TextCard
+    //                                 key={newVariable} // Provide a unique key
+    //                                 textData={item}
+    //                                 index={newVariable}
+    //                                 open={open}
+    //                                 setOpen={setOpen}
+    //                                 resources={resources}
+    //                                 resourceMap={resourceMap}
+    //                                 setResourcePopUpText={setResourcePopupText}
+    //                                 resourcePopUpText={resourcePopupText}
+    //                                 setTitlePopupText={setTitlePopupText}
+    //                                 titlePopupText={titlePopupText}
+    //                                 setMoveStateArray={setMoveStateArray}
+    //                                 setFen={setFen}
+    //                                 moveStateArray={moveStateArray}
+    //                                 setBoardState={setBoardState}
+    //                                 parsedMoveMap={parsedMoveMap}
+    //                             />
+    //                             );
+    //                         })}
+    //                         </Carousel>
+    //                         {/* </dl> */}
+    //                         {/* <Pagination /> */}
+    //                     </div>
+    //                 </div>
+    //                 <Chessboard class="w-[48rem] max-w-none rounded-xl bg-gray-900 shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]" id="BasicBoard" position={fen} />
+    //             </div>
+    //         </div>
+    //     </div>
+    // )
 }
 
 export default function DarkModeAnalysis(currentGame) {

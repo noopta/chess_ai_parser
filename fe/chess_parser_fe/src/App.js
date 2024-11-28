@@ -262,8 +262,9 @@ const CubeSpinner = () => {
   )
 }
 
-const LoadingModel2 = ({isLoading, setIsLoading, analysisProgress, username, numGames}) => {
+const LoadingModel2 = ({isLoading, setIsLoading, analysisProgress, username, numGames, abortControllers, setAnalysisProgress}) => {
   console.log("loading model " + isLoading) 
+  
   return(
     <Dialog open={isLoading} handler={() => {}} className="p-4">
     <DialogHeader className="relative m-0 block">
@@ -277,7 +278,13 @@ const LoadingModel2 = ({isLoading, setIsLoading, analysisProgress, username, num
         size="sm"
         variant="text"
         className="!absolute right-3.5 top-3.5"
-        onClick={() => setIsLoading(false)}
+        onClick={() => {
+          setAnalysisProgress(0)
+          setIsLoading(false)
+          abortControllers.current.forEach(controller => controller.abort());
+          // Clear the controllers
+          abortControllers.current = [];
+        }}
       >
         <XMarkIcon className="h-4 w-4 stroke-2" />
       </IconButton>
@@ -333,7 +340,14 @@ const LoadingModel2 = ({isLoading, setIsLoading, analysisProgress, username, num
         <InformationCircleIcon className="h-5 w-5 text-gray-900" />
         Closing this window may interrupt the analysis process.
       </Typography>
-      <Button onClick={() => setIsLoading(false)} className="w-full lg:max-w-fit">
+      <Button onClick={() => {
+            setAnalysisProgress(0)
+            setIsLoading(false)
+            abortControllers.current.forEach(controller => controller.abort());
+            // Clear the controllers
+            abortControllers.current = [];
+          }
+        } className="w-full lg:max-w-fit">
         cancel analysis
       </Button>
     </DialogFooter>
@@ -388,41 +402,30 @@ async function generateRandomHash() {
   return hashHex;
 }
 
-const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap }) => {
-
+const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers }) => {
   // useEffect(() => {
   // const fetchData = async () => {
   // console.log("fetching data")
   // const url = 'https://ol4gm9f3k0.execute-api.us-east-2.amazonaws.com/chess-parser-lambda'
   // const url = 'https://non68do8s4.execute-api.us-east-2.amazonaws.com/prod'
   const url = 'https://4vz6fr5rinuhsspb6rh5alkige0jrcmo.lambda-url.us-east-2.on.aws/'
+
   try {
     // console.log("here")
     setIsLoading(true);
 
-    const updateProgress = (progress, end) => {
-      console.log("progress " + progress)
-      if(progress < end) {
-        setTimeout(() => {
-          setAnalysisProgress(prev => {
-            const newProgress = prev + 1;
-
-            if(newProgress < end) {
-              updateProgress(newProgress, end);
-            }
-            return newProgress;
-          })
-        }, 20)
-      }
-    }
-   
-
+    const controller = new AbortController();
+    abortControllers.current.push(controller)
+    console.log("abort controllers")
+    console.log(abortControllers.length);
     // console.log(isLoading)
     // console.log("before fetch")
     console.log("monthState " + monthState)
     console.log("monthMap val " + monthToDigitMap[monthState])
+    console.log("updating progress " + analysisProgress)
     const response = await fetch(url, {
       method: 'POST',
+      signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
         // Set the appropriate content-type
@@ -438,10 +441,6 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
       }), // Convert your request data to JSON
     });
 
-    updateProgress(analysisProgress, 95)
-
-    // setAnalysisProgress(70)
-
     if (!response.ok) {
       throw new Error('Network response was not ok.');
     }
@@ -452,7 +451,6 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
 
     var jsonBody = JSON.parse(responseData)
 
-    updateProgress(analysisProgress, 96)
     for (var i = 0; i < jsonBody.length; i++) {
 
       var cleanedWhiteMoves = jsonBody[i]['whiteMoves']
@@ -481,21 +479,21 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
       gameMap.set(matchHash, jsonObj)
     }
 
-    updateProgress(analysisProgress, 99)
+    // updateProgress(analysisProgress, 99)
     if (responseData == "200") {
       // updateProgress(100)
-      updateProgress(analysisProgress, 100)
+      // updateProgress(95, 100)
       // get games from MongoDB
       console.log("200")
     }
     // setResponseData(data); // Handle the response data as needed
   } catch (error) {
-    // setAnalysisProgress(0)
+    setAnalysisProgress(0)
     console.error('Error:', error);
     // Handle errors appropriately (e.g., show an error message to the user)
   } finally {
     // come back here later
-    setAnalysisProgress(analysisProgress, 0)
+    setAnalysisProgress(0)
     setIsLoading(false);
   }
   // }
@@ -506,16 +504,19 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
   return globalGames.length > 0 ? 200 : 400;
 };
 
-const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap) => {
+const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers) => {
   console.log("get games")
   try {
-    var requestResponse = await MakePostRequest({ isLoading, setIsLoading, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap })
+    // console.log("logging current month")
+    // console.log(monthToDigitMap[monthState])
+    var requestResponse = await MakePostRequest({ isLoading, setIsLoading, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers })
   } catch {
     console.log("error")
   } finally {
     console.log("finally")
+    // TODO: uncomment after testing
     if (requestResponse == 200) {
-      // scroll down UI
+      setAnalysisProgress(0)
       setShowComponent(true)
     }
   }
@@ -523,47 +524,6 @@ const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading
   if (!data) return (
     <span>Data not available</span>
   )
-}
-
-
-const GenerateGrid = () => {
-  // Check if gameObjects is an object and not null
-
-  const jsonArray = Object.values(globalGames)
-  var whiteKnight = "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/chess_piece_knight_white.png"
-  var blackKnight = "https://img.freepik.com/free-icon/strategy_318-302817.jpg?t=st=1689738547~exp=1689739147~hmac=40c7bf99944a8259d71ce85d01caed61863e4a7facc32d784cb8a2ce917271db"
-  // var knightToUse = "";
-  const navigate = useNavigate();
-  return (
-    <div className="grid grid-cols-3 gap-4">
-      {/* {[...gameMap.values()].map((currentGame, index) => { */}
-      {[...gameMap.entries()].map(([key, currentGame]) => {
-        const knightToUse = currentGame["PlayerColor"] === "White" ? whiteKnight : blackKnight;
-        return (
-          <div className="max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
-            <div className="flex justify-center md:justify-end -mt-16">
-              <img className="w-20 h-20 object-cover rounded-full border-2 border-indigo-500" src={knightToUse} alt="Knight" />
-            </div>
-            <div>
-              <h2 className="text-gray-800 text-3xl font-semibold">{currentGame["Opponent"]}</h2>
-              <p className="mt-2 text-gray-600">{currentGame["MatchBlurb"]}!</p>
-            </div>
-            <div className="flex justify-end mt-4">
-              {/* <Link to={`/analysis/${encodeURIComponent(key)}`}> */}
-              <a onClick={() => {
-                navigate('/analysis', {
-                  state: { key: encodeURIComponent(key) }
-                });
-              }} href="#" className="text-xl font-medium text-indigo-500">
-                View Game
-              </a>
-              {/* </Link> */}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
 }
 
 
@@ -678,22 +638,6 @@ const HeroSection = (props) => {
   return (
     <>
       <html class="h-full">
-        {/* <body class="h-full">
-          <NavBar />
-          <div class="relative isolate px-6 lg:px-8">
-            <div class="mx-auto max-w-2xl py-32">
-              <div class="text-center">
-                <h1 class="text-4xl font-bold tracking-tight text-white sm:text-6xl">Chess analysis with AI, tailored for your skill set.</h1>
-                <p class="mt-6 text-lg leading-8 text-gray-400">Get started by entering a Chess.com username to get feedback on your recent games.</p>
-                <div class="mt-10 flex items-center justify-center gap-x-6">
-                  {LandingForm(showComponent, setShowComponent)}
-                </div>
-              </div>
-            </div>
-            {showComponent ? <ListGames /> : null}
-          </div>
-        </body> */}
-
           <body className="h-full relative">
           {/* Video Background */}
 
@@ -851,7 +795,7 @@ function LandingInputForm(showComponent, setShowComponent) {
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [data, setData] = useState(null);
   const [chessUsername, setChessUsername] = useState("");
-  const [monthState, setMonthState] = useState(defaultMonth);
+  const [monthState, setMonthState] = useState("January");
   const [yearState, setYearState] = useState(defaultYear);
   const [yearTitleState, setYearTitleState] = useState("Select Year");
   const [monthTitleState, setMonthTitleState] = useState("Select Month");
@@ -920,8 +864,31 @@ function LandingInputForm(showComponent, setShowComponent) {
     console.log("num games " + numGames);
   };
 
+  const UpdateProgress = ({progress, end, setAnalysisProgress, progressRef}) => {
+
+    if (progress >= end) {
+      return;
+    }
+  
+    progressRef.current = setTimeout(() => {
+      setAnalysisProgress((prev) => {
+        const newProgress = prev + 1;
+        UpdateProgress({ progress: newProgress, end, setAnalysisProgress, progressRef });
+        return newProgress;
+      });
+    }, 20);
+
+    return () => {
+      if (progressRef.current) {
+        clearInterval(progressRef.current);
+      }
+    };
+  };
+
   const [monthList, setMonthList] = useState(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
   const [yearList, setYearList] = useState(['2024', '2023', '2022', '2021', '2020', '2019']);
+  const abortControllers = useRef([]);
+  const progressRef = useRef(null);
 
   return (
     <form onSubmit={handleFormButtonClick}>
@@ -933,7 +900,7 @@ function LandingInputForm(showComponent, setShowComponent) {
                 Username
               </label>
               {/* {isLoading && <LoadingModel2 />} */}
-              {<LoadingModel2 isLoading = {isLoading} setIsLoading={setIsLoading} analysisProgress={analysisProgress} username={chessUsername} numGames={numGames}/>}
+              {<LoadingModel2 isLoading = {isLoading} setIsLoading={setIsLoading} analysisProgress={analysisProgress} username={chessUsername} numGames={numGames} abortControllers={abortControllers} setAnalysisProgress={setAnalysisProgress}/>}
               <div className="mt-2">
                 <input
                   type="text"
@@ -951,22 +918,6 @@ function LandingInputForm(showComponent, setShowComponent) {
                 Year
               </label>
               <div className="mt-2">
-                {/* <select
-                  id="year"
-                  name="year"
-                  autoComplete="Enter year"
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black"
-                  onChange={handleYearStateChange}
-                >
-                  <option>Select Year</option>
-                  <option>2024</option>
-                  <option>2023</option>
-                  <option>2022</option>
-                  <option>2021</option>
-                  <option>2020</option>
-                  <option>2019</option>
-                  <option>2018</option>
-                </select> */}
                 <DropdownMenu handleStateChange={setYearState} id="year" title = {yearState} listItems={yearList}/>
               </div>
             </div>
@@ -977,27 +928,6 @@ function LandingInputForm(showComponent, setShowComponent) {
               </label>
               <div className="mt-2">
                 <DropdownMenu handleStateChange={setMonthState} id="month" title = {monthState} listItems={monthList}/>
-                {/* <select
-                  id="month"
-                  name="month"
-                  autoComplete="Enter month"
-                  className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black"
-                  onChange={handleMonthStateChange}
-                >
-                  <option>Select Month</option>
-                  <option>01</option>
-                  <option>02</option>
-                  <option>03</option>
-                  <option>04</option>
-                  <option>05</option>
-                  <option>06</option>
-                  <option>07</option>
-                  <option>08</option>
-                  <option>09</option>
-                  <option>10</option>
-                  <option>11</option>
-                  <option>12</option>
-                </select> */}
               </div>
             </div>
 
@@ -1023,7 +953,7 @@ function LandingInputForm(showComponent, setShowComponent) {
       <div>
         <button
           type="submit"
-          onClick={() => GetGames(showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap)}
+          onClick={() =>  {UpdateProgress({ progress: analysisProgress, end: 95, setAnalysisProgress: setAnalysisProgress, progressRef: progressRef }); GetGames(showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers)}}
           // onClick={() => setShowModel(true)}
           className="flex w-full justify-center rounded-md bg-indigo-500  px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
@@ -1041,6 +971,8 @@ function LandingInputForm(showComponent, setShowComponent) {
     </form>
   )
 }
+
+
 
 const environments = {
   Preview: 'text-gray-400 bg-gray-400/10 ring-gray-400/20',
@@ -1066,6 +998,7 @@ const ListGames = forwardRef((props, ref) => {
                 <div className={classNames("text-green-400 bg-green-400/10", 'flex-none rounded-full p-1')}>
                   <div className="h-2 w-2 rounded-full bg-current" />
                 </div>
+                
                 <h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
                   <a onClick={() => {
                     navigate('/analysis', {

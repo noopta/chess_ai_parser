@@ -11,11 +11,11 @@ import { CursorArrowRaysIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
    
 export default function DropdownMenu({handleStateChange, id, title, listItems}) {
-    console.log("listItems " + listItems);
     const [menuTitle, setMenuTitle] = useState(title);
     
     const handleMenuItemClick = (item) => {
         setMenuTitle(item);
+        handleStateChange(item);
         console.log("item clicked " + item);
     }
     
@@ -49,16 +49,3 @@ export default function DropdownMenu({handleStateChange, id, title, listItems}) 
         </Menu>
     );
 }
-
-            {/* <MenuItem>January</MenuItem>
-          <MenuItem>February</MenuItem>
-          <MenuItem>March</MenuItem>
-          <MenuItem>April</MenuItem>
-          <MenuItem>May</MenuItem>
-          <MenuItem>June</MenuItem>
-          <MenuItem>July</MenuItem>
-          <MenuItem>August</MenuItem>
-          <MenuItem>September</MenuItem>
-          <MenuItem>October</MenuItem>
-          <MenuItem>November</MenuItem>
-          <MenuItem>December</MenuItem> */}
