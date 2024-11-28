@@ -3,7 +3,7 @@ import DarkModeAnalysis from './analysisComponents/DarkModeAnalysis';
 import React, { Fragment, useState, useEffect, useRef, forwardRef } from 'react';
 import { Bars3Icon, BellIcon, XMarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link, useNavigate, useLocation } from 'react-router-dom';
 // import backgroundVideo from './chess_game_ai_2.mp4'
 import VideoBackground from './analysisComponents/VideoBackground';
 import Layout from './analysisComponents/Layout';
@@ -26,7 +26,7 @@ import { InformationCircleIcon } from "@heroicons/react/24/solid";
 
 // Array of JSON objects
 var globalGames = [];
-export const gameMap = new Map();
+// export const gameMap = new Map();
 
 function App() {
   return (
@@ -54,7 +54,7 @@ const Spinner = () => {
   )
 }
 
-const LandingForm = (showComponent, setShowComponent) => {
+const LandingForm = (showComponent, setShowComponent, setGameMap) => {
 
   const handleSubmit = (event) => {
     event.preventDefault(); // This p"I am going to give you two sets of chess moves followed by the color of the player. I want you to write a 15-20 word enthusiastic summary on the players game and if they won or lost. Both move sets are from the same game" revents the default behavior of form submission (page refresh)
@@ -224,7 +224,8 @@ const LandingForm = (showComponent, setShowComponent) => {
   }
   return (
     <>
-      {LandingInputForm(showComponent, setShowComponent)}
+      {/* {LandingInputForm(showComponent, setShowComponent, setGameMap)} */}
+      <LandingInputForm showComponent={showComponent} setShowComponent={setShowComponent} setGameMap={setGameMap}/>
     </>
   )
 }
@@ -402,7 +403,7 @@ async function generateRandomHash() {
   return hashHex;
 }
 
-const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers }) => {
+const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap }) => {
   // useEffect(() => {
   // const fetchData = async () => {
   // console.log("fetching data")
@@ -451,6 +452,8 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
 
     var jsonBody = JSON.parse(responseData)
 
+    var tempMap = new Map();
+
     for (var i = 0; i < jsonBody.length; i++) {
 
       var cleanedWhiteMoves = jsonBody[i]['whiteMoves']
@@ -476,14 +479,25 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
       }
 
       globalGames.push(jsonObj)
-      gameMap.set(matchHash, jsonObj)
+      tempMap.set(matchHash, jsonObj)
     }
 
+    // expected to be a hash -> game object 
+
+    console.log("logging temp map")
+
+    tempMap.forEach((value, key) => {
+      console.log(key + " = " + value);
+    });
+
+    setGameMap(tempMap)
+    localStorage.setItem('gameMap', JSON.stringify(Array.from(tempMap.entries())));
     // updateProgress(analysisProgress, 99)
     if (responseData == "200") {
       // updateProgress(100)
       // updateProgress(95, 100)
       // get games from MongoDB
+      
       console.log("200")
     }
     // setResponseData(data); // Handle the response data as needed
@@ -504,12 +518,12 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
   return globalGames.length > 0 ? 200 : 400;
 };
 
-const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers) => {
+const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap) => {
   console.log("get games")
   try {
     // console.log("logging current month")
     // console.log(monthToDigitMap[monthState])
-    var requestResponse = await MakePostRequest({ isLoading, setIsLoading, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers })
+    var requestResponse = await MakePostRequest({ isLoading, setIsLoading, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap })
   } catch {
     console.log("error")
   } finally {
@@ -549,12 +563,41 @@ const HeroSection = (props) => {
     // { name: 'About', href: '#', current: false }
   ]
 
+  // const gameMap = new Map();
+  const [gameMap, setGameMap] = useState(new Map());
+  const location = useLocation();
+
   useEffect(() => {
     if (showComponent && listGamesRef.current) {
       // Scroll to the ListGames component
       listGamesRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [showComponent]);
+
+  // deserialization
+  useEffect(() => {
+    const cachedMap = localStorage.getItem('gameMap');
+    if (cachedMap) {
+      console.log("cached mapp")
+      var i = 0
+      var tempMap = new Map()
+      var parsedJsonData = JSON.parse(cachedMap)
+
+      for(i = 0; i < parsedJsonData.length; i++) {
+        var parsedData = parsedJsonData[i]
+
+        tempMap.set(parsedData[0], parsedData[1])
+      }
+
+      setGameMap(tempMap);
+      setShowComponent(true);
+    }
+  }, [location]);
+
+  // serialization
+  // useEffect(() => {
+  //   localStorage.setItem('gameMap', JSON.stringify(Array.from(gameMap.entries())));
+  // }, [gameMap]);
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -635,26 +678,71 @@ const HeroSection = (props) => {
     )
   }
 
+  const ListGames = forwardRef(({ gameMap }, ref) => {
+    const navigate = useNavigate();
+
+    const gameItems = [];
+  
+    for (const [key, currentGame] of gameMap.entries()) { 
+      console.log("key: " + key + " value: " + currentGame)
+      gameItems.push( 
+        <li className="relative flex items-center space-x-4 py-4">
+        <div className="min-w-0 flex-auto">
+          <div className="flex items-center gap-x-3">
+            <div className={classNames("text-green-400 bg-green-400/10", 'flex-none rounded-full p-1')}>
+              <div className="h-2 w-2 rounded-full bg-current" />
+            </div>
+            
+            <h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
+              <a onClick={() => {
+                navigate('/analysis', {
+                  state: { key: encodeURIComponent(key), gameMap: gameMap }
+                });
+              }} href="#" className="flex gap-x-2">
+                <span className="truncate">{currentGame["Opponent"]}</span>
+                <span className="text-gray-400">/</span>
+                <span className="whitespace-nowrap">{currentGame["PlayerColor"]}</span>
+                <span className="absolute inset-0" />
+              </a>
+            </h2>
+          </div>
+          <div className="mt-3 flex items-center gap-x-2.5 text-xs leading-5 text-gray-400">
+            <p className="truncate">{currentGame["MatchBlurb"]}</p>
+            <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 flex-none fill-gray-300">
+              <circle cx={1} cy={1} r={1} />
+            </svg>
+            <p className="whitespace-nowrap">Initiated</p>
+          </div>
+        </div>
+        <div
+          className={classNames(
+            environments["Production"],
+            'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset'
+          )}
+        >
+          View Game
+        </div>
+        <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+      </li>
+      ); 
+    }
+
+
+    return (
+      <div ref={ref}>
+      <ul role="list" className="divide-y divide-white/5">
+        {gameItems}
+      </ul>
+      </div>
+    )
+  });
+
+
   return (
     <>
       <html class="h-full">
           <body className="h-full relative">
           {/* Video Background */}
-
-          {/* <VideoBackground isVisible={true}/> */}
-          {/* <video
-            autoPlay
-            loop
-            muted
-            className="fixed inset-0 w-full h-full object-cover"
-          >
-            <source src={VideoBackground} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video> */}
-
-          {/* Optional Overlay */}
-          {/* the background change is happening here */}
-          {/* <div className="absolute inset-0 bg-black opacity-50"></div> */}
           <div className="fixed inset-0 bg-black opacity-50 h-screen"></div>
           {/* Content */}
           <NavBar />
@@ -668,11 +756,11 @@ const HeroSection = (props) => {
                   Get started by entering a Chess.com username to get feedback on your recent games.
                 </p>
                 <div className="mt-10 flex items-center justify-center gap-x-6">
-                  {LandingForm(showComponent, setShowComponent)}
+                  {LandingForm(showComponent, setShowComponent, setGameMap)}
                 </div>
               </div>
             </div>
-            {showComponent ? <ListGames ref={listGamesRef} /> : null}
+            {showComponent ? <ListGames ref={listGamesRef} gameMap={gameMap} /> : null}
           </div>
         </body>
       </html>
@@ -784,7 +872,7 @@ function InputForm() {
   )
 }
 
-function LandingInputForm(showComponent, setShowComponent) {
+function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
   const date = new Date();
   // const defaultMonth = String((date.getMonth() + 1)).padStart(2, '0');
   const defaultMonth = "January";
@@ -865,7 +953,7 @@ function LandingInputForm(showComponent, setShowComponent) {
   };
 
   const UpdateProgress = ({progress, end, setAnalysisProgress, progressRef}) => {
-
+    localStorage.setItem('gameMap', [])
     if (progress >= end) {
       return;
     }
@@ -953,7 +1041,7 @@ function LandingInputForm(showComponent, setShowComponent) {
       <div>
         <button
           type="submit"
-          onClick={() =>  {UpdateProgress({ progress: analysisProgress, end: 95, setAnalysisProgress: setAnalysisProgress, progressRef: progressRef }); GetGames(showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers)}}
+          onClick={() =>  {UpdateProgress({ progress: analysisProgress, end: 95, setAnalysisProgress: setAnalysisProgress, progressRef: progressRef }); GetGames(showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap)}}
           // onClick={() => setShowModel(true)}
           className="flex w-full justify-center rounded-md bg-indigo-500  px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
@@ -982,59 +1070,5 @@ const environments = {
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
-
-const ListGames = forwardRef((props, ref) => {
-  const navigate = useNavigate();
-
-  return (
-    <div ref={ref}>
-    <ul role="list" className="divide-y divide-white/5">
-      {[...gameMap.entries()].map(([key, currentGame]) => {
-        return (
-         
-          <li className="relative flex items-center space-x-4 py-4">
-            <div className="min-w-0 flex-auto">
-              <div className="flex items-center gap-x-3">
-                <div className={classNames("text-green-400 bg-green-400/10", 'flex-none rounded-full p-1')}>
-                  <div className="h-2 w-2 rounded-full bg-current" />
-                </div>
-                
-                <h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
-                  <a onClick={() => {
-                    navigate('/analysis', {
-                      state: { key: encodeURIComponent(key) }
-                    });
-                  }} href="#" className="flex gap-x-2">
-                    <span className="truncate">{currentGame["Opponent"]}</span>
-                    <span className="text-gray-400">/</span>
-                    <span className="whitespace-nowrap">{currentGame["PlayerColor"]}</span>
-                    <span className="absolute inset-0" />
-                  </a>
-                </h2>
-              </div>
-              <div className="mt-3 flex items-center gap-x-2.5 text-xs leading-5 text-gray-400">
-                <p className="truncate">{currentGame["MatchBlurb"]}</p>
-                <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 flex-none fill-gray-300">
-                  <circle cx={1} cy={1} r={1} />
-                </svg>
-                <p className="whitespace-nowrap">Initiated</p>
-              </div>
-            </div>
-            <div
-              className={classNames(
-                environments["Production"],
-                'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset'
-              )}
-            >
-              View Game
-            </div>
-            <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
-          </li>
-        );
-      })}
-    </ul>
-    </div>
-  )
-})
 
 export default App;

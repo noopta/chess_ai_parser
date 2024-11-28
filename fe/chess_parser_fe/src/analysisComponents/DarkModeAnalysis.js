@@ -5,7 +5,6 @@ import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon, CheckIcon, LightBulbIcon } from '@heroicons/react/24/outline'
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid'
 import { useParams, useLocation, useNavigation } from 'react-router-dom';
-import { gameMap } from '../App.js';
 import { Chess } from 'chess.js';
 import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
 import AnimatedText from './AnimatedText.js';
@@ -299,7 +298,8 @@ const LeftSide = ({
     chessAnalysis,
     setChessAnalysis,
     chessOpponent,
-    setChessOpponent
+    setChessOpponent,
+    gameMap
 }) => {
 
     const [fen, setFen] = useState('start');
@@ -375,7 +375,9 @@ const LeftSide = ({
         }
 
 
-        if (analysisArray.length > 0) {
+        if (analysisArray.length > 0 && gameMap != undefined) {
+            console.log("gamemap is not undefined")
+            console.log(gameMap)
             setPlayerColor(gameMap.get(decodeKey).PlayerColor);
             const whiteMoves = gameMap.get(decodeKey).WhiteMoves;
             const blackMoves = gameMap.get(decodeKey).BlackMoves;
@@ -646,6 +648,10 @@ export default function DarkModeAnalysis(currentGame) {
     const [chessAnalysis, setChessAnalysis] = useState("")
     const [chessOpponent, setChessOpponent] = useState("")
     const location = useLocation();
+    // const gameMap = location.state?.gameMap
+    // deserialize the gameMap
+    const cachedMap = localStorage.getItem('gameMap');
+    const gameMap = new Map(JSON.parse(cachedMap));
 
     useEffect(() => {
         if (gameMap.size > 0 && location.state != null) {
@@ -666,6 +672,7 @@ export default function DarkModeAnalysis(currentGame) {
             chessOpponent={chessOpponent}
             setChessAnalysis={setChessAnalysis}
             setChessOpponent={setChessOpponent}
+            gameMap={gameMap}
         />
         // <div className="overflow-hidden bg-gray-900 ">
         //     <NavBar />
