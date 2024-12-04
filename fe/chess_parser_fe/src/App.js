@@ -263,7 +263,7 @@ const CubeSpinner = () => {
   )
 }
 
-const LoadingModel2 = ({isLoading, setIsLoading, analysisProgress, username, numGames, abortControllers, setAnalysisProgress}) => {
+const LoadingModel2 = ({isLoading, setIsLoading, analysisProgress, username, numGames, abortControllers, setAnalysisProgress, resetProgressAsync}) => {
   console.log("loading model " + isLoading) 
   
   return(
@@ -280,7 +280,8 @@ const LoadingModel2 = ({isLoading, setIsLoading, analysisProgress, username, num
         variant="text"
         className="!absolute right-3.5 top-3.5"
         onClick={() => {
-          setAnalysisProgress(0)
+          resetProgressAsync()
+          // setAnalysisProgress(0)
           setIsLoading(false)
           abortControllers.current.forEach(controller => controller.abort());
           // Clear the controllers
@@ -342,7 +343,8 @@ const LoadingModel2 = ({isLoading, setIsLoading, analysisProgress, username, num
         Closing this window may interrupt the analysis process.
       </Typography>
       <Button onClick={() => {
-            setAnalysisProgress(0)
+            resetProgressAsync()
+            // setAnalysisProgress(0)
             setIsLoading(false)
             abortControllers.current.forEach(controller => controller.abort());
             // Clear the controllers
@@ -403,7 +405,7 @@ async function generateRandomHash() {
   return hashHex;
 }
 
-const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap }) => {
+const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap, resetProgressAsync }) => {
   // useEffect(() => {
   // const fetchData = async () => {
   // console.log("fetching data")
@@ -502,12 +504,14 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
     }
     // setResponseData(data); // Handle the response data as needed
   } catch (error) {
-    setAnalysisProgress(0)
+    // setAnalysisProgress(0)
     console.error('Error:', error);
     // Handle errors appropriately (e.g., show an error message to the user)
   } finally {
     // come back here later
-    setAnalysisProgress(0)
+    resetProgressAsync()
+
+    // setAnalysisProgress(0)
     setIsLoading(false);
   }
   // }
@@ -518,19 +522,20 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
   return globalGames.length > 0 ? 200 : 400;
 };
 
-const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap) => {
+const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap, resetProgressAsync) => {
   console.log("get games")
   try {
     // console.log("logging current month")
     // console.log(monthToDigitMap[monthState])
-    var requestResponse = await MakePostRequest({ isLoading, setIsLoading, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap })
+    var requestResponse = await MakePostRequest({ isLoading, setIsLoading, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap , resetProgressAsync})
   } catch {
     console.log("error")
   } finally {
     console.log("finally")
     // TODO: uncomment after testing
     if (requestResponse == 200) {
-      setAnalysisProgress(0)
+      // setAnalysisProgress(0)
+      resetProgressAsync()
       setShowComponent(true)
     }
   }
@@ -952,25 +957,39 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
     console.log("num games " + numGames);
   };
 
-  const UpdateProgress = ({progress, end, setAnalysisProgress, progressRef}) => {
-    localStorage.setItem('gameMap', [])
+  const UpdateProgress = ({ progress, end, setAnalysisProgress, progressRef }) => {
+    localStorage.setItem('gameMap', []);
     if (progress >= end) {
       return;
     }
   
-    progressRef.current = setTimeout(() => {
+    progressRef.current = setInterval(() => {
       setAnalysisProgress((prev) => {
         const newProgress = prev + 1;
-        UpdateProgress({ progress: newProgress, end, setAnalysisProgress, progressRef });
+        if (newProgress >= end) {
+          clearInterval(progressRef.current);
+        }
         return newProgress;
       });
     }, 20);
-
+  
     return () => {
       if (progressRef.current) {
         clearInterval(progressRef.current);
       }
     };
+  };
+
+  const waitForProgressCompletion = () => {
+    return new Promise((resolve) => {
+        setAnalysisProgress(0)
+    });
+  };
+
+  const resetProgressAsync = async () => {
+    await waitForProgressCompletion();
+    // This code runs after progress reaches 100
+    console.log('Progress complete!');
   };
 
   const [monthList, setMonthList] = useState(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
@@ -988,7 +1007,7 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
                 Username
               </label>
               {/* {isLoading && <LoadingModel2 />} */}
-              {<LoadingModel2 isLoading = {isLoading} setIsLoading={setIsLoading} analysisProgress={analysisProgress} username={chessUsername} numGames={numGames} abortControllers={abortControllers} setAnalysisProgress={setAnalysisProgress}/>}
+              {<LoadingModel2 isLoading = {isLoading} setIsLoading={setIsLoading} analysisProgress={analysisProgress} username={chessUsername} numGames={numGames} abortControllers={abortControllers} setAnalysisProgress={setAnalysisProgress} resetProgressAsync={resetProgressAsync}/>}
               <div className="mt-2">
                 <input
                   type="text"
@@ -1041,7 +1060,7 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
       <div>
         <button
           type="submit"
-          onClick={() =>  {UpdateProgress({ progress: analysisProgress, end: 95, setAnalysisProgress: setAnalysisProgress, progressRef: progressRef }); GetGames(showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap)}}
+          onClick={() =>  {UpdateProgress({ progress: analysisProgress, end: 95, setAnalysisProgress: setAnalysisProgress, progressRef: progressRef }); GetGames(showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap, resetProgressAsync)}}
           // onClick={() => setShowModel(true)}
           className="flex w-full justify-center rounded-md bg-indigo-500  px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
