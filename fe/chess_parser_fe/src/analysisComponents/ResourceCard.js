@@ -29,8 +29,8 @@ export default function ResourceCard({ open, setOpen, titleText, descriptionText
           <DialogHeader className="text-center mt-4">{titleText}</DialogHeader>
         </div>
         {/* Added padding to the DialogBody */}
-        <DialogBody className="text-base leading-relaxed text-gray-600 px-6">
-          {descriptionText}
+        <DialogBody className="text-base leading-relaxed text-gray-600 px-6 py-4 whitespace-normal break-words">
+        {descriptionText}
         </DialogBody>
         {/* Centered the button and added padding to the DialogFooter */}
         <DialogFooter className="flex justify-center px-6">

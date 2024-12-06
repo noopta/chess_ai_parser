@@ -273,7 +273,7 @@ const LoadingModel2 = ({isLoading, setIsLoading, analysisProgress, username, num
         Analysis Progress
       </Typography>
       <Typography className="mt-1 font-normal text-gray-600">
-        Please wait while we process analysis for your games. You can track the progress below.
+        Please wait 1-2 while we process analysis for your games. Estimated wait time is between 1-2 minutes. You can track the progress below.
       </Typography>
       <IconButton
         size="sm"
