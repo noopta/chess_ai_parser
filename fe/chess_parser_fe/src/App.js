@@ -60,7 +60,7 @@ const LandingForm = (showComponent, setShowComponent, setGameMap) => {
     event.preventDefault(); // This p"I am going to give you two sets of chess moves followed by the color of the player. I want you to write a 15-20 word enthusiastic summary on the players game and if they won or lost. Both move sets are from the same game" revents the default behavior of form submission (page refresh)
     // Add your form submission logic here, if needed
     // For example, you can access form data using event.target and perform actions based on it
-    console.log("yo")
+    // console.log("yo")
 
     // setShowComponent(true)
   }
@@ -264,7 +264,7 @@ const CubeSpinner = () => {
 }
 
 const LoadingModel2 = ({isLoading, setIsLoading, analysisProgress, username, numGames, abortControllers, setAnalysisProgress, resetProgressAsync}) => {
-  console.log("loading model " + isLoading) 
+  // console.log("loading model " + isLoading) 
   
   return(
     <Dialog open={isLoading} handler={() => {}} className="p-4">
@@ -419,13 +419,13 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
 
     const controller = new AbortController();
     abortControllers.current.push(controller)
-    console.log("abort controllers")
-    console.log(abortControllers.length);
+    // console.log("abort controllers")
+    // console.log(abortControllers.length);
     // console.log(isLoading)
     // console.log("before fetch")
-    console.log("monthState " + monthState)
-    console.log("monthMap val " + monthToDigitMap[monthState])
-    console.log("updating progress " + analysisProgress)
+    // console.log("monthState " + monthState)
+    // console.log("monthMap val " + monthToDigitMap[monthState])
+    // console.log("updating progress " + analysisProgress)
     const response = await fetch(url, {
       method: 'POST',
       signal: controller.signal,
@@ -469,7 +469,7 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
       // generate a random hash fmor each game 
       var matchHash = await generateRandomHash();
 
-      console.log(matchPgn)
+      // console.log(matchPgn)
 
       var jsonObj = {
         "WhiteMoves": cleanedWhiteMoves,
@@ -486,11 +486,11 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
 
     // expected to be a hash -> game object 
 
-    console.log("logging temp map")
+    // console.log("logging temp map")
 
-    tempMap.forEach((value, key) => {
-      console.log(key + " = " + value);
-    });
+    // tempMap.forEach((value, key) => {
+    //   console.log(key + " = " + value);
+    // });
 
     setGameMap(tempMap)
     localStorage.setItem('gameMap', JSON.stringify(Array.from(tempMap.entries())));
@@ -516,14 +516,14 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
   }
   // }
   // fetchData();
-  console.log("after fetch")
+  // console.log("after fetch")
   // }, []);
 
   return globalGames.length > 0 ? 200 : 400;
 };
 
 const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap, resetProgressAsync) => {
-  console.log("get games")
+  // console.log("get games")
   try {
     // console.log("logging current month")
     // console.log(monthToDigitMap[monthState])
@@ -531,7 +531,7 @@ const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading
   } catch {
     console.log("error")
   } finally {
-    console.log("finally")
+    // console.log("finally")
     // TODO: uncomment after testing
     if (requestResponse == 200) {
       // setAnalysisProgress(0)
@@ -583,7 +583,7 @@ const HeroSection = (props) => {
   useEffect(() => {
     const cachedMap = localStorage.getItem('gameMap');
     if (cachedMap) {
-      console.log("cached mapp")
+      // console.log("cached mapp")
       var i = 0
       var tempMap = new Map()
       var parsedJsonData = JSON.parse(cachedMap)
@@ -689,7 +689,7 @@ const HeroSection = (props) => {
     const gameItems = [];
   
     for (const [key, currentGame] of gameMap.entries()) { 
-      console.log("key: " + key + " value: " + currentGame)
+      // console.log("key: " + key + " value: " + currentGame)
       gameItems.push( 
         <li className="relative flex items-center space-x-4 py-4">
         <div className="min-w-0 flex-auto">
@@ -829,10 +829,10 @@ function InputForm() {
   const handleFormButtonClick = (event) => {
     // Access the inputValue here and do whatever you want with it
     event.preventDefault();
-    console.log("first name = " + firstName);
-    console.log("last name = " + lastName);
-    console.log("email = " + email);
-    console.log("message " + message);
+    // console.log("first name = " + firstName);
+    // console.log("last name = " + lastName);
+    // console.log("email = " + email);
+    // console.log("message " + message);
   };
 
   return (
@@ -951,10 +951,10 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
   const handleFormButtonClick = (event) => {
     // Access the inputValue here and do whatever you want with it
     event.preventDefault();
-    console.log("chess username = " + chessUsername);
-    console.log("month state = " + monthState);
-    console.log("year state = " + yearState);
-    console.log("num games " + numGames);
+    // console.log("chess username = " + chessUsername);
+    // console.log("month state = " + monthState);
+    // console.log("year state = " + yearState);
+    // console.log("num games " + numGames);
   };
 
   const UpdateProgress = ({ progress, end, setAnalysisProgress, progressRef }) => {
@@ -989,7 +989,7 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
   const resetProgressAsync = async () => {
     await waitForProgressCompletion();
     // This code runs after progress reaches 100
-    console.log('Progress complete!');
+    // console.log('Progress complete!');
   };
 
   const [monthList, setMonthList] = useState(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);

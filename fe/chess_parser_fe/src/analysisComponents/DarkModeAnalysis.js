@@ -47,7 +47,7 @@ function TextCard({textData, index, open, setOpen, resources, resourceMap, setRe
     resourcePopUpText = resourcePopUpText.replace(prefixRegex, '');
 
     // one option 
-    console.log("resource map: " + resourceMap.get(index + 1));
+    // console.log("resource map: " + resourceMap.get(index + 1));
     // so resoruces in an array 
     // we just need to access the index of each element in some kind of organized way 
     // we can pass in the resources OR store it to a global variable for slightly easier access 
@@ -61,10 +61,10 @@ function TextCard({textData, index, open, setOpen, resources, resourceMap, setRe
     // console.log("title: " + title);
 
     const updateBoard = (index) => {
-        console.log("logging move state board")
-        console.log(moveStateArray[0][index]);
-        console.log(moveStateArray)
-        console.log(index)
+        // console.log("logging move state board")
+        // console.log(moveStateArray[0][index]);
+        // console.log(moveStateArray)
+        // console.log(index)
         setBoardState(moveStateArray[0][index]);
         setFen(moveStateArray[0][index].fen());
     }
@@ -357,9 +357,9 @@ const LeftSide = ({
         var tempMap = new Map();
 
         if(analysisSection != undefined && resourcesSection != undefined) {
-            console.log("here")
-            console.log(analysisSection)
-            console.log("done")
+            // console.log("here")
+            // console.log(analysisSection)
+            // console.log("done")
             analysisPoints = analysisSection.split('\n').filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.')).map(line => line.trim());
             const tempMoveArray = []
 
@@ -376,8 +376,8 @@ const LeftSide = ({
 
 
         if (analysisArray.length > 0 && gameMap != undefined) {
-            console.log("gamemap is not undefined")
-            console.log(gameMap)
+            // console.log("gamemap is not undefined")
+            // console.log(gameMap)
             setPlayerColor(gameMap.get(decodeKey).PlayerColor);
             const whiteMoves = gameMap.get(decodeKey).WhiteMoves;
             const blackMoves = gameMap.get(decodeKey).BlackMoves;
@@ -393,7 +393,7 @@ const LeftSide = ({
                 chess = new Chess();
 
                 // get the move number between the brackets
-                console.log("intiial analysis: " + analysisArray[i]);
+                // console.log("intiial analysis: " + analysisArray[i]);
                 var moveNumber = currentRound.substring(currentRound.indexOf("(") + 1, currentRound.indexOf(")"));
                 // convert the move number to an integer
                 var convertedMoveNumber = parseInt(moveNumber);
@@ -431,7 +431,7 @@ const LeftSide = ({
         if (chessMovesArray != null && chessMovesArray.length > 0) {
             // what does chessMovesArray represent?
             // it is 
-            console.log("chessMovesArray: " + chessMovesArray);
+            // console.log("chessMovesArray: " + chessMovesArray);
             var moveStateMap = new Map();
             var tempArray = [];
             var j = 0;
@@ -443,13 +443,16 @@ const LeftSide = ({
                 }
             }
 
-            console.log("tempArray: " + tempArray);
+            // console.log("tempArray: " + tempArray);
 
             setMoveStateArray(moveStateArray => [...moveStateArray, tempArray]);
         }
 
         if(analysisSection != undefined && resourcesSection != undefined) {
             analysisPoints = analysisSection.split('\n').filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.')).map(line => line.trim());
+            // console.log("analysis points: " + analysisPoints);
+            // console.log("analysis section: " + analysisSection);
+            
             const tempParsedMoveMap = new Map();
 
             for(i = 0; i < analysisPoints.length; i++) {
@@ -460,7 +463,7 @@ const LeftSide = ({
 
             setParsedMoveMap(tempParsedMoveMap);
 
-            console.log("parsed move round map" + tempParsedMoveMap.get(0) + " " + tempParsedMoveMap.get(1) + " " + tempParsedMoveMap.get(2));
+            // console.log("parsed move round map" + tempParsedMoveMap.get(0) + " " + tempParsedMoveMap.get(1) + " " + tempParsedMoveMap.get(2));
             // Extract resource points
             resourcePoints = resourcesSection.split('\n').filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.')).map(line => line.trim());
     
