@@ -1068,13 +1068,13 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
         </button>
       </div>
 
-      {/* <p className="mt-10 text-center text-sm text-gray-400">
+      <p className="mt-10 text-center text-sm text-gray-400">
         Got a suggestion?{' '}
-        <a href="#" onClick={handleModelToggle} className="font-semibold leading-6 text-indigo-400 hover:text-indigo-300">
+        <a target="_blank" href="https://chessifai.canny.io/feature-requests" onClick={handleModelToggle} className="font-semibold leading-6 text-indigo-400 hover:text-indigo-300">
           Submit any bugs here
-          {showModel && <FeedbackForm />}
+          {/* {showModel && <FeedbackForm />} */}
         </a>
-      </p> */}
+      </p>
     </form>
   )
 }
