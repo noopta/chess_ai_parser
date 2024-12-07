@@ -1164,6 +1164,8 @@ PLEASE ENSURE THE LINK FOR RESOURCES YOU FIND ONLINE ARE VALID AND EXIST. This i
 }
 
 func cohereWebSearch(request string) string {
+	// TODO: this HAS to become an environment variable bruh
+	// also get a new API key because this is now public on GitHub
 	cohere_api_key := "i5SfrWG12ZDdqztyx1TBkMUxrHU3RAOa01mUVy6a"
 
 	client := cohereclient.NewClient(cohereclient.WithToken(cohere_api_key))
@@ -1199,7 +1201,7 @@ func connectToChessApi(jsonRequest FrontEndRequest, userSessionHash string) stri
 
 	if parseFormErr != nil {
 		fmt.Println(parseFormErr)
-		return ""
+		return "Invalid username or date."
 	}
 
 	// Fetch Request
@@ -1207,13 +1209,17 @@ func connectToChessApi(jsonRequest FrontEndRequest, userSessionHash string) stri
 
 	if err != nil {
 		fmt.Println("Failure : ", err)
-		return ""
+		return "Network failure occurred."
 	}
 
 	// Read Response Body
 	respBody, _ := ioutil.ReadAll(resp.Body)
 
 	json.Unmarshal(respBody, &chessMatches)
+
+	if len(chessMatches.Games) == 0 {
+		return "No games found in that time frame"
+	}
 
 	// Channel to signal goroutine completion
 	var wg sync.WaitGroup
@@ -1328,6 +1334,11 @@ func HandleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		log.Fatalln("Failed to unmarshal request body")
 	}
 
+	callerIP := request.RequestContext.Identity.SourceIP
+	fmt.Println(callerIP)
+
+	// insert the callerIP into a database somewhere
+
 	// deleteDocuments()
 	deleteCollections()
 
@@ -1371,7 +1382,15 @@ func HandleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		log.Fatal(err)
 	}
 
-	connectToChessApi(e, "individual_games"+timeStamp+hash)
+	chessApiResponse := connectToChessApi(e, "individual_games"+timeStamp+hash)
+
+	if chessApiResponse != "200" {
+		return events.APIGatewayProxyResponse{
+			StatusCode: http.StatusBadRequest,
+			Body:       chessApiResponse,
+		}, nil
+	}
+
 	mongoDBGames = getMongoDbGames("individual_games" + timeStamp + hash)
 	// convert mongoDBGames to a json string and store in a variable called jsonData
 

@@ -27,7 +27,7 @@ const getFirstMoveRoundInBracket = (descriptionText) => {
 }
 
 const navigation = [
-    { name: 'Home', href: '#', current: false }
+    { name: 'Home', href: '/', current: false }
     // { name: 'About', href: '#', current: false }
 ]
 
