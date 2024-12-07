@@ -4,6 +4,7 @@ export default function VideoBackground({ isVisible }) {
     return (
         <video
         autoPlay
+        playsInline
         loop
         muted
         preload="auto"
