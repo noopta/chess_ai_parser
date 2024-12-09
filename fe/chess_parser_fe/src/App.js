@@ -532,6 +532,13 @@ const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading
     return;
   }
 
+  // if numGames is not a number
+  if (isNaN(numGames)) {
+    setAlertDialog("Please enter a valid number of games")
+    setShowAlert(true)
+    return;
+  }
+
   try {
     // console.log("logging current month")
     // console.log(monthToDigitMap[monthState])
