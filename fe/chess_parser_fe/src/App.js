@@ -525,6 +525,13 @@ const MakePostRequest = async ({ isLoading, setIsLoading, setData, chessUsername
 
 const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap, resetProgressAsync, progressRef, setShowAlert, setAlertDialog) => {
   // console.log("get games")
+
+  if(numGames >= 11 || numGames <= 0) {
+    setAlertDialog("Please enter a number of games between 1 and 10")
+    setShowAlert(true)
+    return;
+  }
+
   try {
     // console.log("logging current month")
     // console.log(monthToDigitMap[monthState])
