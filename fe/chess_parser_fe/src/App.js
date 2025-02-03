@@ -12,6 +12,7 @@ import DropdownMenu from './analysisComponents/DropdownMenu';
 import AnimatedPolygon from './analysisComponents/AnimatedPolygon';
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import InfiniteLoading from './analysisComponents/InfiniteLoading';
+import grpc from 'grpc-web';
 import {
   Button,
   Dialog,
@@ -24,10 +25,18 @@ import {
 } from "@material-tailwind/react";
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import AlertDialog from './analysisComponents/AlertDialog';
+import { ChessServiceClient } from './generated/stockfishai_grpc_web_pb';
+import { ProfileRequestData } from './generated/stockfishai_pb';
 
 // Array of JSON objects
 var globalGames = [];
+
+// const rpcClient = new ChessServiceClient('http://ec2-18-221-162-109.us-east-2.compute.amazonaws.com:50051', null, null);
 // export const gameMap = new Map();
+
+const rpcClient = new ChessServiceClient('http://ec2-18-221-162-109.us-east-2.compute.amazonaws.com', {
+  transport: grpc.CrossBrowserHttpTransport({ withCredentials: false }),
+});
 
 function App() {
   return (
@@ -39,7 +48,6 @@ function App() {
         </Route>
       </Routes>
     </Router>
-    // HeroSection()
   );
 }
 
@@ -56,9 +64,9 @@ const Spinner = () => {
 }
 
 const LandingForm = (showComponent, setShowComponent, setGameMap) => {
-
   const handleSubmit = (event) => {
-    event.preventDefault(); // This p"I am going to give you two sets of chess moves followed by the color of the player. I want you to write a 15-20 word enthusiastic summary on the players game and if they won or lost. Both move sets are from the same game" revents the default behavior of form submission (page refresh)
+    event.preventDefault(); 
+    // This p"I am going to give you two sets of chess moves followed by the color of the player. I want you to write a 15-20 word enthusiastic summary on the players game and if they won or lost. Both move sets are from the same game" revents the default behavior of form submission (page refresh)
     // Add your form submission logic here, if needed
     // For example, you can access form data using event.target and perform actions based on it
     // console.log("yo")
@@ -1016,6 +1024,35 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
     };
   }, [isLoading]);
 
+
+  const callRpcService = async () => {
+
+  }
+
+  const getChessGamesWithRpc = () => {
+    const req = new ProfileRequestData();
+      // var f, obj = {
+      //   username: jspb.Message.getFieldWithDefault(msg, 1, ""),
+      //   numberofgames: jspb.Message.getFieldWithDefault(msg, 2, ""),
+      //   month: jspb.Message.getFieldWithDefault(msg, 3, ""),
+      //   year: jspb.Message.getFieldWithDefault(msg, 4, "")
+      // };
+    
+      req.setUsername("noopdogg07");
+      req.setNumberofgames("10");
+      req.setMonth("10");
+      req.setYear("2024");
+
+      rpcClient.getChessGames(req, {}, (err, response) => {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log("logging grpc response");
+          console.log(response);
+        }
+      });
+  }
+
   return (
     <form onSubmit={handleFormButtonClick}>
       <div className="space-y-12">
@@ -1080,7 +1117,10 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
       <div>
         <button
           type="submit"
-          onClick={() =>  {GetGames(showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap, resetProgressAsync, progressRef, setShowAlert, setAlertDialog)}}
+          // onClick={() =>  {GetGames(showComponent, setShowComponent, isLoading, setIsLoading, data, setData, chessUsername, monthState, yearState, numGames, setAnalysisProgress, analysisProgress, monthToDigitMap, abortControllers, setGameMap, resetProgressAsync, progressRef, setShowAlert, setAlertDialog)}}
+          onClick={() => {
+            getChessGamesWithRpc();
+          }}
           // onClick={() => setShowModel(true)}
           className="flex w-full justify-center rounded-md bg-indigo-500  px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >

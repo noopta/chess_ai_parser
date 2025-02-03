@@ -1,0 +1,57 @@
+syntax = "proto3";
+package hello_cargo;
+
+service Greeter {
+    rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+service ChessService {
+    rpc GetChessGames (ProfileRequestData) returns (ChessGamesResponse);
+}
+
+message ChessGamesResponse {
+    repeated ParsedChessGameData games = 1;
+}
+
+message ParsedChessGameData {
+    repeated double probabilities = 1;
+    repeated string lan_moves = 2;
+    repeated string san_moves = 3;
+    repeated string fen_values = 4;
+    repeated string best_moves = 5;
+}
+
+
+message ProfileRequestData {
+    string username = 1;
+    string numberOfGames = 2;
+    string month = 3;
+    string year = 4;
+}
+
+message ChessApiGameResponse {
+    repeated Game games = 1;   
+}
+
+message Game {
+    string url = 1;
+    string pgn = 2;
+    string tcn = 3;
+    string fen = 4;
+    ChessPlayer white = 5;
+    ChessPlayer black = 6;
+}
+
+message ChessPlayer {
+    int32 rating = 1;
+    string result = 2;
+    string username = 3;
+}
+
+message HelloRequest {
+    string name = 1;
+}
+
+message HelloReply {
+    string message = 1;
+}
