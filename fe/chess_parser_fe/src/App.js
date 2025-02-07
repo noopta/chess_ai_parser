@@ -39,7 +39,7 @@ var globalGames = [];
 // const rpcClient = new ChessServiceClient('http://ec2-18-221-162-109.us-east-2.compute.amazonaws.com:50051', null, null);
 // export const gameMap = new Map();
 
-const rpcClient = new ChessServiceClient('http://ec2-18-221-162-109.us-east-2.compute.amazonaws.com', {
+const rpcClient = new ChessServiceClient('http://ec2-18-221-162-109.us-east-2.compute.amazonaws.com:8080', {
   transport: grpc.CrossBrowserHttpTransport({ withCredentials: false }),
 });
 
@@ -1053,7 +1053,7 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
           console.log(err)
         } else {
           console.log("logging grpc response");
-          console.log(response);
+          console.log(response.toObject());
         }
       });
   }
