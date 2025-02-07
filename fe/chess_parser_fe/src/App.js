@@ -12,7 +12,7 @@ import DropdownMenu from './analysisComponents/DropdownMenu';
 import AnimatedPolygon from './analysisComponents/AnimatedPolygon';
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import InfiniteLoading from './analysisComponents/InfiniteLoading';
-import grpc from 'grpc-web';
+import { grpc } from "@improbable-eng/grpc-web";
 import {
   Button,
   Dialog,
@@ -27,6 +27,11 @@ import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import AlertDialog from './analysisComponents/AlertDialog';
 import { ChessServiceClient } from './generated/stockfishai_grpc_web_pb';
 import { ProfileRequestData } from './generated/stockfishai_pb';
+import { Buffer } from 'buffer';
+import process from 'process';
+
+window.Buffer = Buffer || Buffer;
+window.process = process;
 
 // Array of JSON objects
 var globalGames = [];
