@@ -19,6 +19,8 @@ message ParsedChessGameData {
     repeated string san_moves = 3;
     repeated string fen_values = 4;
     repeated string best_moves = 5;
+    ChessPlayer white = 6;
+    ChessPlayer black = 7;
 }
 
 

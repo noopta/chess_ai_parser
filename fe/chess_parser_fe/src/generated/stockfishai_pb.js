@@ -394,7 +394,9 @@ proto.hello_cargo.ParsedChessGameData.toObject = function(includeInstance, msg) 
     lanMovesList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
     sanMovesList: (f = jspb.Message.getRepeatedField(msg, 3)) == null ? undefined : f,
     fenValuesList: (f = jspb.Message.getRepeatedField(msg, 4)) == null ? undefined : f,
-    bestMovesList: (f = jspb.Message.getRepeatedField(msg, 5)) == null ? undefined : f
+    bestMovesList: (f = jspb.Message.getRepeatedField(msg, 5)) == null ? undefined : f,
+    white: (f = msg.getWhite()) && proto.hello_cargo.ChessPlayer.toObject(includeInstance, f),
+    black: (f = msg.getBlack()) && proto.hello_cargo.ChessPlayer.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -452,6 +454,16 @@ proto.hello_cargo.ParsedChessGameData.deserializeBinaryFromReader = function(msg
     case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.addBestMoves(value);
+      break;
+    case 6:
+      var value = new proto.hello_cargo.ChessPlayer;
+      reader.readMessage(value,proto.hello_cargo.ChessPlayer.deserializeBinaryFromReader);
+      msg.setWhite(value);
+      break;
+    case 7:
+      var value = new proto.hello_cargo.ChessPlayer;
+      reader.readMessage(value,proto.hello_cargo.ChessPlayer.deserializeBinaryFromReader);
+      msg.setBlack(value);
       break;
     default:
       reader.skipField();
@@ -515,6 +527,22 @@ proto.hello_cargo.ParsedChessGameData.serializeBinaryToWriter = function(message
     writer.writeRepeatedString(
       5,
       f
+    );
+  }
+  f = message.getWhite();
+  if (f != null) {
+    writer.writeMessage(
+      6,
+      f,
+      proto.hello_cargo.ChessPlayer.serializeBinaryToWriter
+    );
+  }
+  f = message.getBlack();
+  if (f != null) {
+    writer.writeMessage(
+      7,
+      f,
+      proto.hello_cargo.ChessPlayer.serializeBinaryToWriter
     );
   }
 };
@@ -702,6 +730,80 @@ proto.hello_cargo.ParsedChessGameData.prototype.addBestMoves = function(value, o
  */
 proto.hello_cargo.ParsedChessGameData.prototype.clearBestMovesList = function() {
   return this.setBestMovesList([]);
+};
+
+
+/**
+ * optional ChessPlayer white = 6;
+ * @return {?proto.hello_cargo.ChessPlayer}
+ */
+proto.hello_cargo.ParsedChessGameData.prototype.getWhite = function() {
+  return /** @type{?proto.hello_cargo.ChessPlayer} */ (
+    jspb.Message.getWrapperField(this, proto.hello_cargo.ChessPlayer, 6));
+};
+
+
+/**
+ * @param {?proto.hello_cargo.ChessPlayer|undefined} value
+ * @return {!proto.hello_cargo.ParsedChessGameData} returns this
+*/
+proto.hello_cargo.ParsedChessGameData.prototype.setWhite = function(value) {
+  return jspb.Message.setWrapperField(this, 6, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.hello_cargo.ParsedChessGameData} returns this
+ */
+proto.hello_cargo.ParsedChessGameData.prototype.clearWhite = function() {
+  return this.setWhite(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.hello_cargo.ParsedChessGameData.prototype.hasWhite = function() {
+  return jspb.Message.getField(this, 6) != null;
+};
+
+
+/**
+ * optional ChessPlayer black = 7;
+ * @return {?proto.hello_cargo.ChessPlayer}
+ */
+proto.hello_cargo.ParsedChessGameData.prototype.getBlack = function() {
+  return /** @type{?proto.hello_cargo.ChessPlayer} */ (
+    jspb.Message.getWrapperField(this, proto.hello_cargo.ChessPlayer, 7));
+};
+
+
+/**
+ * @param {?proto.hello_cargo.ChessPlayer|undefined} value
+ * @return {!proto.hello_cargo.ParsedChessGameData} returns this
+*/
+proto.hello_cargo.ParsedChessGameData.prototype.setBlack = function(value) {
+  return jspb.Message.setWrapperField(this, 7, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.hello_cargo.ParsedChessGameData} returns this
+ */
+proto.hello_cargo.ParsedChessGameData.prototype.clearBlack = function() {
+  return this.setBlack(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.hello_cargo.ParsedChessGameData.prototype.hasBlack = function() {
+  return jspb.Message.getField(this, 7) != null;
 };
 
 

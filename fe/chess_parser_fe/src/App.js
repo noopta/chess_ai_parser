@@ -1053,7 +1053,9 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
           console.log(err)
         } else {
           console.log("logging grpc response");
-          console.log(response.toObject());
+          var respObj = response.toObject();
+
+          console.log(respObj);
         }
       });
   }
