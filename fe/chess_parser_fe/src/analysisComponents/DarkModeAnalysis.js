@@ -12,7 +12,8 @@ import { CardCarousel } from './CardCarousel.js';
 import { Carousel } from "@material-tailwind/react";
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'; // Import icons for arrows
 import ResourceCard from './ResourceCard.js';
-
+import ProgressBar from './ProgressBar.js';
+import Pagination from './Pagination.js';
 
 const getFirstMoveRoundInBracket = (descriptionText) => {
     const regex = /\((\d+)\)/;
@@ -35,12 +36,10 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-
 function TextCard({textData, index, open, setOpen, resources, resourceMap, setResourcePopUpText, resourcePopUpText, setTitlePopupText, titlePopupText, moveStateArray, setBoardState, setFen, parsedMoveMap}) {
     var splitStrings = textData.split(":");
     var title = splitStrings[0];
     var description = splitStrings[1];
- 
     var prefixRegex = /^\d+\.\s*/;
 
     title = title.replace(prefixRegex, ''); 
@@ -187,6 +186,8 @@ function TextCard({textData, index, open, setOpen, resources, resourceMap, setRe
 //     </Transition.Root>
 // ) : null
 // }
+
+
 function NavBar() {
     const navigate = useNavigate();
     return (
@@ -299,9 +300,11 @@ const LeftSide = ({
     setChessAnalysis,
     chessOpponent,
     setChessOpponent,
-    gameMap
+    gameProbs,
+    locationState,
+    fenMovesList
 }) => {
-
+    
     const [fen, setFen] = useState('start');
     const [open, setOpen] = useState(false);
     const [playerColor, setPlayerColor] = useState("")
@@ -318,6 +321,7 @@ const LeftSide = ({
     const [parsedFirstText, setParsedFirstTextState] = useState([]);
     const [boardState, setBoardState] = useState(new Chess());
     const [moveStateArray, setMoveStateArray] = useState([]);
+    const [fenStateList, setFenStateList] = useState([]);
     const [resourceMap, setResourceMap] = useState(new Map());
 
     const [analysisSection, resourcesSection] = chessAnalysis.split("Resources:");
@@ -330,18 +334,31 @@ const LeftSide = ({
     const [titlePopupText, setTitlePopupText] = useState("");
     const [parsedMoveMap, setParsedMoveMap] = useState(new Map());
 
-
     // get all occurances of "(" in the analysis string
     // get all occurances of ")" in the analysis string and store to a list
     let indexOccurance = analysis.indexOf("(", 0);
     var startingIndices = [];
     var i = 0;
     const chess = new Chess();
+    const [whiteChances, setWhiteChances] = useState("57.5%");
+    console.log("left side");
+    console.log(fenMovesList);
+
+    const updateBoard = (index) => {
+        // console.log("logging move state board")
+        // console.log(moveStateArray[0][index]);
+        // console.log(moveStateArray)
+        // console.log(index)
+        // setBoardState(moveStateArray[0][index]);
+        setFen(fenMovesList[index]);
+    }
+
 
     while (indexOccurance >= 0) {
         startingIndices.push(indexOccurance);
         indexOccurance = analysis.indexOf("(", indexOccurance + 1);
     }
+
 
     for (i = 0; i < startingIndices.length; i++) {
         var index = startingIndices[i];
@@ -351,146 +368,150 @@ const LeftSide = ({
         analysisArray.push(substring);
     }
 
-    useEffect(() => {
-        var chess = new Chess();
-        var chessMovesArray = [];
-        var tempMap = new Map();
+    // useEffect(() => {
+    //     var chess = new Chess();
+    //     var chessMovesArray = [];
+    //     var tempMap = new Map();
 
-        if(analysisSection != undefined && resourcesSection != undefined) {
-            // console.log("here")
-            // console.log(analysisSection)
-            // console.log("done")
-            analysisPoints = analysisSection.split('\n').filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.')).map(line => line.trim());
-            const tempMoveArray = []
+    //     if(analysisSection != undefined && resourcesSection != undefined) {
+    //         // console.log("here")
+    //         // console.log(analysisSection)
+    //         // console.log("done")
+    //         analysisPoints = analysisSection.split('\n').filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.')).map(line => line.trim());
+    //         const tempMoveArray = []
 
-            for(i = 0; i < analysisPoints.length; i++) {
-                // we can go through each analysisPoint, extract the move number store it to our map, 
-                // and then later we can use the map for when a user selects View on Board to get the appropriate board state   
-                // getFirstMoveRoundInBracket(analysisPoints[i], tempParsedMoveMap, i); 
-                tempMoveArray.push(getFirstMoveRoundInBracket(analysisPoints[i]));
-            }
-            //*********** */
+    //         for(i = 0; i < analysisPoints.length; i++) {
+    //             // we can go through each analysisPoint, extract the move number store it to our map, 
+    //             // and then later we can use the map for when a user selects View on Board to get the appropriate board state   
+    //             // getFirstMoveRoundInBracket(analysisPoints[i], tempParsedMoveMap, i); 
+    //             tempMoveArray.push(getFirstMoveRoundInBracket(analysisPoints[i]));
+    //         }
+    //         //*********** */
 
-            setAnalysisArrayState(tempMoveArray);
-        }
-
-
-        if (analysisArray.length > 0 && gameMap != undefined) {
-            // console.log("gamemap is not undefined")
-            // console.log(gameMap)
-            setPlayerColor(gameMap.get(decodeKey).PlayerColor);
-            const whiteMoves = gameMap.get(decodeKey).WhiteMoves;
-            const blackMoves = gameMap.get(decodeKey).BlackMoves;
-
-            // set parsedFirstText to the return response of reformatResponse function
-            setParsedFirstTextState(reformatResponse(analysis, "A"));
-
-            // how do I modify the move board with parsedMoveNumber 
-            // don't want to refactor at the moment so might do a hacky solution for now
-            // TODO: come back to this later to refactor because it'll become technical debt 
-            for (let i = 0; i < analysisArray.length; i++) {
-                var currentRound = analysisArray[i];
-                chess = new Chess();
-
-                // get the move number between the brackets
-                // console.log("intiial analysis: " + analysisArray[i]);
-                var moveNumber = currentRound.substring(currentRound.indexOf("(") + 1, currentRound.indexOf(")"));
-                // convert the move number to an integer
-                var convertedMoveNumber = parseInt(moveNumber);
-                var j = 0;
-
-                var moveMap = new Map();
+    //         setAnalysisArrayState(tempMoveArray);
+    //     }
 
 
-                //COME BACK HERE
-                // this is the ONLY place we need the converted move number, which affects our board array state 
-                // the issue with this current approach is our board state array can have 3,4,5,6,7,etc. moves dependingon AI output
-                for (j = 0; j < convertedMoveNumber; j++) {
-                    if (moveMap.has(whiteMoves[j])) {
-                        // repeat of moves
-                        break;
-                    };
+    //     if (analysisArray.length > 0 && gameMap != undefined) {
+    //         // console.log("gamemap is not undefined")
+    //         // console.log(gameMap)
+    //         setPlayerColor(gameMap.get(decodeKey).PlayerColor);
+    //         const whiteMoves = gameMap.get(decodeKey).WhiteMoves;
+    //         const blackMoves = gameMap.get(decodeKey).BlackMoves;
 
-                    if (whiteMoves[j] == "1-0" || blackMoves[j] == "1-0") {
-                        continue;
-                    }
+    //         // set parsedFirstText to the return response of reformatResponse function
+    //         setParsedFirstTextState(reformatResponse(analysis, "A"));
 
-                    chess.move(whiteMoves[j]);
-                    chess.move(blackMoves[j]);
+    //         // how do I modify the move board with parsedMoveNumber 
+    //         // don't want to refactor at the moment so might do a hacky solution for now
+    //         // TODO: come back to this later to refactor because it'll become technical debt 
+    //         for (let i = 0; i < analysisArray.length; i++) {
+    //             var currentRound = analysisArray[i];
+    //             chess = new Chess();
+
+    //             // get the move number between the brackets
+    //             // console.log("intiial analysis: " + analysisArray[i]);
+    //             var moveNumber = currentRound.substring(currentRound.indexOf("(") + 1, currentRound.indexOf(")"));
+    //             // convert the move number to an integer
+    //             var convertedMoveNumber = parseInt(moveNumber);
+    //             var j = 0;
+
+    //             var moveMap = new Map();
 
 
-                    // set the chess game to the move state array 
+    //             //COME BACK HERE
+    //             // this is the ONLY place we need the converted move number, which affects our board array state 
+    //             // the issue with this current approach is our board state array can have 3,4,5,6,7,etc. moves dependingon AI output
+    //             for (j = 0; j < convertedMoveNumber; j++) {
+    //                 if (moveMap.has(whiteMoves[j])) {
+    //                     // repeat of moves
+    //                     break;
+    //                 };
 
-                    moveMap.set(whiteMoves[j], blackMoves[j]);
-                }
+    //                 if (whiteMoves[j] == "1-0" || blackMoves[j] == "1-0") {
+    //                     continue;
+    //                 }
 
-                chessMovesArray.push(chess);
-            }
-        }
+    //                 chess.move(whiteMoves[j]);
+    //                 chess.move(blackMoves[j]);
 
-        if (chessMovesArray != null && chessMovesArray.length > 0) {
-            // what does chessMovesArray represent?
-            // it is 
-            // console.log("chessMovesArray: " + chessMovesArray);
-            var moveStateMap = new Map();
-            var tempArray = [];
-            var j = 0;
+
+    //                 // set the chess game to the move state array 
+
+    //                 moveMap.set(whiteMoves[j], blackMoves[j]);
+    //             }
+
+    //             chessMovesArray.push(chess);
+    //         }
+    //     }
+
+    //     if (chessMovesArray != null && chessMovesArray.length > 0) {
+    //         // what does chessMovesArray represent?
+    //         // it is 
+    //         // console.log("chessMovesArray: " + chessMovesArray);
+    //         var moveStateMap = new Map();
+    //         var tempArray = [];
+    //         var j = 0;
             
-            for(j = 0; j < chessMovesArray.length; j++) {
-                if(!moveStateMap.has(chessMovesArray[j].fen())) {
-                    tempArray.push(chessMovesArray[j]);
-                    moveStateMap.set(chessMovesArray[j].fen(), 1);
-                }
-            }
+    //         for(j = 0; j < chessMovesArray.length; j++) {
+    //             if(!moveStateMap.has(chessMovesArray[j].fen())) {
+    //                 tempArray.push(chessMovesArray[j]);
+    //                 moveStateMap.set(chessMovesArray[j].fen(), 1);
+    //             }
+    //         }
 
-            // console.log("tempArray: " + tempArray);
+    //         // console.log("tempArray: " + tempArray);
 
-            setMoveStateArray(moveStateArray => [...moveStateArray, tempArray]);
-        }
+    //         setMoveStateArray(moveStateArray => [...moveStateArray, tempArray]);
+    //     }
 
-        if(analysisSection != undefined && resourcesSection != undefined) {
-            analysisPoints = analysisSection.split('\n').filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.')).map(line => line.trim());
-            // console.log("analysis points: " + analysisPoints);
-            // console.log("analysis section: " + analysisSection);
+    //     if(analysisSection != undefined && resourcesSection != undefined) {
+    //         analysisPoints = analysisSection.split('\n').filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.')).map(line => line.trim());
+    //         // console.log("analysis points: " + analysisPoints);
+    //         // console.log("analysis section: " + analysisSection);
             
-            const tempParsedMoveMap = new Map();
+    //         const tempParsedMoveMap = new Map();
 
-            for(i = 0; i < analysisPoints.length; i++) {
-                // we can go through each analysisPoint, extract the move number store it to our map, 
-                // and then later we can use the map for when a user selects View on Board to get the appropriate board state   
-                getFirstMoveRoundInBracket(analysisPoints[i], tempParsedMoveMap, i); 
-            }
+    //         for(i = 0; i < analysisPoints.length; i++) {
+    //             // we can go through each analysisPoint, extract the move number store it to our map, 
+    //             // and then later we can use the map for when a user selects View on Board to get the appropriate board state   
+    //             getFirstMoveRoundInBracket(analysisPoints[i], tempParsedMoveMap, i); 
+    //         }
 
-            setParsedMoveMap(tempParsedMoveMap);
+    //         setParsedMoveMap(tempParsedMoveMap);
 
-            // console.log("parsed move round map" + tempParsedMoveMap.get(0) + " " + tempParsedMoveMap.get(1) + " " + tempParsedMoveMap.get(2));
-            // Extract resource points
-            resourcePoints = resourcesSection.split('\n').filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.')).map(line => line.trim());
+    //         // console.log("parsed move round map" + tempParsedMoveMap.get(0) + " " + tempParsedMoveMap.get(1) + " " + tempParsedMoveMap.get(2));
+    //         // Extract resource points
+    //         resourcePoints = resourcesSection.split('\n').filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.')).map(line => line.trim());
     
-            // Split the string by comma and then trim each part to remove any extra whitespace
-            if(resourcePoints != undefined) {
-                resourceArray = resourcesSection.split(/(?=\d\.)/).map(point => point.trim());
+    //         // Split the string by comma and then trim each part to remove any extra whitespace
+    //         if(resourcePoints != undefined) {
+    //             resourceArray = resourcesSection.split(/(?=\d\.)/).map(point => point.trim());
     
-                for(i = 0; i < resourceArray.length; i++) {
-                    // what are our options here?
-                    // option 1: store the resources in a map and then access the resources by the index of the analysisArray 
-                    // option 2: store the resources in a map and then access the resources by the key of the html element (e.g. 1, 2, 3)
-                    tempMap.set(i + 1, resourceArray[i]);
-                    // console.log("resource map: " + tempMap.get(i + 1));
-                }
-                setResourceMap(tempMap);
-            }
+    //             for(i = 0; i < resourceArray.length; i++) {
+    //                 // what are our options here?
+    //                 // option 1: store the resources in a map and then access the resources by the index of the analysisArray 
+    //                 // option 2: store the resources in a map and then access the resources by the key of the html element (e.g. 1, 2, 3)
+    //                 tempMap.set(i + 1, resourceArray[i]);
+    //                 // console.log("resource map: " + tempMap.get(i + 1));
+    //             }
+    //             setResourceMap(tempMap);
+    //         }
           
     
-            if(analysisPoints != undefined) {
-                setOrganizedAnalysisArray(analysisPoints);
-                // setOrganizedAnalysisArray(analysisSection.split(/(?=\d\.)/).map(point => point.trim()));
-                // organizedAnalysisArray = analysisSection.split(/(?=\d\.)/).map(point => point.trim());
-            }
-        }
+    //         if(analysisPoints != undefined) {
+    //             setOrganizedAnalysisArray(analysisPoints);
+    //             // setOrganizedAnalysisArray(analysisSection.split(/(?=\d\.)/).map(point => point.trim()));
+    //             // organizedAnalysisArray = analysisSection.split(/(?=\d\.)/).map(point => point.trim());
+    //         }
+    //     }
     
 
-    }, [decodeKey]);
+    // }, [decodeKey]);
+
+    const handleExampleClick = () => {
+        console.log("yo")
+    }
 
     return (
         <div className="overflow-hidden bg-gray-900 min-h-screen">
@@ -519,6 +540,7 @@ const LeftSide = ({
                         <button
                           type="button"
                           className="absolute top-1/2 -left-12 transform -translate-y-1/2 z-10"
+                          onClick={handleExampleClick}
                         >
                           <HiChevronLeft className="h-6 w-6 text-gray-500 hover:text-gray-700" />
                         </button>
@@ -526,13 +548,14 @@ const LeftSide = ({
                       rightControl={
                         <button
                           type="button"
+                          onClick={handleExampleClick}
                           className="absolute top-1/2 -right-12 transform -translate-y-1/2 z-10"
                         >
                           <HiChevronRight className="h-6 w-6 text-gray-500 hover:text-gray-700" />
                         </button>
                       }
                     >
-                      {organizedAnalysisArray
+                      {/* {organizedAnalysisArray
                         .filter((item, idx) => !item.includes('Analysis'))
                         .map((item, index) => (
                             <TextCard
@@ -553,7 +576,7 @@ const LeftSide = ({
                             setBoardState={setBoardState}
                             parsedMoveMap={parsedMoveMap}
                         />
-                        ))}
+                        ))} */}
                     </Carousel>
                   </div>
                 </div>
@@ -561,16 +584,63 @@ const LeftSide = ({
     
               {/* Right Column - Chessboard */}
               <div className="mt-4">
+                <ProgressBar whiteChances={whiteChances} />
                 <Chessboard
                   className="w-[48rem] max-w-none rounded-xl bg-gray-900 shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]"
                   id="BasicBoard"
                   position={fen}
                 />
+                    {/* Carousel Wrapper */}
+                <div className="mt-10">
+                    <Pagination gameProbs={locationState ? gameProbs : []} setWhiteChances={setWhiteChances} setFen={setFen} fenMovesList={fenMovesList} updateBoard={updateBoard}/>
+                </div>
               </div>
             </div>
           </div>
         </div>
       );
+
+
+    //   <Carousel
+    //   className="relative rounded-xl w-full pb-12"
+    //   leftControl={({ onClick, ...props }) => (
+    //       <button
+    //       type="button"
+    //       {...props}
+    //       onClick={(e) => {
+    //           console.log("left clicked");
+    //           onClick && onClick(e);
+    //       }}
+    //       onMouseDown={(e) => {
+    //           console.log("left mouse down");
+    //           onClick && onClick(e);
+    //         }}
+    //       className="absolute top-1/2 -left-12 transform -translate-y-1/2 z-[50] pointer-events-auto"
+    //       >
+    //       <HiChevronLeft className="h-6 w-6 text-gray-500 hover:text-gray-700" />
+    //       </button>
+    //   )}
+    //   rightControl={({ onClick, ...props }) => (
+    //       <button
+    //         type="button"
+    //         {...props}
+    //         onClick={(e) => {
+    //           console.log("right clicked");
+    //           // Call the provided onClick only if it exists
+    //           if (typeof onClick === "function") {
+    //             onClick(e);
+    //           }
+    //         }}
+    //         className="absolute top-1/2 -right-12 transform -translate-y-1/2 z-10"
+    //       >
+    //         <HiChevronRight className="h-6 w-6 text-gray-500 hover:text-gray-700" />
+    //       </button>
+    //     )}
+    //   >
+    //   {/* Your slide elements */}
+    //   <div>Your Slide Content</div>
+    //   <div>Your Second Slide</div>
+    //   </Carousel>
 
     // return (
     //     <div className="overflow-hidden bg-gray-900 h-screen">
@@ -650,6 +720,11 @@ export default function DarkModeAnalysis(currentGame) {
     const [decodeKey, setDecodeKey] = useState("");
     const [chessAnalysis, setChessAnalysis] = useState("")
     const [chessOpponent, setChessOpponent] = useState("")
+    const [gameProbs, setGameProbs] = useState([])
+    const [locationState, setLocationState] = useState(null);
+    const [currentMoveRound, setCurrentMoveRound] = useState(0);
+    const [fenMovesList, setFenMovesList] = useState([]);
+    var gameMoves = [];
     const location = useLocation();
     // const gameMap = location.state?.gameMap
     // deserialize the gameMap
@@ -658,9 +733,19 @@ export default function DarkModeAnalysis(currentGame) {
 
     useEffect(() => {
         if (gameMap.size > 0 && location.state != null) {
+            console.log("cached game map")
+            console.log(gameMap)
+            console.log(gameMap.get(location.state.key))
+            console.log(location.state.key)
             setDecodeKey(location.state.key);
-            setChessAnalysis(gameMap.get(location.state.key).Analysis);
-            setChessOpponent(gameMap.get(location.state.key).Opponent);
+            setLocationState(location.state);
+            setGameProbs(gameMap.get(location.state.key).probabilitiesList)
+            gameMoves = gameMap.get(location.state.key).lanMovesList;
+            setFenMovesList(gameMap.get(location.state.key).fenValuesList);
+            console.log("yooo");
+            console.log(gameMap.get(location.state.key).fenValuesList);
+            // setChessAnalysis(gameMap.get(location.state.key).Analysis);
+            // setChessOpponent(gameMap.get(location.state.key).Opponent);
         }
 
     }, []);
@@ -675,7 +760,9 @@ export default function DarkModeAnalysis(currentGame) {
             chessOpponent={chessOpponent}
             setChessAnalysis={setChessAnalysis}
             setChessOpponent={setChessOpponent}
-            gameMap={gameMap}
+            gameProbs={gameProbs}
+            locationState={locationState}
+            fenMovesList={fenMovesList}
         />
         // <div className="overflow-hidden bg-gray-900 ">
         //     <NavBar />

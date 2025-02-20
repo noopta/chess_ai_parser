@@ -68,7 +68,7 @@ const Spinner = () => {
   )
 }
 
-const LandingForm = (showComponent, setShowComponent, setGameMap) => {
+const LandingForm = (showComponent, setShowComponent, setGameMap, setCurrUsername) => {
   const handleSubmit = (event) => {
     event.preventDefault(); 
     // This p"I am going to give you two sets of chess moves followed by the color of the player. I want you to write a 15-20 word enthusiastic summary on the players game and if they won or lost. Both move sets are from the same game" revents the default behavior of form submission (page refresh)
@@ -82,6 +82,13 @@ const LandingForm = (showComponent, setShowComponent, setGameMap) => {
   const [showModel, setShowModel] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
+
+  const [chessUsername, setChessUsername] = useState("");
+
+  const handleUsernameChange = (event) => {
+    // setChessUsername(event.target.value);
+    setCurrUsername(event.target.value);
+  };
 
   const handleModelToggle = () => {
     setShowModel(!showModel);
@@ -239,7 +246,7 @@ const LandingForm = (showComponent, setShowComponent, setGameMap) => {
   return (
     <>
       {/* {LandingInputForm(showComponent, setShowComponent, setGameMap)} */}
-      <LandingInputForm showComponent={showComponent} setShowComponent={setShowComponent} setGameMap={setGameMap}/>
+      <LandingInputForm setShowComponent={setShowComponent} setGameMap={setGameMap} chessUsername={chessUsername} setChessUsername={setChessUsername} setCurrUsername={setCurrUsername}/>
     </>
   )
 }
@@ -576,6 +583,7 @@ const GetGames = async (showComponent, setShowComponent, isLoading, setIsLoading
 
 const HeroSection = (props) => {
   const [showComponent, setShowComponent] = useState(false);
+  const [currUsername, setCurrUsername] = useState("");
   const listGamesRef = useRef(null);
   const monthToNumMap = {
     "January": "01",
@@ -711,6 +719,69 @@ const HeroSection = (props) => {
     )
   }
 
+  const ListGamesV2 = forwardRef(({ gameMap, currUsername }, ref) => {
+    const navigate = useNavigate();
+  
+    const gameItems = [];
+  
+    for (const [key, currentGame] of gameMap.entries()) { 
+      let oppPlayer = currentGame["white"]["username"] != currUsername ? currentGame["white"] : currentGame;
+      console.log("username");
+      console.log(currUsername);
+      let oppName = currentGame["white"]["username"] != currUsername ? currentGame["white"]["username"] : currentGame["black"]["username"];
+      // console.log("key: " + key + " value: " + currentGame)
+      gameItems.push( 
+        <li className="relative flex items-center space-x-4 py-4">
+        <div className="min-w-0 flex-auto">
+          <div className="flex items-center gap-x-3">
+            <div className={classNames("text-green-400 bg-green-400/10", 'flex-none rounded-full p-1')}>
+              <div className="h-2 w-2 rounded-full bg-current" />
+            </div>
+            
+            <h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
+              <a onClick={() => {
+                navigate('/analysis', {
+                  state: { key: encodeURIComponent(key), gameMap: gameMap }
+                });
+              }} href="#" className="flex gap-x-2">
+                <span className="truncate">{oppName }</span>
+                <span className="text-gray-400">/</span>
+                <span className="whitespace-nowrap">{oppPlayer["rating"]}</span>
+                <span className="absolute inset-0" />
+              </a>
+            </h2>
+          </div>
+          <div className="mt-3 flex items-center gap-x-2.5 text-xs leading-5 text-gray-400">
+            <p className="truncate">some match blurb</p>
+            <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 flex-none fill-gray-300">
+              <circle cx={1} cy={1} r={1} />
+            </svg>
+            <p className="whitespace-nowrap">Initiated</p>
+          </div>
+        </div>
+        <div
+          className={classNames(
+            environments["Production"],
+            'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset'
+          )}
+        >
+          View Game
+        </div>
+        <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+      </li>
+      ); 
+    }
+
+    return (
+      <div ref={ref}>
+      <ul role="list" className="divide-y divide-white/5">
+        {gameItems}
+      </ul>
+      </div>
+    )
+  });
+
+
   const ListGames = forwardRef(({ gameMap }, ref) => {
     const navigate = useNavigate();
 
@@ -789,11 +860,11 @@ const HeroSection = (props) => {
                   Get started by entering a Chess.com username to get feedback on your recent games.
                 </p>
                 <div className="mt-10 flex items-center justify-center gap-x-6">
-                  {LandingForm(showComponent, setShowComponent, setGameMap)}
+                  {LandingForm(showComponent, setShowComponent, setGameMap, setCurrUsername)}
                 </div>
               </div>
             </div>
-            {showComponent ? <ListGames ref={listGamesRef} gameMap={gameMap} /> : null}
+            {showComponent ? <ListGamesV2 ref={listGamesRef} gameMap={gameMap} currUsername={currUsername} /> : null}
           </div>
         </body>
       </html>
@@ -850,6 +921,7 @@ function InputForm() {
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
+
   const handleMessageChange = (event) => {
     setMessage(event.target.value);
   };
@@ -857,10 +929,6 @@ function InputForm() {
   const handleFormButtonClick = (event) => {
     // Access the inputValue here and do whatever you want with it
     event.preventDefault();
-    // console.log("first name = " + firstName);
-    // console.log("last name = " + lastName);
-    // console.log("email = " + email);
-    // console.log("message " + message);
   };
 
   return (
@@ -905,7 +973,7 @@ function InputForm() {
   )
 }
 
-function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
+function LandingInputForm({setShowComponent, setGameMap, chessUsername, setChessUsername, setCurrUsername}) {
   const date = new Date();
   // const defaultMonth = String((date.getMonth() + 1)).padStart(2, '0');
   const defaultMonth = "January";
@@ -915,7 +983,6 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
   const [isLoading, setIsLoading] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [data, setData] = useState(null);
-  const [chessUsername, setChessUsername] = useState("");
   const [monthState, setMonthState] = useState("January");
   const [yearState, setYearState] = useState(defaultYear);
   const [yearTitleState, setYearTitleState] = useState("Select Year");
@@ -938,19 +1005,6 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
   monthToDigitMap["November"] = "11";
   monthToDigitMap["December"] = "12";
 
-  const handleUsernameChange = (event) => {
-    setChessUsername(event.target.value);
-  };
-
-  const handleMonthStateChange = (event) => {
-    if (event.target.value == "Select Month") {
-      setMonthState(defaultMonth);
-      return;
-    }
-
-    setMonthState(event.target.value);
-  };
-
   const handleYearStateChange = (event) => {
     if (event.target.value == "Select Year") {
       setYearState(defaultYear);
@@ -959,6 +1013,7 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
 
     setYearState(event.target.value);
   };
+
   const handleNumGamesChange = (event) => {
     var val = event.target.value;
 
@@ -977,26 +1032,20 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
     setShowModel(!showModel);
   };
 
+  const handleUsernameChange = (event) => {
+    setCurrUsername(event.target.value);
+  };
+
 
   const handleFormButtonClick = (event) => {
     // Access the inputValue here and do whatever you want with it
     event.preventDefault();
-    // console.log("chess username = " + chessUsername);
-    // console.log("month state = " + monthState);
-    // console.log("year state = " + yearState);
-    // console.log("num games " + numGames);
   };
 
   const waitForProgressCompletion = () => {
     return new Promise((resolve) => {
         setAnalysisProgress(0)
     });
-  };
-
-  const resetProgressAsync = async () => {
-    await waitForProgressCompletion();
-    // This code runs after progress reaches 100
-    // console.log('Progress complete!');
   };
 
   const [monthList, setMonthList] = useState(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
@@ -1029,11 +1078,6 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
     };
   }, [isLoading]);
 
-
-  const callRpcService = async () => {
-
-  }
-
   const getChessGamesWithRpc = () => {
     const req = new ProfileRequestData();
       // var f, obj = {
@@ -1048,14 +1092,25 @@ function LandingInputForm({showComponent, setShowComponent, setGameMap}) {
       req.setMonth("10");
       req.setYear("2024");
 
-      rpcClient.getChessGames(req, {}, (err, response) => {
+      rpcClient.getChessGames(req, {}, async (err, response) => {
         if (err) {
           console.log(err)
         } else {
           console.log("logging grpc response");
           var respObj = response.toObject();
 
+          var tempMap = new Map();
           console.log(respObj);
+
+          for (var i = 0; i < respObj["gamesList"].length; i++) {
+            var matchHash = await generateRandomHash();
+
+            tempMap.set(matchHash, respObj.gamesList[i]);
+          }
+
+          setGameMap(tempMap);
+          localStorage.setItem('gameMap', JSON.stringify(Array.from(tempMap.entries())));
+          setShowComponent(true);
         }
       });
   }
