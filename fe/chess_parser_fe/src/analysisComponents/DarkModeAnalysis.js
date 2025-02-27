@@ -14,6 +14,9 @@ import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'; // Import icons 
 import ResourceCard from './ResourceCard.js';
 import ProgressBar from './ProgressBar.js';
 import Pagination from './Pagination.js';
+import ThreeColumn from './ThreeColumn.js';
+// import ChatInterface from './ChatInterface.js';
+import ThreeColumnLayout from './SecondThreeCol.js';
 
 const getFirstMoveRoundInBracket = (descriptionText) => {
     const regex = /\((\d+)\)/;
@@ -519,7 +522,10 @@ const LeftSide = ({
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto grid grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:grid-cols-2 items-start">
               {/* Left Column */}
-              <div className="lg:pr-8 lg:pt-4">
+              {/* <ChatInterface /> */}
+    
+
+              {/* <div className="lg:pr-8 lg:pt-4">
                 <div>
                   <h2 className="text-base font-semibold leading-7 text-indigo-400">
                     Analysis - you played as {playerColor}
@@ -530,10 +536,10 @@ const LeftSide = ({
                   <p className="mt-6 text-lg leading-8 text-gray-300">
                     Here is the analysis of your match! Use the carousel below to follow along with the
                     feedback and view the board state at each move.
-                  </p>
+                  </p> */}
     
                   {/* Carousel Wrapper */}
-                  <div className="mt-10">
+                  {/* <div className="mt-10">
                     <Carousel
                       className="relative rounded-xl w-full pb-12"
                       leftControl={
@@ -555,33 +561,11 @@ const LeftSide = ({
                         </button>
                       }
                     >
-                      {/* {organizedAnalysisArray
-                        .filter((item, idx) => !item.includes('Analysis'))
-                        .map((item, index) => (
-                            <TextCard
-                            key={index} // Provide a unique key
-                            textData={item}
-                            index={index}
-                            open={open}
-                            setOpen={setOpen}
-                            resources={resources}
-                            resourceMap={resourceMap}
-                            setResourcePopUpText={setResourcePopupText}
-                            resourcePopUpText={resourcePopupText}
-                            setTitlePopupText={setTitlePopupText}
-                            titlePopupText={titlePopupText}
-                            setMoveStateArray={setMoveStateArray}
-                            setFen={setFen}
-                            moveStateArray={moveStateArray}
-                            setBoardState={setBoardState}
-                            parsedMoveMap={parsedMoveMap}
-                        />
-                        ))} */}
                     </Carousel>
                   </div>
                 </div>
-              </div>
-    
+              </div> */}
+
               {/* Right Column - Chessboard */}
               <div className="mt-4">
                 <ProgressBar whiteChances={whiteChances} />
@@ -722,6 +706,7 @@ export default function DarkModeAnalysis(currentGame) {
     const [chessOpponent, setChessOpponent] = useState("")
     const [gameProbs, setGameProbs] = useState([])
     const [locationState, setLocationState] = useState(null);
+    const [fen, setFen] = useState('start');
     const [currentMoveRound, setCurrentMoveRound] = useState(0);
     const [fenMovesList, setFenMovesList] = useState([]);
     var gameMoves = [];
@@ -749,21 +734,47 @@ export default function DarkModeAnalysis(currentGame) {
         }
 
     }, []);
+    const [whiteChances, setWhiteChances] = useState("57.5%");
+
+    const updateBoard = (index) => {
+        // console.log("logging move state board")
+        // console.log(moveStateArray[0][index]);
+        // console.log(moveStateArray)
+        // console.log(index)
+        // setBoardState(moveStateArray[0][index]);
+        setFen(fenMovesList[index]);
+    }
 
     return (
         //py-24 sm:py-32
 
-        <LeftSide
-            game={currentGame}
-            decodeKey={decodeKey}
-            chessAnalysis={chessAnalysis}
-            chessOpponent={chessOpponent}
-            setChessAnalysis={setChessAnalysis}
-            setChessOpponent={setChessOpponent}
-            gameProbs={gameProbs}
-            locationState={locationState}
-            fenMovesList={fenMovesList}
-        />
+        // <ThreeColumn />
+        <div>
+            <NavBar />
+            <ThreeColumnLayout
+             whiteChances={whiteChances}
+              fenMovesList={fenMovesList} 
+              updateBoard={updateBoard} 
+              fen={fen} 
+              gameProbs={gameProbs} 
+              locationState={locationState} 
+              setFen={setFen} 
+              setFenMovesList={setFenMovesList} 
+              setWhiteChances={setWhiteChances} 
+              />
+        </div>
+
+        // <LeftSide
+        //     game={currentGame}
+        //     decodeKey={decodeKey}
+        //     chessAnalysis={chessAnalysis}
+        //     chessOpponent={chessOpponent}
+        //     setChessAnalysis={setChessAnalysis}
+        //     setChessOpponent={setChessOpponent}
+        //     gameProbs={gameProbs}
+        //     locationState={locationState}
+        //     fenMovesList={fenMovesList}
+        // />
         // <div className="overflow-hidden bg-gray-900 ">
         //     <NavBar />
         //     <div className="mx-auto max-w-7xl px-6 lg:px-8">

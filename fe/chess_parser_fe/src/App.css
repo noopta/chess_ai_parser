@@ -280,3 +280,66 @@ main {
 }
 
 .smooth-progress { transition: width 0.4s ease}
+
+.GptPage {
+  display: grid;
+  grid-template-columns: auto 200px;
+  gap: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.GptColumn {
+  color: white;
+}
+
+.GptTitle {
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  color: black;
+  background-color: rgb(218, 255, 170);
+}
+
+.GptContent {
+  height: calc(100vh - 200px);
+  overflow-y: scroll;
+  margin-bottom: 20px;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Container uses flexbox to arrange columns */
+.threeColContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 20px;
+}
+
+/* Each column takes equal space with some margin */
+.threeColColumn {
+  flex: 1;
+  margin: 10px;
+  padding: 20px;
+  background-color: transparent;
+  /* border: 1px solid #ddd; */
+  box-sizing: border-box;
+}
+
+/* Responsive: stack columns on screens narrower than 768px */
+@media (max-width: 768px) {
+  .threeColContainer {
+    flex-direction: column;
+  }
+  .threeColColumn {
+    margin: 10px 0;
+  }
+}
